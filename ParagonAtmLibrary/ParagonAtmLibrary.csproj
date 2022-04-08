@@ -13,6 +13,10 @@
     <Description>Library for Paragon Virtual ATM API interaction.</Description>
     <Copyright>2022</Copyright>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/CodeFontana/ParagonAtmLibrary</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/CodeFontana/ParagonAtmLibrary</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>Paragon Virtual ATM</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
