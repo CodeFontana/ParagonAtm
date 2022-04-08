@@ -6,7 +6,7 @@
     <Nullable>disable</Nullable>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <PackageId>CodeFoxtrot.ParagonAtmLibrary</PackageId>
-    <Version>1.0.0</Version>
+    <Version>1.0.1</Version>
     <Authors>CodeFoxtrot</Authors>
     <Company>CodeFoxtrot</Company>
     <Product>ParagonAtmLibrary</Product>
