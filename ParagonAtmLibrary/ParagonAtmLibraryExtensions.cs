@@ -3,7 +3,7 @@ using ParagonAtmLibrary.Services;
 
 namespace ParagonAtmLibrary;
 
-public static class WindowsLibraryExtensions
+public static class ParagonAtmLibraryExtensions
 {
     public static IServiceCollection AddParagonAtmLibrary(this IServiceCollection services)
     {
