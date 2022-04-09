@@ -22,7 +22,7 @@ Add the following to your appsettings.json, and be sure to update relevant feild
 ```
 "WebFast": {
     "Username": "bfontana",
-    "Password": "<I would use user secrets for this>",
+    "Password": "<User secrets>",
     "GroupId": 8
   },
   "ApiEndpoint": {
@@ -109,10 +109,8 @@ public class ClientApp : IHostedService
 Use the services...
 
 ```
-public async Task ExecuteAsync()
+public async Task<bool> ConnectAsync()
 {
-    bool sessionOpened = false;
-
     try
     {
         AgentStatusModel agentState = await _agentService.GetAgentStatusAsync();
@@ -120,33 +118,52 @@ public async Task ExecuteAsync()
         if (agentState == null)
         {
             _logger.LogError("Unable to query agent status, may not be running, unable to acquire session");
-            return;
+            return false;
         }
         else if (agentState.AgentStatus.ToUpper().Equals("IDLE") == false
             && agentState.AgentStatus.ToUpper().Equals("PAUSED") == false)
         {
             _logger.LogError("Agent must be in IDLE or PAUSED state to acquire session");
-            return;
+            return false;
         }
 
-        sessionOpened = await _agentService.OpenSesisonAsync(WebFastUser);
+        bool sessionOpened = await _agentService.OpenSesisonAsync(WebFastUser);
 
         agentState = await _agentService.GetAgentStatusAsync();
 
         if (sessionOpened == false)
         {
             _logger.LogError("Failed to acquire session");
-            return;
+            return false;
         }
         else if (agentState.AgentStatus.ToUpper().Equals("APICONTROLLED") == false)
         {
             _logger.LogError($"Unexpected session state [{agentState.AgentStatus}], expecting [APICONTROLLED]");
-            return;
+            return false;
         }
 
         await _agentService.OpenHwProfileAsync(VirtualAtm);
         await _connectionService.OpenAsync();
+        return true;
+    }
+    catch (Exception ex)
+    {
+        _logger.LogCritical(ex, ex.Message);
+        return false;
+    }
+}
 
+public async Task ExecuteAsync()
+{
+    bool sessionOpened = await ConnectAsync();
+
+    if (sessionOpened == false)
+    {
+        return;
+    }
+
+    try
+    {
         // TODO: Add your automation instructions here!
 
     }
