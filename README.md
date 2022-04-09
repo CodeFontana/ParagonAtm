@@ -4,7 +4,7 @@ This library is used for interacting with a Paragon Virtual ATM via the publishe
 [![Nuget Release](https://img.shields.io/nuget/v/CodeFoxtrot.ParagonAtmLibrary?style=for-the-badge)](https://www.nuget.org/packages/CodeFoxtrot.ParagonAtmLibrary/)
 
 ## How to use
-Add latest CodeFoxtrot.ParagonAtmLibrary to your project via 'Manage Nuget Packages' or your favorite method...
+Add latest **CodeFoxtrot.ParagonAtmLibrary** to your project via 'Manage Nuget Packages' or your favorite method...
 
 ```
 dotnet add package CodeFoxtrot.ParagonAtmLibrary --version 1.0.1
