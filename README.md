@@ -1,5 +1,5 @@
 # Paragon Virtual ATM API Library
-This library is used for interacting with a Paragon Virtual ATM.  It provides the following services.
+This library is used for interacting with a Paragon Virtual ATM via the published API.
 
 [![Nuget Release](https://img.shields.io/nuget/v/CodeFoxtrot.ParagonAtmLibrary?style=for-the-badge)](https://www.nuget.org/packages/CodeFoxtrot.ParagonAtmLibrary/)
 
