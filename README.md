@@ -141,7 +141,6 @@ public async Task ExecuteAsync()
         else if (agentState.AgentStatus.ToUpper().Equals("APICONTROLLED") == false)
         {
             _logger.LogError($"Unexpected session state [{agentState.AgentStatus}], expecting [APICONTROLLED]");
-            await _agentService.CloseSesisonAsync();
             return;
         }
 
