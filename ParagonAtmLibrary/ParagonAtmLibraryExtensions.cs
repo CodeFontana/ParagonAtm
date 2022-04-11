@@ -11,6 +11,7 @@ public static class ParagonAtmLibraryExtensions
         services.AddScoped<ConnectionService>();
         services.AddScoped<VirtualMachineService>();
         services.AddScoped<AtmService>();
+        services.AddScoped<AutomationService>();
         return services;
     }
 }
