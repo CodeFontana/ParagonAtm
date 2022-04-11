@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using ParagonAtmLibrary.Models;
 
 namespace ParagonAtmLibrary.Services;
 
@@ -49,13 +50,13 @@ public class AutomationService
         {
             DateTime curTime = DateTime.Now;
             DateTime endTime = curTime + timeout;
-            var screenText = await _vmService.GetScreenTextAsync();
+            ScreenOcrDataModel screenText;
 
             while (DateTime.Now < endTime)
             {
                 screenText = await _vmService.GetScreenTextAsync();
 
-                if (screenText.Elements.Any(x => x.text.ToLower() == text.ToLower()) == false)
+                if (screenText.Elements.Any(x => x.text.ToLower().Contains(text.ToLower())))
                 {
                     return true;
                 }
