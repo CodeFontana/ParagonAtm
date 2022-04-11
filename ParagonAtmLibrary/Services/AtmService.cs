@@ -40,13 +40,11 @@ public class AtmService
             {
                 AtmServices result = await response.Content.ReadFromJsonAsync<AtmServices>();
                 _logger.LogInformation($"Success [{response.StatusCode}] -- /get-services");
-                _logger.LogDebug($"{JsonSerializer.Serialize(result, _jsonOptions)}");
                 return result.services;
             }
             else
             {
-                _logger.LogInformation($"Failed [{response.StatusCode}] -- /get-services");
-                _logger.LogError($"Reason -- [{response.ReasonPhrase}]");
+                _logger.LogError($"Failed [{response.StatusCode}] -- /get-services");
                 return null;
             }
         }
@@ -70,13 +68,11 @@ public class AtmService
             {
                 string result = await response.Content.ReadAsStringAsync();
                 _logger.LogInformation($"Success [{response.StatusCode}] -- /get-device-state");
-                _logger.LogDebug($"{device.DeviceName}: {result}");
                 return result;
             }
             else
             {
-                _logger.LogInformation($"Failed [{response.StatusCode}] -- /get-device-state");
-                _logger.LogError($"Reason -- [{response.ReasonPhrase}]");
+                _logger.LogError($"Failed [{response.StatusCode}] -- /get-device-state");
                 return null;
             }
         }
@@ -106,13 +102,11 @@ public class AtmService
             {
                 AuditData result = await response.Content.ReadFromJsonAsync<AuditData>();
                 _logger.LogInformation($"Success [{response.StatusCode}] -- /take-card");
-                _logger.LogDebug($"{JsonSerializer.Serialize(result, _jsonOptions)}");
                 return result;
             }
             else
             {
-                _logger.LogInformation($"Failed [{response.StatusCode}] -- /take-card");
-                _logger.LogError($"Reason -- [{response.ReasonPhrase}]");
+                _logger.LogError($"Failed [{response.StatusCode}] -- /take-card");
                 return null;
             }
         }
@@ -153,13 +147,11 @@ public class AtmService
             {
                 PinpadKeysModel result = await response.Content.ReadFromJsonAsync<PinpadKeysModel>();
                 _logger.LogInformation($"Success [{response.StatusCode}] -- /get-pin-pad-keys");
-                _logger.LogDebug($"{JsonSerializer.Serialize(result, _jsonOptions)}");
                 return result;
             }
             else
             {
-                _logger.LogInformation($"Failed [{response.StatusCode}] -- /get-pin-pad-keys");
-                _logger.LogError($"Reason -- [{response.ReasonPhrase}]");
+                _logger.LogError($"Failed [{response.StatusCode}] -- /get-pin-pad-keys");
                 return null;
             }
         }
@@ -232,13 +224,11 @@ public class AtmService
             {
                 SwitchState result = await response.Content.ReadFromJsonAsync<SwitchState>();
                 _logger.LogInformation($"Success [{response.StatusCode}] -- /operator-switch-status");
-                _logger.LogDebug($"{JsonSerializer.Serialize(result, _jsonOptions)}");
                 return result;
             }
             else
             {
-                _logger.LogInformation($"Failed [{response.StatusCode}] -- /operator-switch-status");
-                _logger.LogError($"Reason -- [{response.ReasonPhrase}]");
+                _logger.LogError($"Failed [{response.StatusCode}] -- /operator-switch-status");
                 return null;
             }
         }
@@ -274,13 +264,11 @@ public class AtmService
             {
                 AuditData result = await response.Content.ReadFromJsonAsync<AuditData>();
                 _logger.LogInformation($"Success [{response.StatusCode}] -- /take-media");
-                _logger.LogDebug($"{JsonSerializer.Serialize(result, _jsonOptions)}");
                 return result;
             }
             else
             {
-                _logger.LogInformation($"Failed [{response.StatusCode}] -- /take-media");
-                _logger.LogError($"Reason -- [{response.ReasonPhrase}]");
+                _logger.LogError($"Failed [{response.StatusCode}] -- /take-media");
                 return null;
             }
         }
