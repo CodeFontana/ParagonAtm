@@ -48,7 +48,12 @@ public class AutomationService
     {
         ScreenOcrDataModel screenText = await _vmService.GetScreenTextAsync();
 
-        if (matchAll)
+        if (screenText == null)
+        {
+            _logger.LogError("Unable to read screen text");
+            return false;
+        }
+        else if (matchAll)
         {
             return words.All(w => screenText.Elements.Any(e => e.text.ToLower().Contains(w.ToLower())));
         }
@@ -69,6 +74,12 @@ public class AutomationService
             while (DateTime.Now < endTime)
             {
                 screenText = await _vmService.GetScreenTextAsync();
+
+                if (screenText == null)
+                {
+                    _logger.LogError("Unable to read screen text");
+                    return false;
+                }
 
                 if (screenText.Elements.Any(x => x.text.ToLower().Contains(text.ToLower())))
                 {
