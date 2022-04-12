@@ -44,6 +44,20 @@ public class AutomationService
         }
     }
 
+    public async Task<bool> SearchForWords(string[] words, bool matchAll = true)
+    {
+        ScreenOcrDataModel screenText = await _vmService.GetScreenTextAsync();
+
+        if (matchAll)
+        {
+            return words.All(w => screenText.Elements.Any(e => e.text.ToLower().Contains(w.ToLower())));
+        }
+        else
+        {
+            return words.Any(w => screenText.Elements.Any(e => e.text.ToLower().Contains(w.ToLower())));
+        }
+    }
+
     public async Task<bool> WaitForScreenText(string text, TimeSpan timeout, TimeSpan? refreshInterval = null)
     {
         try
