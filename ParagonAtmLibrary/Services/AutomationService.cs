@@ -44,7 +44,7 @@ public class AutomationService
         }
     }
 
-    public async Task<bool> WaitForScreenText(string text, TimeSpan timeout)
+    public async Task<bool> WaitForScreenText(string text, TimeSpan timeout, TimeSpan? refreshInterval = null)
     {
         try
         {
@@ -61,7 +61,14 @@ public class AutomationService
                     return true;
                 }
 
-                await Task.Delay(5000);
+                if (refreshInterval == null)
+                {
+                    await Task.Delay(30000);
+                }
+                else
+                {
+                    await Task.Delay((TimeSpan)refreshInterval);
+                }
             }
 
             return false;
