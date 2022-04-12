@@ -83,7 +83,7 @@ public class AtmService
         }
     }
 
-    public async Task<bool> InsertCardAsync(InsertCardModel insertCard)
+    public async Task<bool> InsertCardAsync(CardModel insertCard)
     {
         _logger.LogInformation($"Insert card [{insertCard.CardId}] into reader [{insertCard.CardReaderName}]...");
         return await AtmRequestAsync("insert-card", insertCard);
@@ -239,7 +239,7 @@ public class AtmService
         }
     }
 
-    public async Task<bool> InsertMediaAsync(InsertMediaModel insertMedia)
+    public async Task<bool> InsertMediaAsync(MediaModel insertMedia)
     {
         _logger.LogInformation($"Insert media [{insertMedia.MediaId}] into device [{insertMedia.DeviceName}]...");
         return await AtmRequestAsync("insert-media", insertMedia);
