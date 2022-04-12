@@ -2,9 +2,9 @@
 
 namespace ParagonAtmLibrary.Models;
 
-public class InsertCardModel
+public class CardModel
 {
-    public InsertCardModel(string cardId, string cardReaderName)
+    public CardModel(string cardId, string cardReaderName)
     {
         CardId = cardId;
         CardReaderName = cardReaderName;

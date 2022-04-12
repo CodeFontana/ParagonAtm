@@ -2,7 +2,7 @@
 
 namespace ParagonAtmLibrary.Models;
 
-public class InsertMediaModel
+public class MediaModel
 {
     [JsonPropertyName("mediaId")]
     public string MediaId { get; set; }
