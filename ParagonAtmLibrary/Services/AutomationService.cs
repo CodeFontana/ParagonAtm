@@ -79,4 +79,44 @@ public class AutomationService
             return false;
         }
     }
+
+    public async Task<bool> WaitForScreenText(string[] text, TimeSpan timeout, TimeSpan? refreshInterval = null, bool matchAll = true)
+    {
+        try
+        {
+            DateTime curTime = DateTime.Now;
+            DateTime endTime = curTime + timeout;
+            ScreenOcrDataModel screenText;
+
+            while (DateTime.Now < endTime)
+            {
+                screenText = await _vmService.GetScreenTextAsync();
+
+                if (matchAll && text.All(x => screenText.Elements.Any(e => e.text.ToLower().Contains(x.ToLower()))))
+                {
+                    return true;
+                }
+                else if (text.Any(x => screenText.Elements.Any(e => e.text.ToLower().Contains(x.ToLower()))))
+                {
+                    return true;
+                }
+
+                if (refreshInterval == null)
+                {
+                    await Task.Delay(30000);
+                }
+                else
+                {
+                    await Task.Delay((TimeSpan)refreshInterval);
+                }
+            }
+
+            return false;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, ex.Message);
+            return false;
+        }
+    }
 }
