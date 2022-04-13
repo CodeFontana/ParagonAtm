@@ -115,13 +115,13 @@ public class VirtualMachineService
             }
             else
             {
-                _logger.LogError($"Failed to get screen jpeg -- [{response.ReasonPhrase}]");
+                _logger.LogError($"Failed to get text location -- [{response.ReasonPhrase}]");
                 return null;
             }
         }
         catch (Exception e)
         {
-            _logger.LogError($"Failed to get screen jpeg -- [{e.Message}]");
+            _logger.LogError($"Failed to get text location -- [{e.Message}]");
             return null;
         }
     }
