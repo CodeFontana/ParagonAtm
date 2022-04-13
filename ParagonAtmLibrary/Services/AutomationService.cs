@@ -121,7 +121,7 @@ public class AutomationService
                 {
                     return true;
                 }
-                else if (text.Any(x => screenText.Elements.Any(e => e.text.ToLower().Contains(x.ToLower()))))
+                else if (matchAll == false && text.Any(x => screenText.Elements.Any(e => e.text.ToLower().Contains(x.ToLower()))))
                 {
                     return true;
                 }
