@@ -1,6 +1,6 @@
 ﻿namespace ParagonAtmLibrary.Models;
 
-public class AtmScreen
+public class AtmScreenModel
 {
     public string Name { get; set; }
     public List<string> Text { get; set; }
