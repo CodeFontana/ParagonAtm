@@ -33,6 +33,13 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Compile Remove="log\**" />
+	  <Content Remove="log\**" />
+	  <EmbeddedResource Remove="log\**" />
+	  <None Remove="log\**" />
+	</ItemGroup>
+
+	<ItemGroup>
 	  <ProjectReference Include="..\ParagonAtmLibrary\ParagonAtmLibrary.csproj" />
 	</ItemGroup>
 
