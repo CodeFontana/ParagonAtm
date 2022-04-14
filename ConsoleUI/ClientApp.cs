@@ -115,8 +115,8 @@ public class ClientApp : IHostedService
         try
         {
             // Starting point -- InService/Welcome screen
-            bool atScreen = await _autoService.IsAtScreen(
-                _atmScreens.First(s => s.Name.ToLower() == "inservice"), 0.50M);
+            AtmScreenModel welcome = _atmScreens.First(s => s.Name.ToLower() == "inservice");
+            bool atScreen = await _autoService.IsAtScreen(welcome);
 
             if (atScreen == false)
             {
@@ -163,7 +163,6 @@ public class ClientApp : IHostedService
             // Validate -- Language selection screen
             atScreen = await _autoService.WaitForScreen(
                 _atmScreens.First(s => s.Name.ToLower() == "language"), 
-                0.50M, 
                 TimeSpan.FromSeconds(30), 
                 TimeSpan.FromSeconds(5));
 
@@ -196,7 +195,6 @@ public class ClientApp : IHostedService
             // Validate -- PIN screen
             atScreen = await _autoService.WaitForScreen(
                 _atmScreens.First(s => s.Name.ToLower() == "pin"),
-                0.50M,
                 TimeSpan.FromSeconds(30),
                 TimeSpan.FromSeconds(5));
 
@@ -245,7 +243,6 @@ public class ClientApp : IHostedService
             // Validate -- Transaction type screen
             atScreen = await _autoService.WaitForScreen(
                 _atmScreens.First(s => s.Name.ToLower() == "transactiontype"),
-                0.50M,
                 TimeSpan.FromSeconds(30),
                 TimeSpan.FromSeconds(5));
 
@@ -278,7 +275,6 @@ public class ClientApp : IHostedService
             // Validate -- Account type screen
             atScreen = await _autoService.WaitForScreen(
                 _atmScreens.First(s => s.Name.ToLower() == "accounttype"),
-                0.50M,
                 TimeSpan.FromSeconds(30),
                 TimeSpan.FromSeconds(5));
 
@@ -311,7 +307,6 @@ public class ClientApp : IHostedService
             // Validate -- Balance destination screen
             atScreen = await _autoService.WaitForScreen(
                 _atmScreens.First(s => s.Name.ToLower() == "balancedestination"),
-                0.50M,
                 TimeSpan.FromSeconds(30),
                 TimeSpan.FromSeconds(5));
 
@@ -344,7 +339,6 @@ public class ClientApp : IHostedService
             // Validate -- Account name screen
             atScreen = await _autoService.WaitForScreen(
                 _atmScreens.First(s => s.Name.ToLower() == "accountname"),
-                0.50M,
                 TimeSpan.FromSeconds(30),
                 TimeSpan.FromSeconds(5));
 
@@ -377,7 +371,6 @@ public class ClientApp : IHostedService
             // Validate -- balance inquiry screen
             atScreen = await _autoService.WaitForScreen(
                 _atmScreens.First(s => s.Name.ToLower() == "balanceinquiry"),
-                0.50M,
                 TimeSpan.FromSeconds(30),
                 TimeSpan.FromSeconds(5));
 
@@ -410,7 +403,6 @@ public class ClientApp : IHostedService
             // Validate -- Another transaction screen
             atScreen = await _autoService.WaitForScreen(
                 _atmScreens.First(s => s.Name.ToLower() == "anothertransaction"),
-                0.50M,
                 TimeSpan.FromSeconds(30),
                 TimeSpan.FromSeconds(5));
 
@@ -434,7 +426,6 @@ public class ClientApp : IHostedService
             // Validate -- Take card screen
             atScreen = await _autoService.WaitForScreen(
                 _atmScreens.First(s => s.Name.ToLower() == "takecard"),
-                0.50M,
                 TimeSpan.FromSeconds(30),
                 TimeSpan.FromSeconds(5));
 
@@ -569,7 +560,7 @@ public class ClientApp : IHostedService
             await _connectionService.OpenAsync();
 
             // Use OCR to figure out if ATM app is already running
-            bool appRunning = await _autoService.IsAtScreen(_atmScreens, 0.50M);
+            bool appRunning = await _autoService.IsAtScreen(_atmScreens);
 
             if (appRunning == false)
             {
@@ -594,7 +585,7 @@ public class ClientApp : IHostedService
             await DispatchToIdle();
 
             // Check for welcome screen
-            if (await _autoService.IsAtScreen(_atmScreens.First(s => s.Name.ToLower() == "inservice"), 0.50M) == false)
+            if (await _autoService.IsAtScreen(_atmScreens.First(s => s.Name.ToLower() == "inservice")) == false)
             {
                 _logger.LogError("ATM not at welcome screen");
                 return false;
