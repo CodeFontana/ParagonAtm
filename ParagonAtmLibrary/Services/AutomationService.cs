@@ -49,17 +49,17 @@ public class AutomationService
         }
     }
 
-    public async Task<bool> IsAtScreen(AtmScreen screen, decimal matchConfidence = 1)
+    public async Task<bool> IsAtScreen(AtmScreenModel screen, decimal matchConfidence = 1)
     {
         List<string> screenText = await GetScreenWords();
         return MatchScreen(screenText, screen.Text, matchConfidence);
     }
 
-    public async Task<bool> IsAtScreen(List<AtmScreen> screens, decimal matchConfidence = 1)
+    public async Task<bool> IsAtScreen(List<AtmScreenModel> screens, decimal matchConfidence = 1)
     {
         List<string> screenText = await GetScreenWords();
 
-        foreach (AtmScreen s in screens)
+        foreach (AtmScreenModel s in screens)
         {
             if (MatchScreen(screenText, s.Text, matchConfidence))
             {
@@ -330,7 +330,7 @@ public class AutomationService
         }
     }
 
-    public async Task<bool> WaitForScreen(AtmScreen screen, decimal matchConfidence, TimeSpan timeout, TimeSpan? refreshInterval = null)
+    public async Task<bool> WaitForScreen(AtmScreenModel screen, decimal matchConfidence, TimeSpan timeout, TimeSpan? refreshInterval = null)
     {
         return await WaitForText(screen.Text, matchConfidence, timeout, refreshInterval);
     }
