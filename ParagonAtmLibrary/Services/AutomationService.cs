@@ -140,7 +140,9 @@ public class AutomationService
             }
         })));
 
-        if (matchCount / words.Count >= matchConfidence)
+        decimal confidence = matchCount / (decimal)words.Count;
+
+        if (confidence >= matchConfidence)
         {
             return true;
         }
@@ -289,7 +291,9 @@ public class AutomationService
                     }
                 })));
 
-                if (matchCount / words.Count >= matchConfidence)
+                decimal confidence = matchCount / (decimal)words.Count;
+
+                if (confidence >= matchConfidence)
                 {
                     return true;
                 }
