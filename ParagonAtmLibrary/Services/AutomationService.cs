@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using ParagonAtmLibrary.Models;
+using System.Text.Json;
 
 namespace ParagonAtmLibrary.Services;
 
@@ -10,6 +11,7 @@ public class AutomationService
     private readonly ILogger<AgentService> _logger;
     private readonly AtmService _atmService;
     private readonly VirtualMachineService _vmService;
+    private readonly JsonSerializerOptions _jsonOptions;
 
     public AutomationService(IConfiguration config,
                              ILogger<AgentService> logger,
@@ -20,6 +22,7 @@ public class AutomationService
         _logger = logger;
         _atmService = atmService;
         _vmService = vmService;
+        _jsonOptions = new JsonSerializerOptions { WriteIndented = true };
     }
 
     public async Task<List<string>> GetScreenWords()
@@ -34,10 +37,14 @@ public class AutomationService
         else
         {
             List<string> result = new();
+
             screenText.Elements.ToList()
                 .ForEach(e => e.lines.ToList()
                     .ForEach(l => l.words.ToList()
                         .ForEach(w => result.Add(w.text))));
+
+            _logger.LogTrace($"GetScreenWords() -- {JsonSerializer.Serialize(result)}");
+
             return result;
         }
     }
@@ -54,6 +61,8 @@ public class AutomationService
         {
             return true;
         }
+
+        _logger.LogTrace($"MatchScreen(): No match -- {JsonSerializer.Serialize(compareWords)} -- Confidence {confidence}");
 
         return false;
     }
@@ -136,6 +145,7 @@ public class AutomationService
         {
             if (words.Any(x => x.ToLower() == w.text.ToLower()))
             {
+                _logger.LogTrace($"SearchForText() -- Found match {w.text}");
                 matchCount++;
             }
         })));
