@@ -397,70 +397,66 @@ public class ClientApp : IHostedService
     {
         List<string> curScreen = await _autoService.GetScreenWords();
 
-        if (true)
+        if (curScreen is null)
         {
-
+            _logger.LogError("Dispatch - Failed to read screen");
+            return;
         }
-        
-        // Please wait...
-        while (await _autoService.SearchForText(new[] { "please", "wait" }))
+        if (_autoService.MatchScreen(curScreen, new List<string> { "recycle bin" }, 0.50M))
         {
+            _logger.LogInformation("Dispatch - ATM is at desktop");
+            return;
+        }
+        else if (_autoService.MatchScreen(curScreen, _atmScreens.First(s => s.Name.ToLower() == "inservice").Text, 0.50M)
+            || _autoService.MatchScreen(curScreen, _atmScreens.First(s => s.Name.ToLower() == "outservice").Text, 0.50M))
+        {
+            _logger.LogInformation("Dispatch - ATM is idle");
+            return;
+        }
+        else if (_autoService.MatchScreen(curScreen, _atmScreens.First(s => s.Name.ToLower() == "pleasewait").Text, 0.50M))
+        {
+            _logger.LogInformation("Dispatch - Please wait");
             await Task.Delay(5000);
+            await DispatchToIdle();
+            return;
         }
-
-        // Do you need more time?
-        if (await _autoService.SearchForText(new[] { "more", "time" }))
+        else if (_autoService.MatchScreen(curScreen, _atmScreens.First(s => s.Name.ToLower() == "moretime").Text, 0.50M))
         {
-            // Find no button
+            _logger.LogInformation("Dispatch - More time");
+
             var location = await _vmService.GetLocationByTextAsync("no");
 
             if (location is not null && location.Found)
             {
-                // Click no button
                 await _vmService.ClickScreenAsync(new ClickScreenModel(location));
                 await Task.Delay(5000);
             }
+
+            await DispatchToIdle();
+            return;
         }
-
-        // You entered an incorrect PIN
-        if (await _autoService.SearchForText(new[] { "incorrect", "pin" }))
+        else if (_autoService.MatchScreen(curScreen, _atmScreens.First(s => s.Name.ToLower() == "anothertransaction").Text, 0.50M))
         {
-            // Get ATM services
-            var services = await _atmService.GetServicesAsync();
+            _logger.LogInformation("Dispatch - Another transaction");
 
-            if (services is not null)
-            {
-                // Find pinpad
-                var pinpad = services?.FirstOrDefault(x => x.DeviceType.ToLower() == "pin");
-
-                if (pinpad is not null)
-                {
-                    // Press CANCEL
-                    bool success = await _atmService.PressKeyAsync(new PressKeyModel(pinpad.Name, "Cancel"));
-                    await Task.Delay(5000);
-                }
-            }
-        }
-
-        // Another transaction?
-        if (await _autoService.SearchForText(new[] { "another", "transaction" }))
-        {
-            // Find no button
             var location = await _vmService.GetLocationByTextAsync("no");
 
             if (location is not null && location.Found)
             {
-                // Click no button
                 await _vmService.ClickScreenAsync(new ClickScreenModel(location));
                 await Task.Delay(5000);
             }
-        }
 
-        // Take your card
-        if (await _autoService.SearchForText(new[] { "take", "card" }))
+            await DispatchToIdle();
+            return;
+        }
+        else if (_autoService.MatchScreen(curScreen, _atmScreens.First(s => s.Name.ToLower() == "takecard").Text, 0.50M))
         {
+            _logger.LogInformation("Dispatch - Take card");
             await _atmService.TakeCardAsync();
             await Task.Delay(10000);
+            await DispatchToIdle();
+            return;
         }
     }
 
