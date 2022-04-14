@@ -148,7 +148,7 @@ public class AutomationService
         return false;
     }
 
-    public async Task<bool> WaitForScreenText(string word, TimeSpan timeout, TimeSpan? refreshInterval = null)
+    public async Task<bool> WaitForText(string word, TimeSpan timeout, TimeSpan? refreshInterval = null)
     {
         ArgumentNullException.ThrowIfNull(word);
         ArgumentNullException.ThrowIfNull(timeout);
@@ -193,14 +193,14 @@ public class AutomationService
         }
     }
 
-    public async Task<bool> WaitForScreenText(string[] words, TimeSpan timeout, TimeSpan? refreshInterval = null, bool matchAll = true)
+    public async Task<bool> WaitForText(string[] words, TimeSpan timeout, TimeSpan? refreshInterval = null, bool matchAll = true)
     {
         ArgumentNullException.ThrowIfNull(words);
         ArgumentNullException.ThrowIfNull(timeout);
         return await WaitForScreenText(words.ToList(), timeout, refreshInterval, matchAll);
     }
 
-    public async Task<bool> WaitForScreenText(List<string> words, TimeSpan timeout, TimeSpan? refreshInterval = null, bool matchAll = true)
+    public async Task<bool> WaitForText(List<string> words, TimeSpan timeout, TimeSpan? refreshInterval = null, bool matchAll = true)
     {
         ArgumentNullException.ThrowIfNull(words);
         ArgumentNullException.ThrowIfNull(timeout);
@@ -248,7 +248,7 @@ public class AutomationService
         }
     }
 
-    public async Task<bool> WaitForScreenText(string[] words, decimal matchConfidence, TimeSpan timeout, TimeSpan? refreshInterval = null)
+    public async Task<bool> WaitForText(string[] words, decimal matchConfidence, TimeSpan timeout, TimeSpan? refreshInterval = null)
     {
         ArgumentNullException.ThrowIfNull(words);
         ArgumentNullException.ThrowIfNull(matchConfidence);
@@ -256,7 +256,7 @@ public class AutomationService
         return await WaitForScreenText(words.ToList(), matchConfidence, timeout, refreshInterval);
     }
 
-    public async Task<bool> WaitForScreenText(List<string> words, decimal matchConfidence, TimeSpan timeout, TimeSpan? refreshInterval = null)
+    public async Task<bool> WaitForText(List<string> words, decimal matchConfidence, TimeSpan timeout, TimeSpan? refreshInterval = null)
     {
         ArgumentNullException.ThrowIfNull(words);
         ArgumentNullException.ThrowIfNull(matchConfidence);
