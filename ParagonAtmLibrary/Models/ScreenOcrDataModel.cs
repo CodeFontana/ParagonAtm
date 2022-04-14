@@ -21,6 +21,16 @@ public class Element
     public float x1 { get; set; }
     public float y1 { get; set; }
     public string text { get; set; }
+    public Line[] lines { get; set; }
+}
+
+public class Line
+{
+    public float x0 { get; set; }
+    public float y0 { get; set; }
+    public float x1 { get; set; }
+    public float y1 { get; set; }
+    public string text { get; set; }
     public Word[] words { get; set; }
 }
 

@@ -34,7 +34,10 @@ public class AutomationService
         else
         {
             List<string> result = new();
-            screenText.Elements.ToList().ForEach(e => e.words.ToList().ForEach(w => result.Add(w.text)));
+            screenText.Elements.ToList()
+                .ForEach(e => e.lines.ToList()
+                    .ForEach(l => l.words.ToList()
+                        .ForEach(w => result.Add(w.text))));
             return result;
         }
     }
@@ -89,11 +92,17 @@ public class AutomationService
         }
         else if (matchAll)
         {
-            return words.All(w => screenText.Elements.Any(e => e.text.ToLower().Contains(w.ToLower())));
+            return words.All(w => screenText.Elements
+                .Any(e => e.lines.ToList()
+                    .Any(l => l.words.ToList()
+                        .Any(t => t.text.ToLower().Contains(w.ToLower())))));
         }
         else
         {
-            return words.Any(w => screenText.Elements.Any(e => e.text.ToLower().Contains(w.ToLower())));
+            return words.Any(w => screenText.Elements
+                .Any(e => e.lines.ToList()
+                    .Any(l => l.words.ToList()
+                        .Any(t => t.text.ToLower().Contains(w.ToLower())))));
         }
     }
 
@@ -113,13 +122,15 @@ public class AutomationService
             return false;
         }
 
-        screenText.Elements.ToList().ForEach(e => e.words.ToList().ForEach(w =>
+        screenText.Elements.ToList()
+            .ForEach(e => e.lines.ToList()
+                .ForEach(l => l.words.ToList().ForEach(w =>
         {
             if (words.Any(x => x.ToLower() == w.text.ToLower()))
             {
                 matchCount++;
             }
-        }));
+        })));
 
         if (matchCount / words.Count >= matchConfidence)
         {
@@ -245,13 +256,15 @@ public class AutomationService
                     return false;
                 }
 
-                screenText.Elements.ToList().ForEach(e => e.words.ToList().ForEach(w =>
+                screenText.Elements.ToList()
+                    .ForEach(e => e.lines.ToList()
+                        .ForEach(l => l.words.ToList().ForEach(w =>
                 {
                     if (words.Any(x => x.ToLower() == w.text.ToLower()))
                     {
                         matchCount++;
                     }
-                }));
+                })));
 
                 if (matchCount / words.Count >= matchConfidence)
                 {
