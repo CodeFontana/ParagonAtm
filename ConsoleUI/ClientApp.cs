@@ -115,7 +115,7 @@ public class ClientApp : IHostedService
         try
         {
             // Wait for Welcome screen
-            bool foundText = await _autoService.WaitForScreenText("Welcome", TimeSpan.FromMinutes(10), TimeSpan.FromMinutes(1));
+            bool foundText = await _autoService.WaitForText("Welcome", TimeSpan.FromMinutes(10), TimeSpan.FromMinutes(1));
 
             if (foundText)
             {
@@ -168,7 +168,7 @@ public class ClientApp : IHostedService
             }
 
             // Wait for language selection
-            foundText = await _autoService.WaitForScreenText("language", TimeSpan.FromSeconds(30), TimeSpan.FromSeconds(5));
+            foundText = await _autoService.WaitForText("language", TimeSpan.FromSeconds(30), TimeSpan.FromSeconds(5));
 
             if (foundText == false)
             {
@@ -199,7 +199,7 @@ public class ClientApp : IHostedService
             }
 
             // Wait for Enter your PIN screen
-            foundText = await _autoService.WaitForScreenText(new[] { "Personal", "Identification", "Number" }, TimeSpan.FromSeconds(30), TimeSpan.FromSeconds(5), true);
+            foundText = await _autoService.WaitForText(new[] { "Personal", "Identification", "Number" }, TimeSpan.FromSeconds(30), TimeSpan.FromSeconds(5), true);
 
             if (foundText == false)
             {
@@ -315,7 +315,7 @@ public class ClientApp : IHostedService
                 await _autoService.SaveScreenShot();
             }
 
-            await _autoService.WaitForScreenText(new[] { "desired", "account" }, TimeSpan.FromMinutes(1), TimeSpan.FromSeconds(5));
+            await _autoService.WaitForText(new[] { "desired", "account" }, TimeSpan.FromMinutes(1), TimeSpan.FromSeconds(5));
             await _autoService.SaveScreenShot();
 
             // Find checking account button
@@ -341,7 +341,7 @@ public class ClientApp : IHostedService
                 await _autoService.SaveScreenShot();
             }
 
-            await _autoService.WaitForScreenText(new[] { "Total", "Balance" }, TimeSpan.FromMinutes(1), TimeSpan.FromSeconds(5));
+            await _autoService.WaitForText(new[] { "Total", "Balance" }, TimeSpan.FromMinutes(1), TimeSpan.FromSeconds(5));
             await _autoService.SaveScreenShot();
 
             // Find continue button
@@ -520,7 +520,7 @@ public class ClientApp : IHostedService
                 await Task.Delay(TimeSpan.FromMinutes(7));
 
                 // Wait and verify at Welcome screen
-                bool success = await _autoService.WaitForScreenText("Welcome", TimeSpan.FromMinutes(5), TimeSpan.FromSeconds(15));
+                bool success = await _autoService.WaitForText("Welcome", TimeSpan.FromMinutes(5), TimeSpan.FromSeconds(15));
 
                 if (success == false)
                 {
@@ -535,7 +535,7 @@ public class ClientApp : IHostedService
             await DispatchToIdle();
 
             // Check for welcome screen
-            if (await _autoService.SearchForText(_atmScreens.First(s => s.Name == "Welcome").Text.ToList()) == false)
+            if (await _autoService.IsAtScreen(_atmScreens.First(s => s.Name.ToLower() == "inservice"), 0.50M) == false)
             {
                 _logger.LogError("ATM not at welcome screen");
                 return false;
