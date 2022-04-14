@@ -114,21 +114,20 @@ public class ClientApp : IHostedService
     {
         try
         {
-            // Wait for Welcome screen
-            bool foundText = await _autoService.WaitForText("Welcome", TimeSpan.FromMinutes(10), TimeSpan.FromMinutes(1));
+            // Starting point -- InService/Welcome screen
+            bool atScreen = await _autoService.IsAtScreen(
+                _atmScreens.First(s => s.Name.ToLower() == "inservice"), 0.50M);
 
-            if (foundText)
-            {
-                await _autoService.SaveScreenShot();
-            }
-            else
+            if (atScreen == false)
             {
                 _logger.LogError("ATM not at welcome screen");
                 return;
             }
 
+            await _autoService.SaveScreenShot();
+
             // Get ATM services
-            var services = await _atmService.GetServicesAsync();
+            List<AtmServiceModel> services = await _atmService.GetServicesAsync();
 
             if (services is null)
             {
@@ -136,7 +135,7 @@ public class ClientApp : IHostedService
                 return;
             }
 
-            // Find card reader
+            // Isolate card reader service
             var cardReader = services?.FirstOrDefault(x => x.DeviceType.ToLower() == "idc");
 
             if (cardReader == null)
@@ -150,41 +149,42 @@ public class ClientApp : IHostedService
                 return;
             }
 
-            // Get card for transaction
-            var glass2 = new CardModel(_config["Card:Id"], cardReader.Name);
+            // Instantiate card
+            CardModel card = new(_config["Card:Id"], cardReader.Name);
 
-            // Insert card
-            bool success = await _atmService.InsertCardAsync(glass2);
+            bool success = await _atmService.InsertCardAsync(card);
 
             if (success == false)
             {
                 _logger.LogError("Failed to insert card for transaction");
                 return;
             }
-            else
-            {
-                await Task.Delay(2000);
-                await _autoService.SaveScreenShot();
-            }
+            
+            // Validate -- Language selection screen
+            atScreen = await _autoService.WaitForScreen(
+                _atmScreens.First(s => s.Name.ToLower() == "language"), 
+                0.50M, 
+                TimeSpan.FromSeconds(30), 
+                TimeSpan.FromSeconds(5));
 
-            // Wait for language selection
-            foundText = await _autoService.WaitForText("language", TimeSpan.FromSeconds(30), TimeSpan.FromSeconds(5));
-
-            if (foundText == false)
+            if (atScreen == false)
             {
+                _logger.LogError($"ATM not at language screen");
                 return;
             }
 
-            // Find English button
-            var location = await _vmService.GetLocationByTextAsync("English");
+            await _autoService.SaveScreenShot();
+
+            // Get location of transaction language
+            LocationModel location = await _vmService.GetLocationByTextAsync(_config["Transaction:Language"]);
 
             if (location is null || location.Found == false)
             {
-                _logger.LogError("English not found");
+                _logger.LogError($"{_config["Transaction:Language"]} not found");
                 return;
             }
 
-            // Click English button
+            // Click language button
             success = await _vmService.ClickScreenAsync(new ClickScreenModel(location));
 
             if (success == false)
@@ -192,23 +192,24 @@ public class ClientApp : IHostedService
                 _logger.LogError("Failed to click english");
                 return;
             }
-            else
-            {
-                await Task.Delay(2000);
-                await _autoService.SaveScreenShot();
-            }
 
-            // Wait for Enter your PIN screen
-            foundText = await _autoService.WaitForText(new[] { "Personal", "Identification", "Number" }, TimeSpan.FromSeconds(30), TimeSpan.FromSeconds(5), true);
+            // Validate -- PIN screen
+            atScreen = await _autoService.WaitForScreen(
+                _atmScreens.First(s => s.Name.ToLower() == "pin"),
+                0.50M,
+                TimeSpan.FromSeconds(30),
+                TimeSpan.FromSeconds(5));
 
-            if (foundText == false)
+            if (atScreen == false)
             {
                 _logger.LogError("Enter your PIN screen not found");
                 return;
             }
 
-            // Find pinpad
-            var pinpad = services?.FirstOrDefault(x => x.DeviceType.ToLower() == "pin");
+            await _autoService.SaveScreenShot();
+
+            // Isolate pinpad service
+            AtmServiceModel pinpad = services?.FirstOrDefault(x => x.DeviceType.ToLower() == "pin");
 
             if (pinpad == null)
             {
@@ -216,7 +217,7 @@ public class ClientApp : IHostedService
                 return;
             }
 
-            // Enter card pin
+            // Type PIN
             foreach (char c in _config["Card:Pin"])
             {
                 success = await _atmService.PressKeyAsync(new PressKeyModel(pinpad.Name, $"n{c}"));
@@ -240,13 +241,23 @@ public class ClientApp : IHostedService
                 _logger.LogError("Failed to press pinpad key -- Enter");
                 return;
             }
-            else
+
+            // Validate -- Transaction type screen
+            atScreen = await _autoService.WaitForScreen(
+                _atmScreens.First(s => s.Name.ToLower() == "transactiontype"),
+                0.50M,
+                TimeSpan.FromSeconds(30),
+                TimeSpan.FromSeconds(5));
+
+            if (atScreen == false)
             {
-                await Task.Delay(5000);
-                await _autoService.SaveScreenShot();
+                _logger.LogError("Transaction type screen not found");
+                return;
             }
 
-            // Find balance inquiry button
+            await _autoService.SaveScreenShot();
+
+            // Find account balance button
             location = await _vmService.GetLocationByTextAsync("balance");
 
             if (location is null || location.Found == false)
@@ -255,7 +266,7 @@ public class ClientApp : IHostedService
                 return;
             }
 
-            // Click balance inquiry button
+            // Click account balance button
             success = await _vmService.ClickScreenAsync(new ClickScreenModel(location));
 
             if (success == false)
@@ -263,22 +274,32 @@ public class ClientApp : IHostedService
                 _logger.LogError("Failed to click balance inquiry");
                 return;
             }
-            else
-            {
-                await Task.Delay(2000);
-                await _autoService.SaveScreenShot();
-            }
 
-            // Find checking account button
-            location = await _vmService.GetLocationByTextAsync("checking");
+            // Validate -- Account type screen
+            atScreen = await _autoService.WaitForScreen(
+                _atmScreens.First(s => s.Name.ToLower() == "accounttype"),
+                0.50M,
+                TimeSpan.FromSeconds(30),
+                TimeSpan.FromSeconds(5));
 
-            if (location is null || location.Found == false)
+            if (atScreen == false)
             {
-                _logger.LogError("Checking account option not found");
+                _logger.LogError("Account type screen not found");
                 return;
             }
 
-            // Click checking account button
+            await _autoService.SaveScreenShot();
+
+            // Find transaction account type
+            location = await _vmService.GetLocationByTextAsync(_config["Transaction:AccountType"]);
+
+            if (location is null || location.Found == false)
+            {
+                _logger.LogError($"{_config["Transaction:AccountType"]} account option not found");
+                return;
+            }
+
+            // Click account type
             success = await _vmService.ClickScreenAsync(new ClickScreenModel(location));
 
             if (success == false)
@@ -286,11 +307,21 @@ public class ClientApp : IHostedService
                 _logger.LogError("Failed to click checking account");
                 return;
             }
-            else
+
+            // Validate -- Balance destination screen
+            atScreen = await _autoService.WaitForScreen(
+                _atmScreens.First(s => s.Name.ToLower() == "balancedestination"),
+                0.50M,
+                TimeSpan.FromSeconds(30),
+                TimeSpan.FromSeconds(5));
+
+            if (atScreen == false)
             {
-                await Task.Delay(2000);
-                await _autoService.SaveScreenShot();
+                _logger.LogError("Balance destination screen not found");
+                return;
             }
+
+            await _autoService.SaveScreenShot();
 
             // Find display balance button
             location = await _vmService.GetLocationByTextAsync("display balance");
@@ -309,25 +340,32 @@ public class ClientApp : IHostedService
                 _logger.LogError("Failed to click display balance");
                 return;
             }
-            else
+
+            // Validate -- Account name screen
+            atScreen = await _autoService.WaitForScreen(
+                _atmScreens.First(s => s.Name.ToLower() == "accountname"),
+                0.50M,
+                TimeSpan.FromSeconds(30),
+                TimeSpan.FromSeconds(5));
+
+            if (atScreen == false)
             {
-                await Task.Delay(2000);
-                await _autoService.SaveScreenShot();
-            }
-
-            await _autoService.WaitForText(new[] { "desired", "account" }, TimeSpan.FromMinutes(1), TimeSpan.FromSeconds(5));
-            await _autoService.SaveScreenShot();
-
-            // Find checking account button
-            location = await _vmService.GetLocationByTextAsync("checking|t");
-
-            if (location is null || location.Found == false)
-            {
-                _logger.LogError("Checking account not found");
+                _logger.LogError("Account name screen not found");
                 return;
             }
 
-            // Click checking button
+            await _autoService.SaveScreenShot();
+
+            // Find specified account button
+            location = await _vmService.GetLocationByTextAsync(_config["Transaction:AccountName"]);
+
+            if (location is null || location.Found == false)
+            {
+                _logger.LogError($"{_config["Transaction:AccountName"]} account not found");
+                return;
+            }
+
+            // Click specified account button
             success = await _vmService.ClickScreenAsync(new ClickScreenModel(location));
 
             if (success == false)
@@ -335,13 +373,20 @@ public class ClientApp : IHostedService
                 _logger.LogError("Failed to click checking");
                 return;
             }
-            else
+
+            // Validate -- balance inquiry screen
+            atScreen = await _autoService.WaitForScreen(
+                _atmScreens.First(s => s.Name.ToLower() == "balanceinquiry"),
+                0.50M,
+                TimeSpan.FromSeconds(30),
+                TimeSpan.FromSeconds(5));
+
+            if (atScreen == false)
             {
-                await Task.Delay(2000);
-                await _autoService.SaveScreenShot();
+                _logger.LogError("Balance inquiry screen not found");
+                return;
             }
 
-            await _autoService.WaitForText(new[] { "Total", "Balance" }, TimeSpan.FromMinutes(1), TimeSpan.FromSeconds(5));
             await _autoService.SaveScreenShot();
 
             // Find continue button
@@ -361,32 +406,46 @@ public class ClientApp : IHostedService
                 _logger.LogError("Failed to click continue");
                 return;
             }
-            else
+
+            // Validate -- Another transaction screen
+            atScreen = await _autoService.WaitForScreen(
+                _atmScreens.First(s => s.Name.ToLower() == "anothertransaction"),
+                0.50M,
+                TimeSpan.FromSeconds(30),
+                TimeSpan.FromSeconds(5));
+
+            if (atScreen == false)
             {
-                await Task.Delay(2000);
-                await _autoService.SaveScreenShot();
+                _logger.LogError("Another transaction screen not found");
+                return;
             }
 
-            // Another transaction?
-            if (await _autoService.SearchForText(new[] { "another", "transaction" }))
-            {
-                // Find no button
-                location = await _vmService.GetLocationByTextAsync("no");
+            await _autoService.SaveScreenShot();
 
-                if (location is not null && location.Found)
-                {
-                    // Click no button
-                    await _vmService.ClickScreenAsync(new ClickScreenModel(location));
-                    await Task.Delay(5000);
-                }
+            // Find no button
+            location = await _vmService.GetLocationByTextAsync("no");
+
+            if (location is not null && location.Found)
+            {
+                // Click no button
+                await _vmService.ClickScreenAsync(new ClickScreenModel(location));
             }
 
-            // Take your card
-            if (await _autoService.SearchForText(new[] { "take", "card" }))
+            // Validate -- Take card screen
+            atScreen = await _autoService.WaitForScreen(
+                _atmScreens.First(s => s.Name.ToLower() == "takecard"),
+                0.50M,
+                TimeSpan.FromSeconds(30),
+                TimeSpan.FromSeconds(5));
+
+            if (atScreen == false)
             {
-                await _atmService.TakeCardAsync();
-                await Task.Delay(10000);
+                _logger.LogError("Take card screen not found");
+                return;
             }
+
+            await _autoService.SaveScreenShot();
+            await _atmService.TakeCardAsync();
         }
         catch (Exception ex)
         {
@@ -510,7 +569,7 @@ public class ClientApp : IHostedService
             await _connectionService.OpenAsync();
 
             // Use OCR to figure out if ATM app is already running
-            bool appRunning = await _autoService.IsAtScreen(_atmScreens);
+            bool appRunning = await _autoService.IsAtScreen(_atmScreens, 0.50M);
 
             if (appRunning == false)
             {
