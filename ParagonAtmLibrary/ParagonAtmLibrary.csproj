@@ -6,7 +6,7 @@
     <Nullable>disable</Nullable>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <PackageId>CodeFoxtrot.ParagonAtmLibrary</PackageId>
-    <Version>1.2.0</Version>
+    <Version>1.2.1</Version>
     <Authors>CodeFoxtrot</Authors>
     <Company>CodeFoxtrot</Company>
     <Product>ParagonAtmLibrary</Product>
@@ -17,8 +17,8 @@
     <RepositoryUrl>https://github.com/CodeFontana/ParagonAtmLibrary</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>Paragon Virtual ATM</PackageTags>
-    <AssemblyVersion>1.0.4.0</AssemblyVersion>
-    <FileVersion>1.0.4.0</FileVersion>
+    <AssemblyVersion>1.0.4.1</AssemblyVersion>
+    <FileVersion>1.0.4.1</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>
