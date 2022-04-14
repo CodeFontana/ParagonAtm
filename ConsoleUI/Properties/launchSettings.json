@@ -1,6 +1,6 @@
 {
   "profiles": {
-    "VirtualAtmClient": {
+    "ConsoleUI": {
       "commandName": "Project",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
