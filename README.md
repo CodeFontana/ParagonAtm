@@ -9,13 +9,13 @@ Add latest **CodeFoxtrot.ParagonAtmLibrary** to your project via 'Manage Nuget P
 or via command line...
 
 ```
-dotnet add package CodeFoxtrot.ParagonAtmLibrary --version 1.1.0
+dotnet add package CodeFoxtrot.ParagonAtmLibrary --version 1.1.1
 ```
 
 or via your .csproj file...
 
 ```
-<PackageReference Include="CodeFoxtrot.ParagonAtmLibrary" Version="1.1.0" />
+<PackageReference Include="CodeFoxtrot.ParagonAtmLibrary" Version="1.1.1" />
 ```
 
 Add this to your ConfigureServices method:
@@ -30,9 +30,6 @@ Inject any of the following services...
 * AtmService
 * VirtualMachineService
 * AutomationService
-
-## Sample Implementation
-https://github.com/CodeFontana/ParagonAtmClient
 
 ## More Information about Paragon Virtual ATM
 https://www.paragonedge.com/products/virtualatm
