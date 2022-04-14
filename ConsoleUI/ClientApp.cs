@@ -581,15 +581,8 @@ public class ClientApp : IHostedService
                 return true;
             }
 
-            // Recover from prior transaction
+            // Ensure ATM is idle
             await DispatchToIdle();
-
-            // Check for welcome screen
-            if (await _autoService.IsAtScreen(_atmScreens.First(s => s.Name.ToLower() == "inservice")) == false)
-            {
-                _logger.LogError("ATM not at welcome screen");
-                return false;
-            }
 
             return true;
         }
