@@ -49,16 +49,70 @@ public class AutomationService
         }
     }
 
-    public bool IsScreen(List<string> screenText, List<string> compareText, decimal confidence)
+    public async Task<bool> IsAtScreen(AtmScreen screen, decimal matchConfidence = 1)
     {
-        ArgumentNullException.ThrowIfNull(screenText);
-        ArgumentNullException.ThrowIfNull(compareText);
-        ArgumentNullException.ThrowIfNull(confidence);
-        
-        int count = screenText.Intersect(compareText, StringComparer.OrdinalIgnoreCase).Count();
+        List<string> screenText = await GetScreenWords();
+        return MatchScreen(screenText, screen.Text, matchConfidence);
+    }
 
-        if (count / compareText.Count >= confidence)
+    public async Task<bool> IsAtScreen(List<AtmScreen> screens, decimal matchConfidence = 1)
+    {
+        List<string> screenText = await GetScreenWords();
+
+        foreach (AtmScreen s in screens)
         {
+            if (MatchScreen(screenText, s.Text, matchConfidence))
+            {
+                _logger.LogTrace($"IsAtScreen(): Found match -- {s.Name}");
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public async Task<bool> MatchScreen(List<string> compareWords, decimal matchConfidence)
+    {
+        List<string> screenText = await GetScreenWords();
+        return MatchScreen(screenText, compareWords, matchConfidence);
+    }
+
+    public bool MatchScreen(List<string> screenWords, List<string> compareWords, decimal matchConfidence)
+    {
+        ArgumentNullException.ThrowIfNull(screenWords);
+        ArgumentNullException.ThrowIfNull(compareWords);
+        ArgumentNullException.ThrowIfNull(matchConfidence);
+        int matchCount = 0;
+
+        foreach (string x in screenWords)
+        {
+            foreach (string y in compareWords)
+            {
+                List<string> left = x.Split(" ").ToList().Select(w => w.ToLower()).ToList();
+                List<string> right = y.Split(" ").ToList().Select(w => w.ToLower()).ToList();
+
+                IEnumerable<string> matches = left.Intersect(right);
+
+                if (matches.Count() > 0)
+                {
+                    _logger.LogTrace($"MatchScreen(): Found match -- {JsonSerializer.Serialize(matches)}");
+                    matchCount += matches.Count();
+                }
+            }
+        }
+
+        int wordCount = 0;
+
+        foreach (string phrase in compareWords)
+        {
+            wordCount += phrase.Split(" ").Count();
+        }
+
+        decimal confidence = matchCount / (decimal)wordCount;
+
+        if (confidence >= matchConfidence)
+        {
+            _logger.LogTrace($"MatchScreen(): Match confidence -- {JsonSerializer.Serialize(compareWords)} -- Confidence {confidence}");
             return true;
         }
 
@@ -110,14 +164,32 @@ public class AutomationService
             return words.All(w => screenText.Elements
                 .Any(e => e.lines.ToList()
                     .Any(l => l.words.ToList()
-                        .Any(t => t.text.ToLower().Contains(w.ToLower())))));
+                        .Any((t) =>
+                        {
+                            if (t.text.Split(" ").ToList().Any(x => x.ToLower().Contains(w.ToLower())))
+                            {
+                                _logger.LogTrace($"SearchForText() -- Found match -- {t.text}");
+                                return t.text.ToLower().Contains(w.ToLower());
+                            }
+
+                            return false;
+                        }))));
         }
         else
         {
             return words.Any(w => screenText.Elements
                 .Any(e => e.lines.ToList()
                     .Any(l => l.words.ToList()
-                        .Any(t => t.text.ToLower().Contains(w.ToLower())))));
+                        .Any((t) =>
+                        {
+                            if (t.text.Split(" ").ToList().Any(x => x.ToLower().Contains(w.ToLower())))
+                            {
+                                _logger.LogTrace($"SearchForText() -- Found match -- {t.text}");
+                                return t.text.ToLower().Contains(w.ToLower());
+                            }
+
+                            return false;
+                        }))));
         }
     }
 
@@ -207,9 +279,7 @@ public class AutomationService
 
     public async Task<bool> WaitForText(string[] words, TimeSpan timeout, TimeSpan? refreshInterval = null, bool matchAll = true)
     {
-        ArgumentNullException.ThrowIfNull(words);
-        ArgumentNullException.ThrowIfNull(timeout);
-        return await WaitForScreenText(words.ToList(), timeout, refreshInterval, matchAll);
+        return await WaitForText(words?.ToList(), timeout, refreshInterval, matchAll);
     }
 
     public async Task<bool> WaitForText(List<string> words, TimeSpan timeout, TimeSpan? refreshInterval = null, bool matchAll = true)
@@ -262,10 +332,7 @@ public class AutomationService
 
     public async Task<bool> WaitForText(string[] words, decimal matchConfidence, TimeSpan timeout, TimeSpan? refreshInterval = null)
     {
-        ArgumentNullException.ThrowIfNull(words);
-        ArgumentNullException.ThrowIfNull(matchConfidence);
-        ArgumentNullException.ThrowIfNull(timeout);
-        return await WaitForScreenText(words.ToList(), matchConfidence, timeout, refreshInterval);
+        return await WaitForText(words?.ToList(), matchConfidence, timeout, refreshInterval);
     }
 
     public async Task<bool> WaitForText(List<string> words, decimal matchConfidence, TimeSpan timeout, TimeSpan? refreshInterval = null)
