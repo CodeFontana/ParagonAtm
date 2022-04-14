@@ -2,7 +2,7 @@
 
 namespace ParagonAtmLibrary.Models;
 
-public class ScreenOcrDataModel
+public class OcrDataModel
 {
     [JsonPropertyName("width")]
     public int Width { get; set; }

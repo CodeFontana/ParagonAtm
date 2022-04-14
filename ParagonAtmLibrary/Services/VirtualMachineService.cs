@@ -23,7 +23,7 @@ public class VirtualMachineService
         _jsonOptions = new JsonSerializerOptions { WriteIndented = true };
     }
 
-    public record OcrData(ScreenOcrDataModel ocrData);
+    public record OcrData(OcrDataModel ocrData);
 
     public async Task<string> GetScreenJpegAsync()
     {
@@ -53,7 +53,7 @@ public class VirtualMachineService
         }
     }
 
-    public async Task<ScreenOcrDataModel> GetScreenTextAsync()
+    public async Task<OcrDataModel> GetScreenTextAsync()
     {
         try
         {

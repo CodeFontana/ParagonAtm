@@ -11,5 +11,5 @@ public class ReceiptModel
     public string format { get; set; }
 
     [JsonPropertyName("ocrData")]
-    public ScreenOcrDataModel OcrData { get; set; }
+    public OcrDataModel OcrData { get; set; }
 }

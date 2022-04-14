@@ -27,7 +27,7 @@ public class AutomationService
 
     public async Task<List<string>> GetScreenWords()
     {
-        ScreenOcrDataModel screenText = await _vmService.GetScreenTextAsync();
+        OcrDataModel screenText = await _vmService.GetScreenTextAsync();
 
         if (screenText == null)
         {
@@ -152,7 +152,7 @@ public class AutomationService
     public async Task<bool> SearchForText(List<string> words, bool matchAll = true)
     {
         ArgumentNullException.ThrowIfNull(words);
-        ScreenOcrDataModel screenText = await _vmService.GetScreenTextAsync();
+        OcrDataModel screenText = await _vmService.GetScreenTextAsync();
 
         if (screenText == null)
         {
@@ -202,7 +202,7 @@ public class AutomationService
     public async Task<bool> SearchForText(List<string> words, decimal matchConfidence)
     {
         ArgumentNullException.ThrowIfNull(words);
-        ScreenOcrDataModel screenText = await _vmService.GetScreenTextAsync();
+        OcrDataModel screenText = await _vmService.GetScreenTextAsync();
         int matchCount = 0;
 
         if (screenText == null)
@@ -241,7 +241,7 @@ public class AutomationService
         {
             DateTime curTime = DateTime.Now;
             DateTime endTime = curTime + timeout;
-            ScreenOcrDataModel screenText;
+            OcrDataModel screenText;
 
             while (DateTime.Now < endTime)
             {
@@ -291,7 +291,7 @@ public class AutomationService
         {
             DateTime curTime = DateTime.Now;
             DateTime endTime = curTime + timeout;
-            ScreenOcrDataModel screenText;
+            OcrDataModel screenText;
 
             while (DateTime.Now < endTime)
             {
@@ -350,7 +350,7 @@ public class AutomationService
         {
             DateTime curTime = DateTime.Now;
             DateTime endTime = curTime + timeout;
-            ScreenOcrDataModel screenText;
+            OcrDataModel screenText;
 
             while (DateTime.Now < endTime)
             {
