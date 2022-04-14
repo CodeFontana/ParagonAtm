@@ -108,10 +108,6 @@ public class ClientApp : IHostedService
         {
             _logger.LogCritical(ex, ex.Message);
         }
-        finally
-        {
-            await DispatchToIdle();
-        }
     }
 
     public async Task BalanceInquiry()
