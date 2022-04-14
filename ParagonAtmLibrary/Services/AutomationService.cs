@@ -36,16 +36,17 @@ public class AutomationService
         }
         else
         {
-            List<string> result = new();
+            HashSet<string> result = new();
 
             screenText.Elements.ToList()
                 .ForEach(e => e.lines.ToList()
                     .ForEach(l => l.words.ToList()
-                        .ForEach(w => result.AddRange(w.text.Split(" ")))));
+                        .ForEach(p => p.text.Split(" ").ToList()
+                            .ForEach(w => result.Add(w)))));
 
             _logger.LogTrace($"Found words -- {JsonSerializer.Serialize(result)}");
 
-            return result;
+            return result.ToList();
         }
     }
 
