@@ -44,6 +44,10 @@ public class AutomationService
 
     public bool IsScreen(List<string> screenText, List<string> compareText, decimal confidence)
     {
+        ArgumentNullException.ThrowIfNull(screenText);
+        ArgumentNullException.ThrowIfNull(compareText);
+        ArgumentNullException.ThrowIfNull(confidence);
+        
         int count = screenText.Intersect(compareText, StringComparer.OrdinalIgnoreCase).Count();
 
         if (count / compareText.Count >= confidence)
@@ -78,11 +82,13 @@ public class AutomationService
 
     public async Task<bool> SearchForText(string[] words, bool matchAll = true)
     {
+        ArgumentNullException.ThrowIfNull(words);
         return await SearchForText(words.ToList(), matchAll);
     }
 
     public async Task<bool> SearchForText(List<string> words, bool matchAll = true)
     {
+        ArgumentNullException.ThrowIfNull(words);
         ScreenOcrDataModel screenText = await _vmService.GetScreenTextAsync();
 
         if (screenText == null)
@@ -108,11 +114,13 @@ public class AutomationService
 
     public async Task<bool> SearchForText(string[] words, decimal matchConfidence)
     {
+        ArgumentNullException.ThrowIfNull(words);
         return await SearchForText(words.ToList(), matchConfidence);
     }
 
     public async Task<bool> SearchForText(List<string> words, decimal matchConfidence)
     {
+        ArgumentNullException.ThrowIfNull(words);
         ScreenOcrDataModel screenText = await _vmService.GetScreenTextAsync();
         int matchCount = 0;
 
@@ -142,6 +150,9 @@ public class AutomationService
 
     public async Task<bool> WaitForScreenText(string word, TimeSpan timeout, TimeSpan? refreshInterval = null)
     {
+        ArgumentNullException.ThrowIfNull(word);
+        ArgumentNullException.ThrowIfNull(timeout);
+
         try
         {
             DateTime curTime = DateTime.Now;
@@ -184,11 +195,16 @@ public class AutomationService
 
     public async Task<bool> WaitForScreenText(string[] words, TimeSpan timeout, TimeSpan? refreshInterval = null, bool matchAll = true)
     {
+        ArgumentNullException.ThrowIfNull(words);
+        ArgumentNullException.ThrowIfNull(timeout);
         return await WaitForScreenText(words.ToList(), timeout, refreshInterval, matchAll);
     }
 
     public async Task<bool> WaitForScreenText(List<string> words, TimeSpan timeout, TimeSpan? refreshInterval = null, bool matchAll = true)
     {
+        ArgumentNullException.ThrowIfNull(words);
+        ArgumentNullException.ThrowIfNull(timeout);
+
         try
         {
             DateTime curTime = DateTime.Now;
@@ -234,11 +250,18 @@ public class AutomationService
 
     public async Task<bool> WaitForScreenText(string[] words, decimal matchConfidence, TimeSpan timeout, TimeSpan? refreshInterval = null)
     {
+        ArgumentNullException.ThrowIfNull(words);
+        ArgumentNullException.ThrowIfNull(matchConfidence);
+        ArgumentNullException.ThrowIfNull(timeout);
         return await WaitForScreenText(words.ToList(), matchConfidence, timeout, refreshInterval);
     }
 
     public async Task<bool> WaitForScreenText(List<string> words, decimal matchConfidence, TimeSpan timeout, TimeSpan? refreshInterval = null)
     {
+        ArgumentNullException.ThrowIfNull(words);
+        ArgumentNullException.ThrowIfNull(matchConfidence);
+        ArgumentNullException.ThrowIfNull(timeout);
+
         try
         {
             DateTime curTime = DateTime.Now;
