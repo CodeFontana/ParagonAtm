@@ -85,6 +85,8 @@ public class AutomationService
         ArgumentNullException.ThrowIfNull(matchConfidence);
         int matchCount = 0;
 
+        _logger.LogTrace($"Match screen -- {JsonSerializer.Serialize(screenPhrases)}");
+
         foreach (string x in screenPhrases)
         {
             foreach (string y in comparePhrases)
@@ -188,6 +190,7 @@ public class AutomationService
 
     public async Task<bool> WaitForScreen(AtmScreenModel screen, TimeSpan timeout, TimeSpan refreshInterval)
     {
+        _logger.LogTrace($"Wait for screen -- {screen.Name}");
         return await WaitForText(screen.Text, screen.MatchConfidence, timeout, refreshInterval);
     }
 
