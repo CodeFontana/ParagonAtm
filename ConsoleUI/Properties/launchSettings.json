@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "VirtualAtmClient": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    }
+  }
+}
