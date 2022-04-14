@@ -94,7 +94,7 @@ public class VirtualMachineService
         }
     }
 
-    public async Task<ScreenTextLocationModel> GetLocationByTextAsync(string inputText)
+    public async Task<LocationModel> GetLocationByTextAsync(string inputText)
     {
         try
         {
@@ -110,7 +110,7 @@ public class VirtualMachineService
 
             if (response.IsSuccessStatusCode)
             {
-                ScreenTextLocationModel result = await response.Content.ReadFromJsonAsync<ScreenTextLocationModel>();
+                LocationModel result = await response.Content.ReadFromJsonAsync<LocationModel>();
                 return result;
             }
             else

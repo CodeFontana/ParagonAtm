@@ -2,7 +2,7 @@
 
 namespace ParagonAtmLibrary.Models;
 
-public class ScreenTextLocationModel
+public class LocationModel
 {
     [JsonPropertyName("found")]
     public bool Found { get; set; }

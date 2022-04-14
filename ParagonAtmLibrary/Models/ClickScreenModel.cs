@@ -10,7 +10,7 @@ public class ClickScreenModel
         YCoordinate = y;
     }
 
-    public ClickScreenModel(ScreenTextLocationModel s)
+    public ClickScreenModel(LocationModel s)
     {
         XCoordinate = s.Location.x;
         YCoordinate = s.Location.y;
