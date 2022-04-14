@@ -19,7 +19,7 @@ public class ClientApp : IHostedService
     private readonly AtmService _atmService;
     private readonly AutomationService _autoService;
     private readonly JsonSerializerOptions _jsonOptions;
-    private readonly List<AtmScreen> _atmScreens;
+    private readonly List<AtmScreenModel> _atmScreens;
 
     public ClientApp(IHostApplicationLifetime hostApplicationLifetime,
                      IConfiguration configuration,
@@ -41,7 +41,7 @@ public class ClientApp : IHostedService
         _atmService = atmService;
         _autoService = autoService;
         _jsonOptions = new JsonSerializerOptions { WriteIndented = true };
-        _atmScreens = _config.GetSection("Screens").Get<List<AtmScreen>>();
+        _atmScreens = _config.GetSection("Screens").Get<List<AtmScreenModel>>();
 
         VirtualAtm = new()
         {
