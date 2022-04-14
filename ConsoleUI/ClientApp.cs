@@ -569,8 +569,11 @@ public class ClientApp : IHostedService
                 _logger.LogInformation("Delaying for 7 minutes while ATM app starts...");
                 await Task.Delay(TimeSpan.FromMinutes(7));
 
-                // Wait and verify at Welcome screen
-                bool success = await _autoService.WaitForText("Welcome", TimeSpan.FromMinutes(5), TimeSpan.FromSeconds(15));
+                // Validate -- Welcome screen
+                bool success = await _autoService.WaitForScreen(
+                    _atmScreens.First(s => s.Name.ToLower() == "inservice"),
+                    TimeSpan.FromMinutes(5),
+                    TimeSpan.FromSeconds(15));
 
                 if (success == false)
                 {
