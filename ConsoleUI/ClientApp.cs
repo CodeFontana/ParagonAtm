@@ -524,7 +524,7 @@ public class ClientApp : IHostedService
             {
                 // Start ATM app
                 await _agentService.StartAtmAppAsync(_config["Terminal:AppStartup"]);
-                _logger.LogInformation("Delaying for 5 minutes while ATM app starts...");
+                _logger.LogInformation("Delaying for 7 minutes while ATM app starts...");
                 await Task.Delay(TimeSpan.FromMinutes(7));
 
                 // Wait and verify at Welcome screen
