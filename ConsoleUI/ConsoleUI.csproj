@@ -10,7 +10,6 @@
 
 	<ItemGroup>
 		<PackageReference Include="CodeFoxtrot.FileLogger" Version="1.0.2" />
-		<PackageReference Include="CodeFoxtrot.ParagonAtmLibrary" Version="1.1.1" />
 		<PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2" />
 		<PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
 		<PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="6.0.1" />
@@ -31,6 +30,10 @@
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 			<DependentUpon>appsettings.json</DependentUpon>
 		</Content>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\ParagonAtmLibrary\ParagonAtmLibrary.csproj" />
 	</ItemGroup>
 
 </Project>
