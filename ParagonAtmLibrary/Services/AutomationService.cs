@@ -44,7 +44,7 @@ public class AutomationService
         }
     }
 
-    public async Task<bool> SearchForWords(string[] words, bool matchAll = true)
+    public async Task<bool> SearchForText(string[] words, bool matchAll = true)
     {
         ScreenOcrDataModel screenText = await _vmService.GetScreenTextAsync();
 
@@ -63,7 +63,34 @@ public class AutomationService
         }
     }
 
-    public async Task<bool> WaitForScreenText(string text, TimeSpan timeout, TimeSpan? refreshInterval = null)
+    public async Task<bool> SearchForText(string[] words, decimal matchConfidence)
+    {
+        ScreenOcrDataModel screenText = await _vmService.GetScreenTextAsync();
+        int matchCount = 0;
+
+        if (screenText == null)
+        {
+            _logger.LogError("Unable to read screen text");
+            return false;
+        }
+
+        screenText.Elements.ToList().ForEach(e => e.words.ToList().ForEach(w =>
+        {
+            if (words.Any(x => x.ToLower() == w.text.ToLower()))
+            {
+                matchCount++;
+            }
+        }));
+
+        if (matchCount / words.Length >= matchConfidence)
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    public async Task<bool> WaitForScreenText(string word, TimeSpan timeout, TimeSpan? refreshInterval = null)
     {
         try
         {
@@ -81,7 +108,7 @@ public class AutomationService
                     return false;
                 }
 
-                if (screenText.Elements.Any(x => x.text.ToLower().Contains(text.ToLower())))
+                if (screenText.Elements.Any(e => e.text.ToLower().Contains(word.ToLower())))
                 {
                     return true;
                 }
@@ -105,7 +132,7 @@ public class AutomationService
         }
     }
 
-    public async Task<bool> WaitForScreenText(string[] text, TimeSpan timeout, TimeSpan? refreshInterval = null, bool matchAll = true)
+    public async Task<bool> WaitForScreenText(string[] words, TimeSpan timeout, TimeSpan? refreshInterval = null, bool matchAll = true)
     {
         try
         {
@@ -117,11 +144,67 @@ public class AutomationService
             {
                 screenText = await _vmService.GetScreenTextAsync();
 
-                if (matchAll && text.All(x => screenText.Elements.Any(e => e.text.ToLower().Contains(x.ToLower()))))
+                if (screenText == null)
+                {
+                    _logger.LogError("Unable to read screen text");
+                    return false;
+                }
+                else if (matchAll && words.All(w => screenText.Elements.Any(e => e.text.ToLower().Contains(w.ToLower()))))
                 {
                     return true;
                 }
-                else if (matchAll == false && text.Any(x => screenText.Elements.Any(e => e.text.ToLower().Contains(x.ToLower()))))
+                else if (matchAll == false && words.Any(w => screenText.Elements.Any(e => e.text.ToLower().Contains(w.ToLower()))))
+                {
+                    return true;
+                }
+
+                if (refreshInterval == null)
+                {
+                    await Task.Delay(30000);
+                }
+                else
+                {
+                    await Task.Delay((TimeSpan)refreshInterval);
+                }
+            }
+
+            return false;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, ex.Message);
+            return false;
+        }
+    }
+
+    public async Task<bool> WaitForScreenText(string[] words, decimal matchConfidence, TimeSpan timeout, TimeSpan? refreshInterval = null)
+    {
+        try
+        {
+            DateTime curTime = DateTime.Now;
+            DateTime endTime = curTime + timeout;
+            ScreenOcrDataModel screenText;
+
+            while (DateTime.Now < endTime)
+            {
+                screenText = await _vmService.GetScreenTextAsync();
+                int matchCount = 0;
+
+                if (screenText == null)
+                {
+                    _logger.LogError("Unable to read screen text");
+                    return false;
+                }
+
+                screenText.Elements.ToList().ForEach(e => e.words.ToList().ForEach(w =>
+                {
+                    if (words.Any(x => x.ToLower() == w.text.ToLower()))
+                    {
+                        matchCount++;
+                    }
+                }));
+
+                if (matchCount / words.Length >= matchConfidence)
                 {
                     return true;
                 }
