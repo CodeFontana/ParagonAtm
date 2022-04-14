@@ -393,6 +393,7 @@ public class ClientApp : IHostedService
             _logger.LogCritical(ex, "Balance inquiry failed");
         }
     }
+
     public async Task DispatchToIdle()
     {
         List<string> curScreen = await _autoService.GetScreenWords();
@@ -509,8 +510,7 @@ public class ClientApp : IHostedService
             await _connectionService.OpenAsync();
 
             // Use OCR to figure out if ATM app is already running
-            bool appRunning = await _autoService.SearchForText(
-                _atmScreens.SelectMany(s => s.Text).SelectMany(t => t.Split(" ")).ToList(), false);
+            bool appRunning = await _autoService.IsAtScreen(_atmScreens);
 
             if (appRunning == false)
             {
