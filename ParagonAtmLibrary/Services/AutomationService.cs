@@ -330,6 +330,11 @@ public class AutomationService
         }
     }
 
+    public async Task<bool> WaitForScreen(AtmScreen screen, decimal matchConfidence, TimeSpan timeout, TimeSpan? refreshInterval = null)
+    {
+        return await WaitForText(screen.Text, matchConfidence, timeout, refreshInterval);
+    }
+
     public async Task<bool> WaitForText(string[] words, decimal matchConfidence, TimeSpan timeout, TimeSpan? refreshInterval = null)
     {
         return await WaitForText(words?.ToList(), matchConfidence, timeout, refreshInterval);
