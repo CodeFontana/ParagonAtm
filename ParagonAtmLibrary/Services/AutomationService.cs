@@ -95,7 +95,7 @@ public class AutomationService
 
                 if (matches.Count() > 0)
                 {
-                    _logger.LogTrace($"MatchScreen(): Found match -- {JsonSerializer.Serialize(matches)}");
+                    _logger.LogTrace($"MatchScreen(): Word match -- {JsonSerializer.Serialize(matches)}");
                     matchCount += matches.Count();
                 }
             }
@@ -112,11 +112,11 @@ public class AutomationService
 
         if (confidence >= matchConfidence)
         {
-            _logger.LogTrace($"MatchScreen(): Match confidence -- {JsonSerializer.Serialize(compareWords)} -- Confidence {confidence}");
+            _logger.LogTrace($"MatchScreen(): Matched -- {JsonSerializer.Serialize(compareWords)} -- Confidence {confidence}");
             return true;
         }
 
-        _logger.LogTrace($"MatchScreen(): No match -- {JsonSerializer.Serialize(compareWords)} -- Confidence {confidence}");
+        _logger.LogTrace($"MatchScreen(): Not match -- {JsonSerializer.Serialize(compareWords)} -- Confidence {confidence}");
 
         return false;
     }
