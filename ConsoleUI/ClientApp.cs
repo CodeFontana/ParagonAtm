@@ -149,9 +149,8 @@ public class ClientApp : IHostedService
                 return;
             }
 
-            // Instantiate card
+            // Insert specified card
             CardModel card = new(_config["Card:Id"], cardReader.Name);
-
             bool success = await _atmService.InsertCardAsync(card);
 
             if (success == false)
@@ -162,7 +161,7 @@ public class ClientApp : IHostedService
             
             // Validate -- Language selection screen
             atScreen = await _autoService.WaitForScreen(
-                _atmScreens.First(s => s.Name.ToLower() == "language"), 
+                _atmScreens.First(s => s.Name.ToLower() == "languageselection"), 
                 TimeSpan.FromSeconds(30), 
                 TimeSpan.FromSeconds(5));
 
