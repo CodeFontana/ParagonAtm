@@ -41,7 +41,7 @@ public class ClientApp : IHostedService
         _atmService = atmService;
         _autoService = autoService;
         _jsonOptions = new JsonSerializerOptions { WriteIndented = true };
-        _atmScreens = JsonSerializer.Deserialize<List<AtmScreen>>(_config["Screens"]);
+        _atmScreens = _config.GetSection("Screens").Get<List<AtmScreen>>();
 
         VirtualAtm = new()
         {
@@ -543,7 +543,7 @@ public class ClientApp : IHostedService
             await DispatchToIdle();
 
             // Check for welcome screen
-            if (await _autoService.SearchForText(_atmScreens.First(s => s.ScreenName == "Welcome").Text.ToList()) == false)
+            if (await _autoService.SearchForText(_atmScreens.First(s => s.Name == "Welcome").Text.ToList()) == false)
             {
                 _logger.LogError("ATM not at welcome screen");
                 return false;
