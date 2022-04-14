@@ -43,7 +43,7 @@ public class AutomationService
     {
         int count = screenText.Intersect(compareText, StringComparer.OrdinalIgnoreCase).Count();
 
-        if (count / screenText.Count >= confidence)
+        if (count / compareText.Count >= confidence)
         {
             return true;
         }
