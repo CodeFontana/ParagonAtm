@@ -49,19 +49,19 @@ public class AutomationService
         }
     }
 
-    public async Task<bool> IsAtScreen(AtmScreenModel screen, decimal matchConfidence = 1)
+    public async Task<bool> IsAtScreen(AtmScreenModel screen)
     {
         List<string> screenText = await GetScreenWords();
-        return MatchScreen(screenText, screen.Text, matchConfidence);
+        return MatchScreen(screenText, screen.Text, screen.MatchConfidence);
     }
 
-    public async Task<bool> IsAtScreen(List<AtmScreenModel> screens, decimal matchConfidence = 1)
+    public async Task<bool> IsAtScreen(List<AtmScreenModel> screens)
     {
         List<string> screenText = await GetScreenWords();
 
         foreach (AtmScreenModel s in screens)
         {
-            if (MatchScreen(screenText, s.Text, matchConfidence))
+            if (MatchScreen(screenText, s.Text, s.MatchConfidence))
             {
                 _logger.LogTrace($"IsAtScreen(): Found match -- {s.Name}");
                 return true;
@@ -129,6 +129,7 @@ public class AutomationService
 
             if (string.IsNullOrWhiteSpace(jpeg) == false)
             {
+                Directory.CreateDirectory(_config["Preferences:DownloadPath"]);
                 File.WriteAllBytes(
                     $@"{_config["Preferences:DownloadPath"]}\Screenshot-{DateTime.Now.ToString("yyyy-MM-dd--HH.mm.ss")}.jpg",
                     Convert.FromBase64String(jpeg));
@@ -330,9 +331,9 @@ public class AutomationService
         }
     }
 
-    public async Task<bool> WaitForScreen(AtmScreenModel screen, decimal matchConfidence, TimeSpan timeout, TimeSpan? refreshInterval = null)
+    public async Task<bool> WaitForScreen(AtmScreenModel screen, TimeSpan timeout, TimeSpan? refreshInterval = null)
     {
-        return await WaitForText(screen.Text, matchConfidence, timeout, refreshInterval);
+        return await WaitForText(screen.Text, screen.MatchConfidence, timeout, refreshInterval);
     }
 
     public async Task<bool> WaitForText(string[] words, decimal matchConfidence, TimeSpan timeout, TimeSpan? refreshInterval = null)
