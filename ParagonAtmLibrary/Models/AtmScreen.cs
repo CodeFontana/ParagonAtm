@@ -1,4 +1,4 @@
-﻿namespace ConsoleUI.Models;
+﻿namespace ParagonAtmLibrary.Models;
 
 public class AtmScreen
 {
