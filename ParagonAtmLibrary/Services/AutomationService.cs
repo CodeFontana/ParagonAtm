@@ -39,6 +39,18 @@ public class AutomationService
         }
     }
 
+    public bool IsScreen(List<string> screenText, List<string> compareText, decimal confidence)
+    {
+        int count = screenText.Intersect(compareText, StringComparer.OrdinalIgnoreCase).Count();
+
+        if (count / screenText.Count >= confidence)
+        {
+            return true;
+        }
+
+        return false;
+    }
+
     public async Task<bool> SaveScreenShot()
     {
         try
