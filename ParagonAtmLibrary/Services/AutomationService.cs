@@ -41,9 +41,9 @@ public class AutomationService
             screenText.Elements.ToList()
                 .ForEach(e => e.lines.ToList()
                     .ForEach(l => l.words.ToList()
-                        .ForEach(w => result.Add(w.text))));
+                        .ForEach(w => result.AddRange(w.text.Split(" ")))));
 
-            _logger.LogTrace($"GetScreenWords() -- {JsonSerializer.Serialize(result)}");
+            _logger.LogTrace($"Found words -- {JsonSerializer.Serialize(result)}");
 
             return result;
         }
@@ -63,7 +63,7 @@ public class AutomationService
         {
             if (MatchScreen(screenText, s.Text, s.MatchConfidence))
             {
-                _logger.LogTrace($"IsAtScreen(): Found match -- {s.Name}");
+                _logger.LogTrace($"Found match -- {s.Name}");
                 return true;
             }
         }
@@ -71,22 +71,22 @@ public class AutomationService
         return false;
     }
 
-    public async Task<bool> MatchScreen(List<string> compareWords, decimal matchConfidence)
+    public async Task<bool> MatchScreen(List<string> comparePhrases, decimal matchConfidence)
     {
         List<string> screenText = await GetScreenWords();
-        return MatchScreen(screenText, compareWords, matchConfidence);
+        return MatchScreen(screenText, comparePhrases, matchConfidence);
     }
 
-    public bool MatchScreen(List<string> screenWords, List<string> compareWords, decimal matchConfidence)
+    public bool MatchScreen(List<string> screenPhrases, List<string> comparePhrases, decimal matchConfidence)
     {
-        ArgumentNullException.ThrowIfNull(screenWords);
-        ArgumentNullException.ThrowIfNull(compareWords);
+        ArgumentNullException.ThrowIfNull(screenPhrases);
+        ArgumentNullException.ThrowIfNull(comparePhrases);
         ArgumentNullException.ThrowIfNull(matchConfidence);
         int matchCount = 0;
 
-        foreach (string x in screenWords)
+        foreach (string x in screenPhrases)
         {
-            foreach (string y in compareWords)
+            foreach (string y in comparePhrases)
             {
                 List<string> left = x.Split(" ").ToList().Select(w => w.ToLower()).ToList();
                 List<string> right = y.Split(" ").ToList().Select(w => w.ToLower()).ToList();
@@ -95,7 +95,7 @@ public class AutomationService
 
                 if (matches.Count() > 0)
                 {
-                    _logger.LogTrace($"MatchScreen(): Word match -- {JsonSerializer.Serialize(matches)}");
+                    _logger.LogTrace($"Found Match -- {JsonSerializer.Serialize(matches)}");
                     matchCount += matches.Count();
                 }
             }
@@ -103,7 +103,7 @@ public class AutomationService
 
         int wordCount = 0;
 
-        foreach (string phrase in compareWords)
+        foreach (string phrase in comparePhrases)
         {
             wordCount += phrase.Split(" ").Count();
         }
@@ -112,11 +112,11 @@ public class AutomationService
 
         if (confidence >= matchConfidence)
         {
-            _logger.LogTrace($"MatchScreen(): Matched -- {JsonSerializer.Serialize(compareWords)} -- Confidence {confidence}");
+            _logger.LogTrace($"Matched -- {JsonSerializer.Serialize(comparePhrases)} -- Confidence {confidence}");
             return true;
         }
 
-        _logger.LogTrace($"MatchScreen(): Not match -- {JsonSerializer.Serialize(compareWords)} -- Confidence {confidence}");
+        _logger.LogTrace($"NotMatched -- {JsonSerializer.Serialize(comparePhrases)} -- Confidence {confidence}");
 
         return false;
     }
@@ -144,65 +144,15 @@ public class AutomationService
         }
     }
 
-    public async Task<bool> SearchForText(string[] words, bool matchAll = true)
+    public async Task<bool> SearchForText(string[] phrases, decimal matchConfidence)
     {
-        ArgumentNullException.ThrowIfNull(words);
-        return await SearchForText(words.ToList(), matchAll);
+        ArgumentNullException.ThrowIfNull(phrases);
+        return await SearchForText(phrases.ToList(), matchConfidence);
     }
 
-    public async Task<bool> SearchForText(List<string> words, bool matchAll = true)
+    public async Task<bool> SearchForText(List<string> phrases, decimal matchConfidence)
     {
-        ArgumentNullException.ThrowIfNull(words);
-        OcrDataModel screenText = await _vmService.GetScreenTextAsync();
-
-        if (screenText == null)
-        {
-            _logger.LogError("Unable to read screen text");
-            return false;
-        }
-        else if (matchAll)
-        {
-            return words.All(w => screenText.Elements
-                .Any(e => e.lines.ToList()
-                    .Any(l => l.words.ToList()
-                        .Any((t) =>
-                        {
-                            if (t.text.Split(" ").ToList().Any(x => x.ToLower().Contains(w.ToLower())))
-                            {
-                                _logger.LogTrace($"SearchForText() -- Found match -- {t.text}");
-                                return t.text.ToLower().Contains(w.ToLower());
-                            }
-
-                            return false;
-                        }))));
-        }
-        else
-        {
-            return words.Any(w => screenText.Elements
-                .Any(e => e.lines.ToList()
-                    .Any(l => l.words.ToList()
-                        .Any((t) =>
-                        {
-                            if (t.text.Split(" ").ToList().Any(x => x.ToLower().Contains(w.ToLower())))
-                            {
-                                _logger.LogTrace($"SearchForText() -- Found match -- {t.text}");
-                                return t.text.ToLower().Contains(w.ToLower());
-                            }
-
-                            return false;
-                        }))));
-        }
-    }
-
-    public async Task<bool> SearchForText(string[] words, decimal matchConfidence)
-    {
-        ArgumentNullException.ThrowIfNull(words);
-        return await SearchForText(words.ToList(), matchConfidence);
-    }
-
-    public async Task<bool> SearchForText(List<string> words, decimal matchConfidence)
-    {
-        ArgumentNullException.ThrowIfNull(words);
+        ArgumentNullException.ThrowIfNull(phrases);
         OcrDataModel screenText = await _vmService.GetScreenTextAsync();
         int matchCount = 0;
 
@@ -214,16 +164,18 @@ public class AutomationService
 
         screenText.Elements.ToList()
             .ForEach(e => e.lines.ToList()
-                .ForEach(l => l.words.ToList().ForEach(w =>
-        {
-            if (words.Any(x => x.ToLower() == w.text.ToLower()))
-            {
-                _logger.LogTrace($"SearchForText() -- Found match {w.text}");
-                matchCount++;
-            }
-        })));
+                .ForEach(l => l.words.ToList()
+                    .ForEach(p => p.text.ToLower().Split(" ").ToList()
+                        .ForEach(w => 
+                        {
+                            if (phrases.Any(x => x.Split(" ").ToList().Any(y => y.ToLower() == w.ToLower())))
+                            {
+                                _logger.LogTrace($"Found match -- {w}");
+                                matchCount++;
+                            }
+                        }))));
 
-        decimal confidence = matchCount / (decimal)words.Count;
+        decimal confidence = matchCount / (decimal)phrases.Count;
 
         if (confidence >= matchConfidence)
         {
@@ -233,117 +185,19 @@ public class AutomationService
         return false;
     }
 
-    public async Task<bool> WaitForText(string word, TimeSpan timeout, TimeSpan? refreshInterval = null)
-    {
-        ArgumentNullException.ThrowIfNull(word);
-        ArgumentNullException.ThrowIfNull(timeout);
-
-        try
-        {
-            DateTime curTime = DateTime.Now;
-            DateTime endTime = curTime + timeout;
-            OcrDataModel screenText;
-
-            while (DateTime.Now < endTime)
-            {
-                screenText = await _vmService.GetScreenTextAsync();
-
-                if (screenText == null)
-                {
-                    _logger.LogError("Unable to read screen text");
-                    return false;
-                }
-
-                if (screenText.Elements.Any(e => e.text.ToLower().Contains(word.ToLower())))
-                {
-                    return true;
-                }
-
-                if (refreshInterval == null)
-                {
-                    await Task.Delay(30000);
-                }
-                else
-                {
-                    await Task.Delay((TimeSpan)refreshInterval);
-                }
-            }
-
-            return false;
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, ex.Message);
-            return false;
-        }
-    }
-
-    public async Task<bool> WaitForText(string[] words, TimeSpan timeout, TimeSpan? refreshInterval = null, bool matchAll = true)
-    {
-        return await WaitForText(words?.ToList(), timeout, refreshInterval, matchAll);
-    }
-
-    public async Task<bool> WaitForText(List<string> words, TimeSpan timeout, TimeSpan? refreshInterval = null, bool matchAll = true)
-    {
-        ArgumentNullException.ThrowIfNull(words);
-        ArgumentNullException.ThrowIfNull(timeout);
-
-        try
-        {
-            DateTime curTime = DateTime.Now;
-            DateTime endTime = curTime + timeout;
-            OcrDataModel screenText;
-
-            while (DateTime.Now < endTime)
-            {
-                screenText = await _vmService.GetScreenTextAsync();
-
-                if (screenText == null)
-                {
-                    _logger.LogError("Unable to read screen text");
-                    return false;
-                }
-                else if (matchAll && words.All(w => screenText.Elements.Any(e => e.text.ToLower().Contains(w.ToLower()))))
-                {
-                    return true;
-                }
-                else if (matchAll == false && words.Any(w => screenText.Elements.Any(e => e.text.ToLower().Contains(w.ToLower()))))
-                {
-                    return true;
-                }
-
-                if (refreshInterval == null)
-                {
-                    await Task.Delay(30000);
-                }
-                else
-                {
-                    await Task.Delay((TimeSpan)refreshInterval);
-                }
-            }
-
-            return false;
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, ex.Message);
-            return false;
-        }
-    }
-
-    public async Task<bool> WaitForScreen(AtmScreenModel screen, TimeSpan timeout, TimeSpan? refreshInterval = null)
+    public async Task<bool> WaitForScreen(AtmScreenModel screen, TimeSpan timeout, TimeSpan refreshInterval)
     {
         return await WaitForText(screen.Text, screen.MatchConfidence, timeout, refreshInterval);
     }
 
-    public async Task<bool> WaitForText(string[] words, decimal matchConfidence, TimeSpan timeout, TimeSpan? refreshInterval = null)
+    public async Task<bool> WaitForText(string[] words, decimal matchConfidence, TimeSpan timeout, TimeSpan refreshInterval)
     {
-        return await WaitForText(words?.ToList(), matchConfidence, timeout, refreshInterval);
+        return await WaitForText(words.ToList(), matchConfidence, timeout, refreshInterval);
     }
 
-    public async Task<bool> WaitForText(List<string> words, decimal matchConfidence, TimeSpan timeout, TimeSpan? refreshInterval = null)
+    public async Task<bool> WaitForText(List<string> phrases, decimal matchConfidence, TimeSpan timeout, TimeSpan refreshInterval)
     {
-        ArgumentNullException.ThrowIfNull(words);
+        ArgumentNullException.ThrowIfNull(phrases);
         ArgumentNullException.ThrowIfNull(matchConfidence);
         ArgumentNullException.ThrowIfNull(timeout);
 
@@ -351,44 +205,15 @@ public class AutomationService
         {
             DateTime curTime = DateTime.Now;
             DateTime endTime = curTime + timeout;
-            OcrDataModel screenText;
 
             while (DateTime.Now < endTime)
             {
-                screenText = await _vmService.GetScreenTextAsync();
-                int matchCount = 0;
-
-                if (screenText == null)
-                {
-                    _logger.LogError("Unable to read screen text");
-                    return false;
-                }
-
-                screenText.Elements.ToList()
-                    .ForEach(e => e.lines.ToList()
-                        .ForEach(l => l.words.ToList().ForEach(w =>
-                {
-                    if (words.Any(x => x.ToLower() == w.text.ToLower()))
-                    {
-                        matchCount++;
-                    }
-                })));
-
-                decimal confidence = matchCount / (decimal)words.Count;
-
-                if (confidence >= matchConfidence)
+                if (await SearchForText(phrases, matchConfidence))
                 {
                     return true;
                 }
 
-                if (refreshInterval == null)
-                {
-                    await Task.Delay(30000);
-                }
-                else
-                {
-                    await Task.Delay((TimeSpan)refreshInterval);
-                }
+                await Task.Delay(refreshInterval);
             }
 
             return false;
