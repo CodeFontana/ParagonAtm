@@ -36,7 +36,7 @@ public class VirtualMachineService
 
             if (response.IsSuccessStatusCode)
             {
-                ScreenJpegModel result = await response.Content.ReadFromJsonAsync<ScreenJpegModel>();
+                ScreenshotModel result = await response.Content.ReadFromJsonAsync<ScreenshotModel>();
                 _logger.LogInformation($"Success -- Base64/{result.Result.Substring(0, 50)}...");
                 return result.Result;
             }

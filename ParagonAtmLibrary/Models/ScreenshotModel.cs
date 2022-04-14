@@ -2,7 +2,7 @@
 
 namespace ParagonAtmLibrary.Models;
 
-public class ScreenJpegModel
+public class ScreenshotModel
 {
     [JsonPropertyName("timestamp")]
     public long Timestamp { get; set; }
