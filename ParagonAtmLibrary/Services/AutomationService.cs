@@ -185,21 +185,21 @@ public class AutomationService
     /// Waits for the specified text to be displayed on the ATM screen. This overload accepts
     /// a string array for input.
     /// </summary>
-    /// <param name="words">Array of words to wait for.</param>
+    /// <param name="phrases">Array of phrases to wait for.</param>
     /// <param name="matchConfidence">Required confidence level the words must match with the screen words.</param>
     /// <param name="timeout">The overall timeout to wait for this screen match.</param>
     /// <param name="refreshInterval">How often to refresh the screen OCR data to check for a match.</param>
     /// <returns>Returns true, if the specified word array matches above the specified confidence level, and within the specified timeout, false otherwise.</returns>
-    public async Task<bool> WaitForText(string[] words, decimal matchConfidence, TimeSpan timeout, TimeSpan refreshInterval)
+    public async Task<bool> WaitForText(string[] phrases, decimal matchConfidence, TimeSpan timeout, TimeSpan refreshInterval)
     {
-        return await WaitForText(words.ToList(), matchConfidence, timeout, refreshInterval);
+        return await WaitForText(phrases.ToList(), matchConfidence, timeout, refreshInterval);
     }
 
     /// <summary>
     /// Waits for the specified text to be displayed on the ATM screen. This overload accepts
     /// a string list for input.
     /// </summary>
-    /// <param name="words">List of words to wait for.</param>
+    /// <param name="phrases">List of phrases to wait for.</param>
     /// <param name="matchConfidence">Required confidence level the words must match with the screen words.</param>
     /// <param name="timeout">The overall timeout to wait for this screen match.</param>
     /// <param name="refreshInterval">How often to refresh the screen OCR data to check for a match.</param>
