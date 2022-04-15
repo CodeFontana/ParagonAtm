@@ -159,8 +159,6 @@ public class ClientApp : IHostedService
                 _logger.LogError("Failed to insert card for transaction");
                 return;
             }
-
-            await Task.Delay(_config.GetValue<int>("Terminal:StandardDelay"));
             
             // Validate -- Language selection screen
             atScreen = await _autoService.WaitForScreen(
@@ -193,8 +191,6 @@ public class ClientApp : IHostedService
                 _logger.LogError("Failed to click english");
                 return;
             }
-
-            await Task.Delay(_config.GetValue<int>("Terminal:StandardDelay"));
 
             // Validate -- PIN screen
             atScreen = await _autoService.WaitForScreen(
@@ -244,8 +240,6 @@ public class ClientApp : IHostedService
                 return;
             }
 
-            await Task.Delay(_config.GetValue<int>("Terminal:StandardDelay"));
-
             // Validate -- Transaction type screen
             atScreen = await _autoService.WaitForScreen(
                 _atmScreens.First(s => s.Name.ToLower() == "transactiontype"),
@@ -277,8 +271,6 @@ public class ClientApp : IHostedService
                 _logger.LogError("Failed to click balance inquiry");
                 return;
             }
-
-            await Task.Delay(_config.GetValue<int>("Terminal:StandardDelay"));
 
             // Validate -- Account type screen
             atScreen = await _autoService.WaitForScreen(
@@ -312,8 +304,6 @@ public class ClientApp : IHostedService
                 return;
             }
 
-            await Task.Delay(_config.GetValue<int>("Terminal:StandardDelay"));
-
             // Validate -- Balance destination screen
             atScreen = await _autoService.WaitForScreen(
                 _atmScreens.First(s => s.Name.ToLower() == "balancedestination"),
@@ -345,8 +335,6 @@ public class ClientApp : IHostedService
                 _logger.LogError("Failed to click display balance");
                 return;
             }
-
-            await Task.Delay(_config.GetValue<int>("Terminal:StandardDelay"));
 
             // Validate -- Account name screen
             atScreen = await _autoService.WaitForScreen(
@@ -380,8 +368,6 @@ public class ClientApp : IHostedService
                 return;
             }
 
-            await Task.Delay(_config.GetValue<int>("Terminal:StandardDelay"));
-
             // Validate -- balance inquiry screen
             atScreen = await _autoService.WaitForScreen(
                 _atmScreens.First(s => s.Name.ToLower() == "balanceinquiry"),
@@ -414,8 +400,6 @@ public class ClientApp : IHostedService
                 return;
             }
 
-            await Task.Delay(_config.GetValue<int>("Terminal:StandardDelay"));
-
             // Validate -- Another transaction screen
             atScreen = await _autoService.WaitForScreen(
                 _atmScreens.First(s => s.Name.ToLower() == "anothertransaction"),
@@ -438,8 +422,6 @@ public class ClientApp : IHostedService
                 // Click no button
                 await _vmService.ClickScreenAsync(new ClickScreenModel(location));
             }
-
-            await Task.Delay(_config.GetValue<int>("Terminal:StandardDelay"));
 
             // Validate -- Take card screen
             atScreen = await _autoService.WaitForScreen(
