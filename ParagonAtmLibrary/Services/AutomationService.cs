@@ -86,24 +86,24 @@ public class AutomationService
         }
     }
 
-    public async Task<bool> IsAtScreen(List<AtmScreenModel> screens)
+    public async Task<AtmScreenModel> IsAtScreen(List<AtmScreenModel> screens)
     {
         List<string> screenText = await GetScreenWords();
         return IsAtScreen(screens, screenText);
     }
 
-    public bool IsAtScreen(List<AtmScreenModel> screens, List<string> screenText)
+    public AtmScreenModel IsAtScreen(List<AtmScreenModel> screens, List<string> screenText)
     {
         foreach (AtmScreenModel s in screens)
         {
             if (CompareText(screenText, s.Text, s.MatchConfidence))
             {
                 _logger.LogTrace($"Found match -- {s.Name}");
-                return true;
+                return s;
             }
         }
 
-        return false;
+        return null;
     }
 
     public bool IsAtScreen(AtmScreenModel screen, List<string> screenText)
