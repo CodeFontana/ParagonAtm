@@ -601,10 +601,18 @@ public class ClientApp : IHostedService
 
             // Use OCR to figure out if ATM app is already running
             _logger.LogInformation("Check if ATM app is running...");
-            List<string> curScreen = await _autoService.GetScreenWords();
-            bool appRunning = _autoService.IsAtScreen(_atmScreens, curScreen);
+            List<string> screenWords = await _autoService.GetScreenWords();
 
-            if (appRunning == false)
+            if (screenWords == null)
+            {
+                _logger.LogError("ATM screen is not available");
+                return false;
+            }
+
+            // Check if ATM is at any of the defined app screens
+            AtmScreenModel curScreen = _autoService.IsAtScreen(_atmScreens, screenWords);
+
+            if (curScreen == null)
             {
                 // Start ATM app
                 await _agentService.StartAtmAppAsync(_config["Terminal:AppStartup"]);
@@ -625,6 +633,12 @@ public class ClientApp : IHostedService
                 }
 
                 return true;
+            }
+
+            // Is ATM at idle?
+            if (curScreen.Name.ToLower() != "inservice" && curScreen.Name.ToLower() != "outservice")
+            {
+                await DispatchToIdle();
             }
 
             return true;
