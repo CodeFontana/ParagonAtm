@@ -572,10 +572,11 @@ public class ClientApp : IHostedService
 
             if (agentPaused == false)
             {
-                // Open hardware profile and connect to API
+                // Open hardware profile
                 await _agentService.OpenHwProfileAsync(VirtualAtm);
             }
 
+            // Open connection to API
             await _connectionService.OpenAsync();
 
             // Use OCR to figure out if ATM app is already running
