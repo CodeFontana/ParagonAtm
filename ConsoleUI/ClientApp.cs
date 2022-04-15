@@ -435,7 +435,7 @@ public class ClientApp : IHostedService
                 return;
             }
 
-            await SaveScreenShot();
+            await SaveScreenShot(saveFolder);
             await _atmService.TakeCardAsync();
         }
         catch (Exception ex)
@@ -515,9 +515,9 @@ public class ClientApp : IHostedService
 
             if (string.IsNullOrWhiteSpace(jpeg) == false)
             {
-                Directory.CreateDirectory(_config["Preferences:DownloadPath"]);
+                Directory.CreateDirectory(folder);
                 File.WriteAllBytes(
-                    $@"{_config["Preferences:DownloadPath"]}\Screenshot-{DateTime.Now.ToString("yyyy-MM-dd--HH.mm.ss")}.jpg",
+                    Path.Combine(folder, $"Screenshot-{DateTime.Now.ToString("yyyy-MM-dd--HH.mm.ss")}.jpg"),
                     Convert.FromBase64String(jpeg));
             }
 
