@@ -452,11 +452,6 @@ public class ClientApp : IHostedService
             _logger.LogError("Dispatch - Failed to read screen");
             return;
         }
-        if (await _autoService.IsAtScreen(_atmScreens.First(s => s.Name.ToLower() == "desktop")))
-        {
-            _logger.LogInformation("Dispatch - ATM is at desktop");
-            return;
-        }
         else if (await _autoService.IsAtScreen(_atmScreens.First(s => s.Name.ToLower() == "inservice"))
             || await _autoService.IsAtScreen(_atmScreens.First(s => s.Name.ToLower() == "outservice")))
         {
