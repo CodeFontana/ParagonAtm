@@ -124,7 +124,8 @@ public class ClientApp : IHostedService
                 return;
             }
 
-            await SaveScreenShot();
+            string saveFolder = Path.Combine(_config["Preferences:DownloadPath"], DateTime.Now.ToString("yyyy-MM-dd--HH.mm.ss"));
+            await SaveScreenShot(saveFolder);
 
             // Get ATM services
             List<AtmServiceModel> services = await _atmService.GetServicesAsync();
@@ -173,7 +174,7 @@ public class ClientApp : IHostedService
                 return;
             }
 
-            await SaveScreenShot();
+            await SaveScreenShot(saveFolder);
 
             // Get location of transaction language
             LocationModel location = await _vmService.GetLocationByTextAsync(_config["Transaction:Language"]);
@@ -207,7 +208,7 @@ public class ClientApp : IHostedService
                 return;
             }
 
-            await SaveScreenShot();
+            await SaveScreenShot(saveFolder);
 
             // Isolate pinpad service
             AtmServiceModel pinpad = services?.FirstOrDefault(x => x.DeviceType.ToLower() == "pin");
@@ -232,7 +233,7 @@ public class ClientApp : IHostedService
                 await Task.Delay(1000);
             }
 
-            await SaveScreenShot();
+            await SaveScreenShot(saveFolder);
 
             // Press ENTER
             success = await _atmService.PressKeyAsync(new PressKeyModel(pinpad.Name, "Enter"));
@@ -257,7 +258,7 @@ public class ClientApp : IHostedService
                 return;
             }
 
-            await SaveScreenShot();
+            await SaveScreenShot(saveFolder);
 
             // Find account balance button
             location = await _vmService.GetLocationByTextAsync("balance");
@@ -291,7 +292,7 @@ public class ClientApp : IHostedService
                 return;
             }
 
-            await SaveScreenShot();
+            await SaveScreenShot(saveFolder);
 
             // Find transaction account type
             location = await _vmService.GetLocationByTextAsync(_config["Transaction:AccountType"]);
@@ -325,7 +326,7 @@ public class ClientApp : IHostedService
                 return;
             }
 
-            await SaveScreenShot();
+            await SaveScreenShot(saveFolder);
 
             // Find display balance button
             location = await _vmService.GetLocationByTextAsync("display balance");
@@ -359,7 +360,7 @@ public class ClientApp : IHostedService
                 return;
             }
 
-            await SaveScreenShot();
+            await SaveScreenShot(saveFolder);
 
             // Find specified account button
             location = await _vmService.GetLocationByTextAsync(_config["Transaction:AccountName"]);
@@ -393,7 +394,7 @@ public class ClientApp : IHostedService
                 return;
             }
 
-            await SaveScreenShot();
+            await SaveScreenShot(saveFolder);
 
             // Find continue button
             location = await _vmService.GetLocationByTextAsync("continue");
@@ -427,7 +428,7 @@ public class ClientApp : IHostedService
                 return;
             }
 
-            await SaveScreenShot();
+            await SaveScreenShot(saveFolder);
 
             // Find no button
             location = await _vmService.GetLocationByTextAsync("no");
@@ -524,7 +525,7 @@ public class ClientApp : IHostedService
         }
     }
 
-    public async Task<bool> SaveScreenShot()
+    public async Task<bool> SaveScreenShot(string folder)
     {
         try
         {
