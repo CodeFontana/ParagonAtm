@@ -12,7 +12,6 @@ public class AutomationService
     private readonly char[] _splitChars;
 
     public AutomationService(ILogger<AgentService> logger,
-                             AtmService atmService,
                              VirtualMachineService vmService)
     {
         _logger = logger;
