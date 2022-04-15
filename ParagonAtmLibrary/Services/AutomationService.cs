@@ -43,7 +43,7 @@ public class AutomationService
 
             if (matches.Count() > 0)
             {
-                _logger.LogTrace($"Found Match -- {JsonSerializer.Serialize(matches)}");
+                _logger.LogTrace($"Mathcing words -- {JsonSerializer.Serialize(matches)}");
                 matchCount += matches.Count();
                 decimal confidence = matchCount / (decimal)phrase.Split(_splitChars).Length;
 
