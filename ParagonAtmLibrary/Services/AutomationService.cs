@@ -50,12 +50,12 @@ public class AutomationService
 
                 if (confidence >= matchConfidence)
                 {
-                    _logger.LogTrace($"Matched -- {JsonSerializer.Serialize(phrase)} -- Confidence {confidence:#.##}");
+                    _logger.LogTrace($"Matched -- {JsonSerializer.Serialize(phrase)} [Confidence {confidence:0.00}]");
                     return true;
                 }
             }
 
-            _logger.LogTrace($"NotMatched -- {JsonSerializer.Serialize(phrase)} -- Confidence {confidence:#.##}");
+            _logger.LogTrace($"NotMatched -- {JsonSerializer.Serialize(phrase)} [Confidence {confidence:0.00}]");
         }
 
         return false;
