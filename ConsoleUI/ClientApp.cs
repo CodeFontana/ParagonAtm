@@ -501,7 +501,6 @@ public class ClientApp : IHostedService
         {
             _logger.LogInformation("Dispatch - Take card");
             await _atmService.TakeCardAsync();
-            await Task.Delay(10000);
             await DispatchToIdle();
             return;
         }
