@@ -24,7 +24,7 @@ public class AutomationService
         _atmService = atmService;
         _vmService = vmService;
         _jsonOptions = new JsonSerializerOptions { WriteIndented = true };
-        _splitChars = new[] { ' ', ',', '.', '?', ';', '\'', '\"', '(', ')', '[', ']', '\\', '/' };
+        _splitChars = new[] { ' ', ',', '.', '?', ';', ':' };
     }
 
     public async Task<bool> CompareText(List<string> comparePhrases, decimal matchConfidence)
