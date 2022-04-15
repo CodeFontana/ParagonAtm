@@ -7,23 +7,16 @@ namespace ParagonAtmLibrary.Services;
 
 public class AutomationService
 {
-    private readonly IConfiguration _config;
     private readonly ILogger<AgentService> _logger;
-    private readonly AtmService _atmService;
     private readonly VirtualMachineService _vmService;
-    private readonly JsonSerializerOptions _jsonOptions;
     private readonly char[] _splitChars;
 
-    public AutomationService(IConfiguration config,
-                             ILogger<AgentService> logger,
+    public AutomationService(ILogger<AgentService> logger,
                              AtmService atmService,
                              VirtualMachineService vmService)
     {
-        _config = config;
         _logger = logger;
-        _atmService = atmService;
         _vmService = vmService;
-        _jsonOptions = new JsonSerializerOptions { WriteIndented = true };
         _splitChars = new[] { ' ', ',', '.', '?', ';', ':' };
     }
 
