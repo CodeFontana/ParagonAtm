@@ -115,29 +115,6 @@ public class AutomationService
         return false;
     }
 
-    public async Task<bool> SaveScreenShot()
-    {
-        try
-        {
-            string jpeg = await _vmService.GetScreenJpegAsync();
-
-            if (string.IsNullOrWhiteSpace(jpeg) == false)
-            {
-                Directory.CreateDirectory(_config["Preferences:DownloadPath"]);
-                File.WriteAllBytes(
-                    $@"{_config["Preferences:DownloadPath"]}\Screenshot-{DateTime.Now.ToString("yyyy-MM-dd--HH.mm.ss")}.jpg",
-                    Convert.FromBase64String(jpeg));
-            }
-
-            return true;
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, ex.Message);
-            return false;
-        }
-    }
-
     public async Task<bool> WaitForScreen(AtmScreenModel screen, TimeSpan timeout, TimeSpan refreshInterval)
     {
         _logger.LogTrace($"Wait for screen -- {screen.Name}");

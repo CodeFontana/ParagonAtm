@@ -124,7 +124,7 @@ public class ClientApp : IHostedService
                 return;
             }
 
-            await _autoService.SaveScreenShot();
+            await SaveScreenShot();
 
             // Get ATM services
             List<AtmServiceModel> services = await _atmService.GetServicesAsync();
@@ -173,7 +173,7 @@ public class ClientApp : IHostedService
                 return;
             }
 
-            await _autoService.SaveScreenShot();
+            await SaveScreenShot();
 
             // Get location of transaction language
             LocationModel location = await _vmService.GetLocationByTextAsync(_config["Transaction:Language"]);
@@ -207,7 +207,7 @@ public class ClientApp : IHostedService
                 return;
             }
 
-            await _autoService.SaveScreenShot();
+            await SaveScreenShot();
 
             // Isolate pinpad service
             AtmServiceModel pinpad = services?.FirstOrDefault(x => x.DeviceType.ToLower() == "pin");
@@ -232,7 +232,7 @@ public class ClientApp : IHostedService
                 await Task.Delay(1000);
             }
 
-            await _autoService.SaveScreenShot();
+            await SaveScreenShot();
 
             // Press ENTER
             success = await _atmService.PressKeyAsync(new PressKeyModel(pinpad.Name, "Enter"));
@@ -257,7 +257,7 @@ public class ClientApp : IHostedService
                 return;
             }
 
-            await _autoService.SaveScreenShot();
+            await SaveScreenShot();
 
             // Find account balance button
             location = await _vmService.GetLocationByTextAsync("balance");
@@ -291,7 +291,7 @@ public class ClientApp : IHostedService
                 return;
             }
 
-            await _autoService.SaveScreenShot();
+            await SaveScreenShot();
 
             // Find transaction account type
             location = await _vmService.GetLocationByTextAsync(_config["Transaction:AccountType"]);
@@ -325,7 +325,7 @@ public class ClientApp : IHostedService
                 return;
             }
 
-            await _autoService.SaveScreenShot();
+            await SaveScreenShot();
 
             // Find display balance button
             location = await _vmService.GetLocationByTextAsync("display balance");
@@ -359,7 +359,7 @@ public class ClientApp : IHostedService
                 return;
             }
 
-            await _autoService.SaveScreenShot();
+            await SaveScreenShot();
 
             // Find specified account button
             location = await _vmService.GetLocationByTextAsync(_config["Transaction:AccountName"]);
@@ -393,7 +393,7 @@ public class ClientApp : IHostedService
                 return;
             }
 
-            await _autoService.SaveScreenShot();
+            await SaveScreenShot();
 
             // Find continue button
             location = await _vmService.GetLocationByTextAsync("continue");
@@ -427,7 +427,7 @@ public class ClientApp : IHostedService
                 return;
             }
 
-            await _autoService.SaveScreenShot();
+            await SaveScreenShot();
 
             // Find no button
             location = await _vmService.GetLocationByTextAsync("no");
@@ -452,7 +452,7 @@ public class ClientApp : IHostedService
                 return;
             }
 
-            await _autoService.SaveScreenShot();
+            await SaveScreenShot();
             await _atmService.TakeCardAsync();
         }
         catch (Exception ex)
@@ -521,6 +521,29 @@ public class ClientApp : IHostedService
             await Task.Delay(10000);
             await DispatchToIdle();
             return;
+        }
+    }
+
+    public async Task<bool> SaveScreenShot()
+    {
+        try
+        {
+            string jpeg = await _vmService.GetScreenJpegAsync();
+
+            if (string.IsNullOrWhiteSpace(jpeg) == false)
+            {
+                Directory.CreateDirectory(_config["Preferences:DownloadPath"]);
+                File.WriteAllBytes(
+                    $@"{_config["Preferences:DownloadPath"]}\Screenshot-{DateTime.Now.ToString("yyyy-MM-dd--HH.mm.ss")}.jpg",
+                    Convert.FromBase64String(jpeg));
+            }
+
+            return true;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, ex.Message);
+            return false;
         }
     }
 
