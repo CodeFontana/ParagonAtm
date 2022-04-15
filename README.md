@@ -9,16 +9,16 @@ Add latest **CodeFoxtrot.ParagonAtmLibrary** to your project via 'Manage Nuget P
 or via command line...
 
 ```
-dotnet add package CodeFoxtrot.ParagonAtmLibrary --version 1.1.2
+dotnet add package CodeFoxtrot.ParagonAtmLibrary --version 1.3.2
 ```
 
 or via your .csproj file...
 
 ```
-<PackageReference Include="CodeFoxtrot.ParagonAtmLibrary" Version="1.1.2" />
+<PackageReference Include="CodeFoxtrot.ParagonAtmLibrary" Version="1.3.2" />
 ```
 
-Add this to your ConfigureServices method:
+Add this to your ConfigureServices() method:
 
 ```
 services.AddParagonAtmLibrary();
