@@ -93,16 +93,14 @@ public class AutomationService
         }
     }
 
-    public async Task<bool> IsAtScreen(AtmScreenModel screen)
-    {
-        List<string> screenText = await GetScreenWords();
-        return CompareText(screenText, screen.Text, screen.MatchConfidence);
-    }
-
     public async Task<bool> IsAtScreen(List<AtmScreenModel> screens)
     {
         List<string> screenText = await GetScreenWords();
+        return IsAtScreen(screens, screenText);
+    }
 
+    public bool IsAtScreen(List<AtmScreenModel> screens, List<string> screenText)
+    {
         foreach (AtmScreenModel s in screens)
         {
             if (CompareText(screenText, s.Text, s.MatchConfidence))
@@ -113,6 +111,17 @@ public class AutomationService
         }
 
         return false;
+    }
+
+    public bool IsAtScreen(AtmScreenModel screen, List<string> screenText)
+    {
+        return CompareText(screenText, screen.Text, screen.MatchConfidence);
+    }
+
+    public async Task<bool> IsAtScreen(AtmScreenModel screen)
+    {
+        List<string> screenText = await GetScreenWords();
+        return CompareText(screenText, screen.Text, screen.MatchConfidence);
     }
 
     public async Task<bool> WaitForScreen(AtmScreenModel screen, TimeSpan timeout, TimeSpan refreshInterval)
