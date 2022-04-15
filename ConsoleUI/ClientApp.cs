@@ -605,9 +605,6 @@ public class ClientApp : IHostedService
                 return true;
             }
 
-            // Ensure ATM is idle
-            await DispatchToIdle();
-
             return true;
         }
         catch (Exception ex)
