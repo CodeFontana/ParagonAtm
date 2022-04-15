@@ -34,6 +34,7 @@ public class AutomationService
         foreach (string phrase in comparePhrases)
         {
             int matchCount = 0;
+            decimal confidence = 0;
 
             IEnumerable<string> matches = screenText
                 .Select(s => s.ToLower())
@@ -45,16 +46,16 @@ public class AutomationService
             {
                 _logger.LogTrace($"Mathcing words -- {JsonSerializer.Serialize(matches)}");
                 matchCount += matches.Count();
-                decimal confidence = matchCount / (decimal)phrase.Split(_splitChars).Length;
+                confidence = matchCount / (decimal)phrase.Split(_splitChars).Length;
 
                 if (confidence >= matchConfidence)
                 {
-                    _logger.LogTrace($"Matched -- {JsonSerializer.Serialize(phrase)} -- Confidence {confidence}");
+                    _logger.LogTrace($"Matched -- {JsonSerializer.Serialize(phrase)} -- Confidence {confidence:#.##}");
                     return true;
                 }
-
-                _logger.LogTrace($"NotMatched -- {JsonSerializer.Serialize(phrase)} -- Confidence {confidence}");
             }
+
+            _logger.LogTrace($"NotMatched -- {JsonSerializer.Serialize(phrase)} -- Confidence {confidence:#.##}");
         }
 
         return false;
