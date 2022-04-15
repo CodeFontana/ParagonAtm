@@ -452,25 +452,25 @@ public class ClientApp : IHostedService
             _logger.LogError("Dispatch - Failed to read screen");
             return;
         }
-        if (_autoService.MatchScreen(curScreen, new List<string> { "recycle bin" }, 0.50M))
+        if (await _autoService.IsAtScreen(_atmScreens.First(s => s.Name.ToLower() == "desktop")))
         {
             _logger.LogInformation("Dispatch - ATM is at desktop");
             return;
         }
-        else if (_autoService.MatchScreen(curScreen, _atmScreens.First(s => s.Name.ToLower() == "inservice").Text, 0.50M)
-            || _autoService.MatchScreen(curScreen, _atmScreens.First(s => s.Name.ToLower() == "outservice").Text, 0.50M))
+        else if (await _autoService.IsAtScreen(_atmScreens.First(s => s.Name.ToLower() == "inservice"))
+            || await _autoService.IsAtScreen(_atmScreens.First(s => s.Name.ToLower() == "outservice")))
         {
             _logger.LogInformation("Dispatch - ATM is idle");
             return;
         }
-        else if (_autoService.MatchScreen(curScreen, _atmScreens.First(s => s.Name.ToLower() == "pleasewait").Text, 0.50M))
+        else if (await _autoService.IsAtScreen(_atmScreens.First(s => s.Name.ToLower() == "pleasewait")))
         {
             _logger.LogInformation("Dispatch - Please wait");
             await Task.Delay(5000);
             await DispatchToIdle();
             return;
         }
-        else if (_autoService.MatchScreen(curScreen, _atmScreens.First(s => s.Name.ToLower() == "moretime").Text, 0.50M))
+        else if (await _autoService.IsAtScreen(_atmScreens.First(s => s.Name.ToLower() == "moretime")))
         {
             _logger.LogInformation("Dispatch - More time");
 
@@ -485,7 +485,7 @@ public class ClientApp : IHostedService
             await DispatchToIdle();
             return;
         }
-        else if (_autoService.MatchScreen(curScreen, _atmScreens.First(s => s.Name.ToLower() == "anothertransaction").Text, 0.50M))
+        else if (await _autoService.IsAtScreen(_atmScreens.First(s => s.Name.ToLower() == "anothertransaction")))
         {
             _logger.LogInformation("Dispatch - Another transaction");
 
@@ -500,7 +500,7 @@ public class ClientApp : IHostedService
             await DispatchToIdle();
             return;
         }
-        else if (_autoService.MatchScreen(curScreen, _atmScreens.First(s => s.Name.ToLower() == "takecard").Text, 0.50M))
+        else if (await _autoService.IsAtScreen(_atmScreens.First(s => s.Name.ToLower() == "takecard")))
         {
             _logger.LogInformation("Dispatch - Take card");
             await _atmService.TakeCardAsync();
