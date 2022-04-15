@@ -158,6 +158,8 @@ public class ClientApp : IHostedService
                 _logger.LogError("Failed to insert card for transaction");
                 return;
             }
+
+            await Task.Delay(_config.GetValue<int>("Terminal:StandardDelay"));
             
             // Validate -- Language selection screen
             atScreen = await _autoService.WaitForScreen(
@@ -190,6 +192,8 @@ public class ClientApp : IHostedService
                 _logger.LogError("Failed to click english");
                 return;
             }
+
+            await Task.Delay(_config.GetValue<int>("Terminal:StandardDelay"));
 
             // Validate -- PIN screen
             atScreen = await _autoService.WaitForScreen(
@@ -239,6 +243,8 @@ public class ClientApp : IHostedService
                 return;
             }
 
+            await Task.Delay(_config.GetValue<int>("Terminal:StandardDelay"));
+
             // Validate -- Transaction type screen
             atScreen = await _autoService.WaitForScreen(
                 _atmScreens.First(s => s.Name.ToLower() == "transactiontype"),
@@ -270,6 +276,8 @@ public class ClientApp : IHostedService
                 _logger.LogError("Failed to click balance inquiry");
                 return;
             }
+
+            await Task.Delay(_config.GetValue<int>("Terminal:StandardDelay"));
 
             // Validate -- Account type screen
             atScreen = await _autoService.WaitForScreen(
@@ -303,6 +311,8 @@ public class ClientApp : IHostedService
                 return;
             }
 
+            await Task.Delay(_config.GetValue<int>("Terminal:StandardDelay"));
+
             // Validate -- Balance destination screen
             atScreen = await _autoService.WaitForScreen(
                 _atmScreens.First(s => s.Name.ToLower() == "balancedestination"),
@@ -334,6 +344,8 @@ public class ClientApp : IHostedService
                 _logger.LogError("Failed to click display balance");
                 return;
             }
+
+            await Task.Delay(_config.GetValue<int>("Terminal:StandardDelay"));
 
             // Validate -- Account name screen
             atScreen = await _autoService.WaitForScreen(
@@ -367,6 +379,8 @@ public class ClientApp : IHostedService
                 return;
             }
 
+            await Task.Delay(_config.GetValue<int>("Terminal:StandardDelay"));
+
             // Validate -- balance inquiry screen
             atScreen = await _autoService.WaitForScreen(
                 _atmScreens.First(s => s.Name.ToLower() == "balanceinquiry"),
@@ -399,6 +413,8 @@ public class ClientApp : IHostedService
                 return;
             }
 
+            await Task.Delay(_config.GetValue<int>("Terminal:StandardDelay"));
+
             // Validate -- Another transaction screen
             atScreen = await _autoService.WaitForScreen(
                 _atmScreens.First(s => s.Name.ToLower() == "anothertransaction"),
@@ -421,6 +437,8 @@ public class ClientApp : IHostedService
                 // Click no button
                 await _vmService.ClickScreenAsync(new ClickScreenModel(location));
             }
+
+            await Task.Delay(_config.GetValue<int>("Terminal:StandardDelay"));
 
             // Validate -- Take card screen
             atScreen = await _autoService.WaitForScreen(
@@ -445,6 +463,7 @@ public class ClientApp : IHostedService
 
     public async Task DispatchToIdle()
     {
+        _logger.LogInformation("Dispatch to idle...");
         List<string> curScreen = await _autoService.GetScreenWords();
 
         if (curScreen is null)
@@ -554,6 +573,7 @@ public class ClientApp : IHostedService
             await _connectionService.OpenAsync();
 
             // Use OCR to figure out if ATM app is already running
+            _logger.LogInformation("Check if ATM app is running...");
             bool appRunning = await _autoService.IsAtScreen(_atmScreens);
 
             if (appRunning == false)
@@ -564,6 +584,7 @@ public class ClientApp : IHostedService
                 await Task.Delay(TimeSpan.FromMinutes(7));
 
                 // Validate -- Welcome screen
+                _logger.LogInformation("Validate welcome screen...");
                 bool success = await _autoService.WaitForScreen(
                     _atmScreens.First(s => s.Name.ToLower() == "inservice"),
                     TimeSpan.FromMinutes(5),
