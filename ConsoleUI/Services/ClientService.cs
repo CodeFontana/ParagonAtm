@@ -151,20 +151,17 @@ public class ClientService : IClientService
         if (curScreen is null)
         {
             _logger.LogError("Dispatch - Failed to read screen");
-            return;
         }
         else if (_autoService.MatchScreen(_atmScreens.First(s => s.Name.ToLower() == "welcome"), curScreen)
-            || _autoService.MatchScreen(_atmScreens.First(s => s.Name.ToLower() == "OutOfService"), curScreen))
+            || _autoService.MatchScreen(_atmScreens.First(s => s.Name.ToLower() == "outofservice"), curScreen))
         {
             _logger.LogInformation("Dispatch - ATM is idle");
-            return;
         }
         else if (_autoService.MatchScreen(_atmScreens.First(s => s.Name.ToLower() == "pleasewait"), curScreen))
         {
             _logger.LogInformation("Dispatch - Please wait");
             await Task.Delay(standardDelay);
             await DispatchToIdle();
-            return;
         }
         else if (_autoService.MatchScreen(_atmScreens.First(s => s.Name.ToLower() == "moretime"), curScreen))
         {
@@ -179,7 +176,6 @@ public class ClientService : IClientService
             }
 
             await DispatchToIdle();
-            return;
         }
         else if (_autoService.MatchScreen(_atmScreens.First(s => s.Name.ToLower() == "anothertransaction"), curScreen))
         {
@@ -194,7 +190,6 @@ public class ClientService : IClientService
             }
 
             await DispatchToIdle();
-            return;
         }
         else if (_autoService.MatchScreen(_atmScreens.First(s => s.Name.ToLower() == "takecard"), curScreen))
         {
@@ -202,7 +197,12 @@ public class ClientService : IClientService
             await _atmService.TakeCardAsync();
             await Task.Delay(standardDelay);
             await DispatchToIdle();
-            return;
+        }
+        else
+        {
+            _logger.LogInformation("Dispatch - Unrecognized screen");
+            await Task.Delay(standardDelay);
+            await DispatchToIdle();
         }
     }
 
