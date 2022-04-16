@@ -115,8 +115,8 @@ public class ClientApp : IHostedService
         try
         {
             // Starting point -- InService/Welcome screen
-            AtmScreenModel welcome = _atmScreens.First(s => s.Name.ToLower() == "inservice");
-            bool atScreen = await _autoService.MatchScreen(welcome);
+            AtmScreenModel welcome = _atmScreens.First(s => s.Name.ToLower() == "welcome");
+            bool atScreen = await _autoService.MatchScreenAsync(welcome);
 
             if (atScreen == false)
             {
@@ -163,7 +163,7 @@ public class ClientApp : IHostedService
             await Task.Delay(_config.GetValue<int>("Transaction:StandardDelay"));
 
             // Validate -- Language selection screen
-            atScreen = await _autoService.WaitForScreen(
+            atScreen = await _autoService.WaitForScreenAsync(
                 _atmScreens.First(s => s.Name.ToLower() == "languageselection"), 
                 TimeSpan.FromSeconds(30), 
                 TimeSpan.FromSeconds(5));
@@ -197,7 +197,7 @@ public class ClientApp : IHostedService
             await Task.Delay(_config.GetValue<int>("Transaction:StandardDelay"));
 
             // Validate -- PIN screen
-            atScreen = await _autoService.WaitForScreen(
+            atScreen = await _autoService.WaitForScreenAsync(
                 _atmScreens.First(s => s.Name.ToLower() == "pin"),
                 TimeSpan.FromSeconds(30),
                 TimeSpan.FromSeconds(5));
@@ -247,7 +247,7 @@ public class ClientApp : IHostedService
             await Task.Delay(_config.GetValue<int>("Transaction:StandardDelay"));
 
             // Validate -- Transaction type screen
-            atScreen = await _autoService.WaitForScreen(
+            atScreen = await _autoService.WaitForScreenAsync(
                 _atmScreens.First(s => s.Name.ToLower() == "transactiontype"),
                 TimeSpan.FromSeconds(30),
                 TimeSpan.FromSeconds(5));
@@ -281,7 +281,7 @@ public class ClientApp : IHostedService
             await Task.Delay(_config.GetValue<int>("Transaction:StandardDelay"));
 
             // Validate -- Account type screen
-            atScreen = await _autoService.WaitForScreen(
+            atScreen = await _autoService.WaitForScreenAsync(
                 _atmScreens.First(s => s.Name.ToLower() == "accounttype"),
                 TimeSpan.FromSeconds(30),
                 TimeSpan.FromSeconds(5));
@@ -315,7 +315,7 @@ public class ClientApp : IHostedService
             await Task.Delay(_config.GetValue<int>("Transaction:StandardDelay"));
 
             // Validate -- Balance destination screen
-            atScreen = await _autoService.WaitForScreen(
+            atScreen = await _autoService.WaitForScreenAsync(
                 _atmScreens.First(s => s.Name.ToLower() == "balancedestination"),
                 TimeSpan.FromSeconds(30),
                 TimeSpan.FromSeconds(5));
@@ -349,7 +349,7 @@ public class ClientApp : IHostedService
             await Task.Delay(_config.GetValue<int>("Transaction:StandardDelay"));
 
             // Validate -- Account name screen
-            atScreen = await _autoService.WaitForScreen(
+            atScreen = await _autoService.WaitForScreenAsync(
                 _atmScreens.First(s => s.Name.ToLower() == "accountname"),
                 TimeSpan.FromSeconds(30),
                 TimeSpan.FromSeconds(5));
@@ -383,7 +383,7 @@ public class ClientApp : IHostedService
             await Task.Delay(_config.GetValue<int>("Transaction:StandardDelay"));
 
             // Validate -- balance inquiry screen
-            atScreen = await _autoService.WaitForScreen(
+            atScreen = await _autoService.WaitForScreenAsync(
                 _atmScreens.First(s => s.Name.ToLower() == "balanceinquiry"),
                 TimeSpan.FromSeconds(30),
                 TimeSpan.FromSeconds(5));
@@ -417,7 +417,7 @@ public class ClientApp : IHostedService
             await Task.Delay(_config.GetValue<int>("Transaction:StandardDelay"));
 
             // Validate -- Another transaction screen
-            atScreen = await _autoService.WaitForScreen(
+            atScreen = await _autoService.WaitForScreenAsync(
                 _atmScreens.First(s => s.Name.ToLower() == "anothertransaction"),
                 TimeSpan.FromSeconds(30),
                 TimeSpan.FromSeconds(5));
@@ -442,7 +442,7 @@ public class ClientApp : IHostedService
             await Task.Delay(_config.GetValue<int>("Transaction:StandardDelay"));
 
             // Validate -- Take card screen
-            atScreen = await _autoService.WaitForScreen(
+            atScreen = await _autoService.WaitForScreenAsync(
                 _atmScreens.First(s => s.Name.ToLower() == "takecard"),
                 TimeSpan.FromSeconds(30),
                 TimeSpan.FromSeconds(5));
@@ -467,15 +467,15 @@ public class ClientApp : IHostedService
     public async Task DispatchToIdle()
     {
         _logger.LogInformation("Dispatch to idle...");
-        List<string> curScreen = await _autoService.GetScreenWords();
+        List<string> curScreen = await _autoService.GetScreenWordsAsync();
 
         if (curScreen is null)
         {
             _logger.LogError("Dispatch - Failed to read screen");
             return;
         }
-        else if (_autoService.MatchScreen(_atmScreens.First(s => s.Name.ToLower() == "inservice"), curScreen)
-            || _autoService.MatchScreen(_atmScreens.First(s => s.Name.ToLower() == "outservice"), curScreen))
+        else if (_autoService.MatchScreen(_atmScreens.First(s => s.Name.ToLower() == "welcome"), curScreen)
+            || _autoService.MatchScreen(_atmScreens.First(s => s.Name.ToLower() == "OutOfService"), curScreen))
         {
             _logger.LogInformation("Dispatch - ATM is idle");
             return;
@@ -601,7 +601,7 @@ public class ClientApp : IHostedService
 
             // Use OCR to figure out if ATM app is already running
             _logger.LogInformation("Check if ATM app is running...");
-            List<string> screenWords = await _autoService.GetScreenWords();
+            List<string> screenWords = await _autoService.GetScreenWordsAsync();
 
             if (screenWords == null)
             {
@@ -621,8 +621,8 @@ public class ClientApp : IHostedService
 
                 // Validate -- Welcome screen
                 _logger.LogInformation("Validate welcome screen...");
-                bool success = await _autoService.WaitForScreen(
-                    _atmScreens.First(s => s.Name.ToLower() == "inservice"),
+                bool success = await _autoService.WaitForScreenAsync(
+                    _atmScreens.First(s => s.Name.ToLower() == "welcome"),
                     TimeSpan.FromMinutes(5),
                     TimeSpan.FromSeconds(15));
 
@@ -636,7 +636,7 @@ public class ClientApp : IHostedService
             }
 
             // Is ATM at idle?
-            if (curScreen.Name.ToLower() != "inservice" && curScreen.Name.ToLower() != "outservice")
+            if (curScreen.Name.ToLower() != "welcome" && curScreen.Name.ToLower() != "OutOfService")
             {
                 await DispatchToIdle();
             }
