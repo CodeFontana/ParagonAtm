@@ -24,12 +24,50 @@ Add this to your ConfigureServices() method:
 services.AddParagonAtmLibrary();
 ```
 
-Inject any of the following services...
-* AgentService
-* ConnectionService
-* AtmService
-* VirtualMachineService
-* AutomationService
+Inject any of the following services to consume their methods...
+* **AgentService**
+  + GetAgentStatusAsync()
+  + GetUserGroupsAsync()
+  + OpenHwProfileAsync()
+  + StartAtmAppAsync()
+  + OpenSesisonAsync()
+  + CloseSesisonAsync()
+* **ConnectionService**
+  + OpenAsync()
+  + CloseAsync()
+  + SaveCloseAsync()
+  + SaveCloseRebootAsync()
+  + CloseRebootAsync()
+* **AtmService**
+  + GetServicesAsync()
+  + GetDeviceStateAsync()
+  + InsertCardAsync()
+  + TakeCardAsync()
+  + PressKeyAsync()
+  + PressTtuKeyAsync()
+  + GetPinpadKeysAsync()
+  + ChangeOperatorSwitchAsync()
+  + PushOperatorSwitchAsync()
+  + EnterDieboldSupervisorModeAsync()
+  + ExitDieboldSupervisorModeAsync()
+  + OperatorSwitchStatusAsync()
+  + InsertMediaAsync()
+  + TakeMediaAsync()
+  + TakeReceiptAsync()
+  + RecoverAsync()
+* **VirtualMachineService**
+  + GetScreenJpegAsync()
+  + GetScreenTextAsync()
+  + ClickScreenAsync()
+  + GetLocationByTextAsync()
+* **AutomationService**
+  + CompareText()
+  + CompareTextAsync()
+  + GetScreenWordsAsync()
+  + MatchScreen()
+  + MatchScreenAsync()
+  + WaitForScreenAsync()
+  + WaitForTextAsync()
 
 ## More Information about Paragon Virtual ATM
 https://www.paragonedge.com/products/virtualatm
