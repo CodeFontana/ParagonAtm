@@ -1,4 +1,5 @@
-﻿using FileLoggerLibrary;
+﻿using ConsoleUI.Services;
+using FileLoggerLibrary;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -36,6 +37,8 @@ class Program
                 .ConfigureServices((hostContext, services) =>
                 {
                     services.AddScoped(sp => new HttpClient(new RequestHandler(new HttpClientHandler(), sp.GetRequiredService<ILogger<RequestHandler>>())));
+                    services.AddScoped<IClientService, ClientService>();
+                    services.AddScoped<IConsumerTransactionService, ConsumerTransactionService>();
                     services.AddParagonAtmLibrary();
                     services.AddHostedService<ClientApp>();
                 })
