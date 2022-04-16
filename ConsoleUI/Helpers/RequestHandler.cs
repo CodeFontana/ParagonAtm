@@ -22,16 +22,16 @@ public class RequestHandler : DelegatingHandler
             if (request.Content.Headers?.ContentType?.MediaType == "application/json")
             {
                 JsonElement json = JsonSerializer.Deserialize<JsonElement>(await request.Content.ReadAsStringAsync());
-                _logger.LogDebug($"{request}\n{JsonSerializer.Serialize(json, _jsonOptions)}");
+                _logger.LogTrace($"{request}\n{JsonSerializer.Serialize(json, _jsonOptions)}");
             }
             else
             {
-                _logger.LogDebug(await request.Content.ReadAsStringAsync());
+                _logger.LogTrace(await request.Content.ReadAsStringAsync());
             }
         }
         else
         {
-            _logger.LogDebug($"Request: {request}");
+            _logger.LogTrace($"Request: {request}");
         }
 
         HttpResponseMessage response = await base.SendAsync(request, cancellationToken);
@@ -41,16 +41,16 @@ public class RequestHandler : DelegatingHandler
             if (response.Content.Headers?.ContentType?.MediaType == "application/json")
             {
                 JsonElement json = JsonSerializer.Deserialize<JsonElement>(await response.Content.ReadAsStringAsync());
-                _logger.LogDebug($"{response}\n{JsonSerializer.Serialize(json, _jsonOptions)}");
+                _logger.LogTrace($"{response}\n{JsonSerializer.Serialize(json, _jsonOptions)}");
             }
             else
             {
-                _logger.LogDebug(await response.Content.ReadAsStringAsync());
+                _logger.LogTrace(await response.Content.ReadAsStringAsync());
             }
         }
         else
         {
-            _logger.LogDebug($"Response: {response}");
+            _logger.LogTrace($"Response: {response}");
         }
 
         return response;
