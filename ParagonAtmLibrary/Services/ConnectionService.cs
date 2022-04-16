@@ -4,7 +4,7 @@ using System.Net.Http.Json;
 
 namespace ParagonAtmLibrary.Services;
 
-public class ConnectionService
+public class ConnectionService : IConnectionService
 {
     private readonly IConfiguration _config;
     private readonly ILogger<ConnectionService> _logger;

@@ -4,14 +4,14 @@ using System.Text.Json;
 
 namespace ParagonAtmLibrary.Services;
 
-public class AutomationService
+public class AutomationService : IAutomationService
 {
     private readonly ILogger<AgentService> _logger;
-    private readonly VirtualMachineService _vmService;
+    private readonly IVirtualMachineService _vmService;
     private readonly char[] _splitChars;
 
     public AutomationService(ILogger<AgentService> logger,
-                             VirtualMachineService vmService)
+                             IVirtualMachineService vmService)
     {
         _logger = logger;
         _vmService = vmService;
@@ -46,18 +46,18 @@ public class AutomationService
 
             if (matches.Count() > 0)
             {
-                _logger.LogTrace($"Mathcing words -- {JsonSerializer.Serialize(matches)}");
+                _logger.LogDebug($"Mathcing words -- {JsonSerializer.Serialize(matches)}");
                 matchCount += matches.Count();
                 confidence = matchCount / (decimal)phrase.Split(_splitChars).Length;
 
                 if (confidence >= matchConfidence)
                 {
-                    _logger.LogTrace($"Phrase Matched -- {JsonSerializer.Serialize(phrase)} [Confidence {confidence:0.00}]");
+                    _logger.LogDebug($"Phrase Matched -- {JsonSerializer.Serialize(phrase)} [Confidence {confidence:0.00}]");
                     return true;
                 }
             }
 
-            _logger.LogTrace($"Phrase NotMatched -- {JsonSerializer.Serialize(phrase)} [Confidence {confidence:0.00}]");
+            _logger.LogDebug($"Phrase NotMatched -- {JsonSerializer.Serialize(phrase)} [Confidence {confidence:0.00}]");
         }
 
         return false;
@@ -101,7 +101,7 @@ public class AutomationService
                         .Select(s => s.Trim().ToLower())
                         .Where(s => string.IsNullOrWhiteSpace(s) == false)));
 
-            _logger.LogTrace($"Screen words -- {JsonSerializer.Serialize(result)}");
+            _logger.LogDebug($"Screen words -- {JsonSerializer.Serialize(result)}");
 
             return result;
         }
@@ -136,7 +136,7 @@ public class AutomationService
         {
             if (CompareText(screenWords, s.Text, s.MatchConfidence))
             {
-                _logger.LogTrace($"Found match -- {s.Name}");
+                _logger.LogDebug($"Found match -- {s.Name}");
                 return s;
             }
         }
@@ -177,7 +177,7 @@ public class AutomationService
     /// <returns>Returns true, if the specified AtmScreenModel matches above it's required confidence level, and within the specified timeout, false otherwise.</returns>
     public async Task<bool> WaitForScreenAsync(AtmScreenModel screen, TimeSpan timeout, TimeSpan refreshInterval)
     {
-        _logger.LogTrace($"Wait for screen -- {screen.Name}");
+        _logger.LogDebug($"Wait for screen -- {screen.Name}");
         return await WaitForTextAsync(screen.Text, screen.MatchConfidence, timeout, refreshInterval);
     }
 

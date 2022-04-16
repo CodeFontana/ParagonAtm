@@ -1,26 +1,23 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System.Net.Http.Json;
-using System.Text.Json;
 using ParagonAtmLibrary.Models;
 
 namespace ParagonAtmLibrary.Services;
 
-public class AtmService
+public class AtmService : IAtmService
 {
     private readonly IConfiguration _config;
     private readonly ILogger<AgentService> _logger;
     private readonly HttpClient _httpClient;
-    private readonly JsonSerializerOptions _jsonOptions;
 
     public AtmService(IConfiguration configuration,
-                        ILogger<AgentService> logger,
-                        HttpClient httpClient)
+                      ILogger<AgentService> logger,
+                      HttpClient httpClient)
     {
         _config = configuration;
         _logger = logger;
         _httpClient = httpClient;
-        _jsonOptions = new JsonSerializerOptions { WriteIndented = true };
     }
 
     public record AtmServices(List<AtmServiceModel> services);

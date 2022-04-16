@@ -2,17 +2,15 @@
 using Microsoft.Extensions.Logging;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
-using System.Text.Json;
 using ParagonAtmLibrary.Models;
 
 namespace ParagonAtmLibrary.Services;
 
-public class AgentService
+public class AgentService : IAgentService
 {
     private readonly IConfiguration _config;
     private readonly ILogger<AgentService> _logger;
     private readonly HttpClient _httpClient;
-    private readonly JsonSerializerOptions _jsonOptions;
 
     public AgentService(IConfiguration configuration,
                         ILogger<AgentService> logger,
@@ -22,7 +20,6 @@ public class AgentService
         _logger = logger;
         _httpClient = httpClient;
         _httpClient.BaseAddress = new Uri(_config["Terminal:Host"]);
-        _jsonOptions = new JsonSerializerOptions { WriteIndented = true };
     }
 
     public record SessionToken(string sessionToken);

@@ -1,17 +1,15 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System.Net.Http.Json;
-using System.Text.Json;
 using ParagonAtmLibrary.Models;
 
 namespace ParagonAtmLibrary.Services;
 
-public class VirtualMachineService
+public class VirtualMachineService : IVirtualMachineService
 {
     private readonly IConfiguration _config;
     private readonly ILogger<VirtualMachineService> _logger;
     private readonly HttpClient _httpClient;
-    private readonly JsonSerializerOptions _jsonOptions;
 
     public VirtualMachineService(IConfiguration configuration,
                                  ILogger<VirtualMachineService> logger,
@@ -20,7 +18,6 @@ public class VirtualMachineService
         _config = configuration;
         _logger = logger;
         _httpClient = httpClient;
-        _jsonOptions = new JsonSerializerOptions { WriteIndented = true };
     }
 
     public record OcrData(OcrDataModel ocrData);
