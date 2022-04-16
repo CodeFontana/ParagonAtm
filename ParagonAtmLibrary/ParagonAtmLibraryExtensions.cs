@@ -7,11 +7,11 @@ public static class ParagonAtmLibraryExtensions
 {
     public static IServiceCollection AddParagonAtmLibrary(this IServiceCollection services)
     {
-        services.AddScoped<AgentService>();
-        services.AddScoped<ConnectionService>();
-        services.AddScoped<VirtualMachineService>();
-        services.AddScoped<AtmService>();
-        services.AddScoped<AutomationService>();
+        services.AddScoped<IAgentService, AgentService>();
+        services.AddScoped<IConnectionService, ConnectionService>();
+        services.AddScoped<IVirtualMachineService, VirtualMachineService>();
+        services.AddScoped<IAtmService, AtmService>();
+        services.AddScoped<IAutomationService, AutomationService>();
         return services;
     }
 }
