@@ -299,7 +299,7 @@ public class AtmService : IAtmService
             }
             else
             {
-                _logger.LogInformation($"Failed [{response.StatusCode}] -- /take-receipt");
+                _logger.LogError($"Failed [{response.StatusCode}] -- /take-receipt");
                 return null;
             }
         }

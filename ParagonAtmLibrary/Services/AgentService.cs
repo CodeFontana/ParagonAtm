@@ -42,7 +42,7 @@ public class AgentService : IAgentService
             }
             else
             {
-                _logger.LogInformation($"Failed [{response.StatusCode}] -- /get-agent-status");
+                _logger.LogError($"Failed [{response.StatusCode}] -- /get-agent-status");
                 return null;
             }
         }
@@ -71,7 +71,7 @@ public class AgentService : IAgentService
             }
             else
             {
-                _logger.LogInformation($"Failed [{response.StatusCode}] -- /get-user-groups");
+                _logger.LogError($"Failed [{response.StatusCode}] -- /get-user-groups");
                 return false;
             }
         }
