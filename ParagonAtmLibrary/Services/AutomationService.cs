@@ -19,19 +19,6 @@ public class AutomationService
     }
 
     /// <summary>
-    /// Compares a list of phrases against all words on the screen. This overload will query the screen of
-    /// the ATM to obtain the list of words.
-    /// </summary>
-    /// <param name="comparePhrases">List of phrases, each may contain one or more words for comparison.</param>
-    /// <param name="matchConfidence">Required confidence level for any single phrase to be considered a match.</param>
-    /// <returns>True, if any phrase matches above the specified confidence level, false otherwise.</returns>
-    public async Task<bool> CompareText(List<string> comparePhrases, decimal matchConfidence)
-    {
-        List<string> screenWords = await GetScreenWords();
-        return CompareText(screenWords, comparePhrases, matchConfidence);
-    }
-
-    /// <summary>
     /// Compares a list of phrases against all words on the screen. In this overload, it's up to the caller
     /// to provide the text of the screen. This can be useful if the caller is doing multiple comparisons, 
     /// but prefers to only grab the screen words only once.
@@ -65,15 +52,28 @@ public class AutomationService
 
                 if (confidence >= matchConfidence)
                 {
-                    _logger.LogTrace($"Matched -- {JsonSerializer.Serialize(phrase)} [Confidence {confidence:0.00}]");
+                    _logger.LogTrace($"Phrase Matched -- {JsonSerializer.Serialize(phrase)} [Confidence {confidence:0.00}]");
                     return true;
                 }
             }
 
-            _logger.LogTrace($"NotMatched -- {JsonSerializer.Serialize(phrase)} [Confidence {confidence:0.00}]");
+            _logger.LogTrace($"Phrase NotMatched -- {JsonSerializer.Serialize(phrase)} [Confidence {confidence:0.00}]");
         }
 
         return false;
+    }
+
+    /// <summary>
+    /// Compares a list of phrases against all words on the screen. This overload will query the screen of
+    /// the ATM to obtain the list of words.
+    /// </summary>
+    /// <param name="comparePhrases">List of phrases, each may contain one or more words for comparison.</param>
+    /// <param name="matchConfidence">Required confidence level for any single phrase to be considered a match.</param>
+    /// <returns>True, if any phrase matches above the specified confidence level, false otherwise.</returns>
+    public async Task<bool> CompareTextAsync(List<string> comparePhrases, decimal matchConfidence)
+    {
+        List<string> screenWords = await GetScreenWordsAsync();
+        return CompareText(screenWords, comparePhrases, matchConfidence);
     }
 
     /// <summary>
@@ -82,7 +82,7 @@ public class AutomationService
     /// parse elements, lines and word arrays.
     /// </summary>
     /// <returns>Returns a list of all the words on the ATM screen.</returns>
-    public async Task<List<string>> GetScreenWords()
+    public async Task<List<string>> GetScreenWordsAsync()
     {
         OcrDataModel screenText = await _vmService.GetScreenTextAsync();
 
@@ -108,15 +108,17 @@ public class AutomationService
     }
 
     /// <summary>
-    /// Checks if the ATM screen matches with any in the specified list. This overload 
-    /// will query the screen of the ATM to obtain the list of words.
+    /// Checks if the ATM screen matches the supplied AtmScreenModel. In this overload,
+    /// it's up to the caller to provide the text of the screen. This can be useful if
+    /// the caller is doing multiple comparisons, but prefers to only grab the screen
+    /// words only once.
     /// </summary>
-    /// <param name="screens">List of AtmScreenModels to check.</param>
-    /// <returns>If matched, returns the matching AtmScreenModel, null otherwise.</returns>
-    public async Task<AtmScreenModel> MatchScreen(List<AtmScreenModel> screens)
+    /// <param name="screen">AtmScreenModel to be checked.</param>
+    /// <param name="screenWords">List of words on the screen, which the caller can obtain using GetScreenWords().</param>
+    /// <returns>True, if the AtmScreenModel matches above its required confidence level, false otherwise.</returns>
+    public bool MatchScreen(AtmScreenModel screen, List<string> screenWords)
     {
-        List<string> screenWords = await GetScreenWords();
-        return MatchScreen(screens, screenWords);
+        return CompareText(screenWords, screen.Text, screen.MatchConfidence);
     }
 
     /// <summary>
@@ -143,29 +145,27 @@ public class AutomationService
     }
 
     /// <summary>
-    /// Checks if the ATM screen matches the supplied AtmScreenModel. In this overload,
-    /// it's up to the caller to provide the text of the screen. This can be useful if
-    /// the caller is doing multiple comparisons, but prefers to only grab the screen
-    /// words only once.
-    /// </summary>
-    /// <param name="screen">AtmScreenModel to be checked.</param>
-    /// <param name="screenWords">List of words on the screen, which the caller can obtain using GetScreenWords().</param>
-    /// <returns>True, if the AtmScreenModel matches above its required confidence level, false otherwise.</returns>
-    public bool MatchScreen(AtmScreenModel screen, List<string> screenWords)
-    {
-        return CompareText(screenWords, screen.Text, screen.MatchConfidence);
-    }
-
-    /// <summary>
     /// Checks if the ATM screen matches the supplied AtmScreenModel. This overload 
     /// will query the screen of the ATM to obtain the list of words.
     /// </summary>
     /// <param name="screen">AtmScreenModel to be checked.</param>
     /// <returns>True, if the AtmScreenModel matches above its required confidence level, false otherwise.</returns>
-    public async Task<bool> MatchScreen(AtmScreenModel screen)
+    public async Task<bool> MatchScreenAsync(AtmScreenModel screen)
     {
-        List<string> screenText = await GetScreenWords();
+        List<string> screenText = await GetScreenWordsAsync();
         return CompareText(screenText, screen.Text, screen.MatchConfidence);
+    }
+
+    /// <summary>
+    /// Checks if the ATM screen matches with any in the specified list. This overload 
+    /// will query the screen of the ATM to obtain the list of words.
+    /// </summary>
+    /// <param name="screens">List of AtmScreenModels to check.</param>
+    /// <returns>If matched, returns the matching AtmScreenModel, null otherwise.</returns>
+    public async Task<AtmScreenModel> MatchScreenAsync(List<AtmScreenModel> screens)
+    {
+        List<string> screenWords = await GetScreenWordsAsync();
+        return MatchScreen(screens, screenWords);
     }
 
     /// <summary>
@@ -175,24 +175,10 @@ public class AutomationService
     /// <param name="timeout">The overall timeout to wait for this screen match.</param>
     /// <param name="refreshInterval">How often to refresh the screen OCR data to check for a match.</param>
     /// <returns>Returns true, if the specified AtmScreenModel matches above it's required confidence level, and within the specified timeout, false otherwise.</returns>
-    public async Task<bool> WaitForScreen(AtmScreenModel screen, TimeSpan timeout, TimeSpan refreshInterval)
+    public async Task<bool> WaitForScreenAsync(AtmScreenModel screen, TimeSpan timeout, TimeSpan refreshInterval)
     {
         _logger.LogTrace($"Wait for screen -- {screen.Name}");
-        return await WaitForText(screen.Text, screen.MatchConfidence, timeout, refreshInterval);
-    }
-
-    /// <summary>
-    /// Waits for the specified text to be displayed on the ATM screen. This overload accepts
-    /// a string array for input.
-    /// </summary>
-    /// <param name="phrases">Array of phrases to wait for.</param>
-    /// <param name="matchConfidence">Required confidence level the words must match with the screen words.</param>
-    /// <param name="timeout">The overall timeout to wait for this screen match.</param>
-    /// <param name="refreshInterval">How often to refresh the screen OCR data to check for a match.</param>
-    /// <returns>Returns true, if the specified word array matches above the specified confidence level, and within the specified timeout, false otherwise.</returns>
-    public async Task<bool> WaitForText(string[] phrases, decimal matchConfidence, TimeSpan timeout, TimeSpan refreshInterval)
-    {
-        return await WaitForText(phrases.ToList(), matchConfidence, timeout, refreshInterval);
+        return await WaitForTextAsync(screen.Text, screen.MatchConfidence, timeout, refreshInterval);
     }
 
     /// <summary>
@@ -204,7 +190,7 @@ public class AutomationService
     /// <param name="timeout">The overall timeout to wait for this screen match.</param>
     /// <param name="refreshInterval">How often to refresh the screen OCR data to check for a match.</param>
     /// <returns>Returns true, if the specified word list matches above the specified confidence level, and within the specified timeout, false otherwise.</returns>
-    public async Task<bool> WaitForText(List<string> phrases, decimal matchConfidence, TimeSpan timeout, TimeSpan refreshInterval)
+    public async Task<bool> WaitForTextAsync(List<string> phrases, decimal matchConfidence, TimeSpan timeout, TimeSpan refreshInterval)
     {
         ArgumentNullException.ThrowIfNull(phrases);
         ArgumentNullException.ThrowIfNull(matchConfidence);
@@ -218,7 +204,7 @@ public class AutomationService
 
             while (DateTime.Now < endTime)
             {
-                if (await CompareText(phrases, matchConfidence))
+                if (await CompareTextAsync(phrases, matchConfidence))
                 {
                     return true;
                 }
@@ -233,5 +219,19 @@ public class AutomationService
             _logger.LogError(ex, ex.Message);
             return false;
         }
+    }
+
+    /// <summary>
+    /// Waits for the specified text to be displayed on the ATM screen. This overload accepts
+    /// a string array for input.
+    /// </summary>
+    /// <param name="phrases">Array of phrases to wait for.</param>
+    /// <param name="matchConfidence">Required confidence level the words must match with the screen words.</param>
+    /// <param name="timeout">The overall timeout to wait for this screen match.</param>
+    /// <param name="refreshInterval">How often to refresh the screen OCR data to check for a match.</param>
+    /// <returns>Returns true, if the specified word array matches above the specified confidence level, and within the specified timeout, false otherwise.</returns>
+    public async Task<bool> WaitForTextAsync(string[] phrases, decimal matchConfidence, TimeSpan timeout, TimeSpan refreshInterval)
+    {
+        return await WaitForTextAsync(phrases.ToList(), matchConfidence, timeout, refreshInterval);
     }
 }
