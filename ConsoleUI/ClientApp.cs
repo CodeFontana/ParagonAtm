@@ -13,13 +13,15 @@ public class ClientApp : IHostedService
     private readonly IConnectionService _connectionService;
     private readonly IClientService _clientService;
     private readonly IConsumerTransactionService _consumerTransactionService;
+    private readonly ITransactionService _transactionService;
 
     public ClientApp(IHostApplicationLifetime hostApplicationLifetime,
                      ILogger<ClientApp> logger,
                      IAgentService agentService,
                      IConnectionService connectionService,
                      IClientService clientService,
-                     IConsumerTransactionService consumerTransactionService)
+                     IConsumerTransactionService consumerTransactionService,
+                     ITransactionService transactionService)
     {
         _hostApplicationLifetime = hostApplicationLifetime;
         _logger = logger;
@@ -27,6 +29,7 @@ public class ClientApp : IHostedService
         _connectionService = connectionService;
         _clientService = clientService;
         _consumerTransactionService = consumerTransactionService;
+        _transactionService = transactionService;
     }
 
     public Task StartAsync(CancellationToken cancellationToken)
@@ -41,7 +44,7 @@ public class ClientApp : IHostedService
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Unhandled exception!");
+                _logger.LogCritical(ex, "Unhandled exception!");
             }
             finally
             {
@@ -54,9 +57,15 @@ public class ClientApp : IHostedService
 
     public async Task StopAsync(CancellationToken cancellationToken)
     {
-        await _clientService.DispatchToIdle();
-        await _connectionService.CloseAsync();
-        await _agentService.CloseSesisonAsync();
+        try
+        {
+            await _clientService.DispatchToIdle();
+        }
+        finally
+        {
+            await _connectionService.CloseAsync();
+            await _agentService.CloseSesisonAsync();
+        }
     }
 
     public async Task ExecuteAsync()
@@ -71,10 +80,11 @@ public class ClientApp : IHostedService
             }
 
             await _consumerTransactionService.BalanceInquiry();
+            //await _transactionService.RunTransactions();
         }
         catch (Exception ex)
         {
-            _logger.LogCritical(ex, ex.Message);
+            _logger.LogCritical(ex, "Unexpected error");
         }
     }        
 }

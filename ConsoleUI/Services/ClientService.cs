@@ -31,7 +31,7 @@ public class ClientService : IClientService
         _vmService = vmService;
         _atmService = atmService;
         _autoService = autoService;
-        _atmScreens = _config.GetSection("ConsumerTransaction:ScreenDefinitions").Get<List<AtmScreenModel>>();
+        _atmScreens = _config.GetSection("AvailableScreens").Get<List<AtmScreenModel>>();
 
         VirtualAtm = new()
         {
@@ -146,7 +146,7 @@ public class ClientService : IClientService
     {
         _logger.LogInformation("Dispatch to idle...");
         List<string> curScreen = await _autoService.GetScreenWordsAsync();
-        int standardDelay = _config.GetValue<int>("ConsumerTransaction:StandardDelay");
+        int standardDelay = _config.GetValue<int>("Terminal:StandardDelay");
 
         if (curScreen is null)
         {

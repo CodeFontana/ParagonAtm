@@ -23,8 +23,17 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Content Include="appsettings.json">
+		<Content Include="appSettings.json">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="AvailableScreens.json">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Playlist.json">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Simulation.json">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="appsettings.*.json">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -37,6 +46,12 @@
 	  <Content Remove="log\**" />
 	  <EmbeddedResource Remove="log\**" />
 	  <None Remove="log\**" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Remove="AvailableScreens.json" />
+	  <None Remove="Playlist.json" />
+	  <None Remove="Simulation.json" />
 	</ItemGroup>
 
 	<ItemGroup>

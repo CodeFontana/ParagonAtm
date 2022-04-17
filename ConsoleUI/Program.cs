@@ -24,8 +24,11 @@ class Program
                 .ConfigureAppConfiguration(config =>
                 {
                     config.SetBasePath(Directory.GetCurrentDirectory());
-                    config.AddJsonFile("appsettings.json", true, true);
-                    config.AddJsonFile($"appsettings.{env}.json", true, true);
+                    config.AddJsonFile("appSettings.json", true, true);
+                    config.AddJsonFile($"appSettings.{env}.json", true, true);
+                    config.AddJsonFile($"Simulation.json", false, true);
+                    config.AddJsonFile($"AvailableScreens.json", false, true);
+                    config.AddJsonFile($"PlayList.json", false, true);
                     config.AddUserSecrets<Program>(optional: true);
                     config.AddEnvironmentVariables();
                 })
@@ -39,6 +42,7 @@ class Program
                     services.AddScoped(sp => new HttpClient(new RequestHandler(new HttpClientHandler(), sp.GetRequiredService<ILogger<RequestHandler>>())));
                     services.AddScoped<IClientService, ClientService>();
                     services.AddScoped<IConsumerTransactionService, ConsumerTransactionService>();
+                    services.AddScoped<ITransactionService, TransactionService>();
                     services.AddParagonAtmLibrary();
                     services.AddHostedService<ClientApp>();
                 })
