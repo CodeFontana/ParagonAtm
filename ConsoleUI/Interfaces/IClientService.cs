@@ -1,6 +1,6 @@
 ﻿using ParagonAtmLibrary.Models;
 
-namespace ConsoleUI.Services;
+namespace ConsoleUI.Interfaces;
 public interface IClientService
 {
     TerminalModel VirtualAtm { get; set; }

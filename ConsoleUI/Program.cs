@@ -1,4 +1,5 @@
-﻿using ConsoleUI.Services;
+﻿using ConsoleUI.Interfaces;
+using ConsoleUI.Services;
 using FileLoggerLibrary;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

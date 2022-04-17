@@ -1,7 +1,7 @@
-﻿using ConsoleUI.Services;
+﻿using ConsoleUI.Interfaces;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using ParagonAtmLibrary.Services;
+using ParagonAtmLibrary.Interfaces;
 
 namespace VirtualAtmClient;
 
@@ -81,7 +81,10 @@ public class ClientApp : IHostedService
                 return;
             }
 
+            // Method 1: Hard-coded transaction
             //await _consumerTransactionService.BalanceInquiry();
+
+            // Method 2: Automated transaction playback, as defined using JSON files
             _transactionService.RunPlaylists();
         }
         catch (Exception ex)

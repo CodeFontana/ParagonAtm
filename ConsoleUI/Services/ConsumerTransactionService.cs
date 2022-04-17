@@ -1,7 +1,8 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using ConsoleUI.Interfaces;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using ParagonAtmLibrary.Interfaces;
 using ParagonAtmLibrary.Models;
-using ParagonAtmLibrary.Services;
 
 namespace ConsoleUI.Services;
 

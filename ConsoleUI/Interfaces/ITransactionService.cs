@@ -1,4 +1,4 @@
-﻿namespace ConsoleUI.Services;
+﻿namespace ConsoleUI.Interfaces;
 
 public interface ITransactionService
 {
