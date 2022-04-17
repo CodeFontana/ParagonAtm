@@ -3,6 +3,6 @@
 public class PlaylistOptionsModel
 {
     public int Repeat { get; set; } = 1;
-    public int RepeatDelay { get; set; } = 10000;
+    public int RepeatSeconds { get; set; } = 10;
     public bool Shuffle { get; set; } = false;
 }

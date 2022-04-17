@@ -1,77 +1,77 @@
 {
   "Name": "EdgeBalanceInquiryEnglish",
   "Options": {
-    "StandardDelay": 5000,
-    "KeypadDelay": 1000
+    "StandardDelaySeconds": 5,
+    "KeypadDelaySeconds": 1
   },
   "ScreenFlow": [
     {
       "Screen": "Welcome",
-      "Timeout": 30000,
-      "RefreshInterval": 5000,
+      "TimeoutSeconds": 30,
+      "RefreshSeconds": 5,
       "ActionType": "InsertCard",
       "ActionValue": "f2305283-bb84-49fe-aba6-cd3f7bcfa5ba"
     },
     {
       "Screen": "LanguageSelection",
-      "Timeout": 30000,
-      "RefreshInterval": 5000,
+      "TimeoutSeconds": 30,
+      "RefreshSeconds": 5,
       "ActionType": "Button",
       "ActionValue": "English"
     },
     {
       "Screen": "PIN",
-      "Timeout": 30000,
-      "RefreshInterval": 5000,
+      "TimeoutSeconds": 30,
+      "RefreshSeconds": 5,
       "ActionType": "Keypad",
       "ActionValue": "1234"
     },
     {
       "Screen": "TransactionType",
-      "Timeout": 30000,
-      "RefreshInterval": 5000,
+      "TimeoutSeconds": 30,
+      "RefreshSeconds": 5,
       "ActionType": "Button",
       "ActionValue": "Account Balance"
     },
     {
       "Screen": "AccountType",
-      "Timeout": 30000,
-      "RefreshInterval": 5000,
+      "TimeoutSeconds": 30,
+      "RefreshSeconds": 5,
       "ActionType": "Button",
       "ActionValue": "Checking"
     },
     {
       "Screen": "BalanceDestination",
-      "Timeout": 30000,
-      "RefreshInterval": 5000,
+      "TimeoutSeconds": 30,
+      "RefreshSeconds": 5,
       "ActionType": "Button",
       "ActionValue": "Print and Display"
     },
     {
       "Screen": "AccountName",
-      "Timeout": 30000,
-      "RefreshInterval": 5000,
+      "TimeoutSeconds": 30,
+      "RefreshSeconds": 5,
       "ActionType": "Button",
       "ActionValue": "Checking|T"
     },
     {
       "Screen": "BalanceInquiry",
-      "Timeout": 30000,
-      "RefreshInterval": 5000,
+      "TimeoutSeconds": 30,
+      "RefreshSeconds": 5,
       "ActionType": "Button",
       "ActionValue": "Continue"
     },
     {
       "Screen": "AnotherTransaction",
-      "Timeout": 30000,
-      "RefreshInterval": 5000,
+      "TimeoutSeconds": 30,
+      "RefreshSeconds": 5,
       "ActionType": "Button",
       "ActionValue": "No"
     },
     {
       "Screen": "TakeCard",
-      "Timeout": 30000,
-      "RefreshInterval": 5000,
+      "TimeoutSeconds": 30,
+      "RefreshSeconds": 5,
       "ActionType": "TakeCard",
       "ActionValue": ""
     }

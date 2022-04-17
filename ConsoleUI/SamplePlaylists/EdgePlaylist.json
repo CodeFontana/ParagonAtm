@@ -2,7 +2,7 @@
   "Name": "EdgeDemo",
   "Options": {
     "Repeat": 1,
-    "RepeatDelay": 10000,
+    "RepeatSeconds": 10,
     "Shuffle": false
   },
   "Transactions": [

@@ -3,8 +3,8 @@
 public class TransactionScreenFlowModel
 {
     public string Screen { get; set; }
-    public int Timeout { get; set; }
-    public int RefreshInterval { get; set; }
+    public int TimeoutSeconds { get; set; }
+    public int RefreshSeconds { get; set; }
     public string ActionType { get; set; }
     public string ActionValue { get; set; }
 }

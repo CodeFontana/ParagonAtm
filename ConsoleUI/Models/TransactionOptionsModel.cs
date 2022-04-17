@@ -2,6 +2,6 @@
 
 public class TransactionOptionsModel
 {
-    public int StandardDelay { get; set; } = 5000;
-    public int KeypadDelay { get; set; } = 1000;
+    public int StandardDelaySeconds { get; set; } = 5000;
+    public int KeypadDelaySeconds { get; set; } = 1000;
 }

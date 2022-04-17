@@ -48,15 +48,21 @@ public class PlaylistService : IPlaylistService
 
         bool playlistSuccess = true;
 
-        foreach (string playlistTransaction in _playlistModel.Transactions)
+        for (int i = 0; i < _playlistModel.Options.Repeat; i++)
         {
-            TransactionModel t = _availableTransactions.First(at => at.Name.ToLower() == playlistTransaction.ToLower());
-            playlistSuccess &= await RunTransaction(t);
-
-            if (playlistSuccess == false)
+            foreach (string playlistTransaction in _playlistModel.Transactions)
             {
-                return false;
+                TransactionModel t = _availableTransactions.First(at => at.Name.ToLower() == playlistTransaction.ToLower());
+                playlistSuccess &= await RunTransaction(t);
+
+                if (playlistSuccess == false)
+                {
+                    return false;
+                }
+
             }
+
+            await Task.Delay(TimeSpan.FromSeconds(_playlistModel.Options.RepeatSeconds));
         }
 
         return true;
@@ -88,7 +94,7 @@ public class PlaylistService : IPlaylistService
                     return false;
                 }
 
-                bool foundScreen = await _autoService.WaitForScreenAsync(requestedScreen, TimeSpan.FromSeconds(sfm.Timeout), TimeSpan.FromSeconds(sfm.RefreshInterval));
+                bool foundScreen = await _autoService.WaitForScreenAsync(requestedScreen, TimeSpan.FromSeconds(sfm.TimeoutSeconds), TimeSpan.FromSeconds(sfm.RefreshSeconds));
 
                 if (foundScreen == false)
                 {
@@ -120,7 +126,6 @@ public class PlaylistService : IPlaylistService
                             return false;
                         }
 
-                        await Task.Delay(transaction.Options.StandardDelay);
                         break;
 
                     case "button":
@@ -161,7 +166,7 @@ public class PlaylistService : IPlaylistService
                                 return false;
                             }
 
-                            await Task.Delay(transaction.Options.KeypadDelay);
+                            await Task.Delay(TimeSpan.FromSeconds(transaction.Options.KeypadDelaySeconds));
                         }
 
                         success = await _atmService.PressKeyAsync(new PressKeyModel(pinpad.Name, "Enter"));
@@ -183,7 +188,7 @@ public class PlaylistService : IPlaylistService
                         return false;
                 }
 
-                await Task.Delay(transaction.Options.StandardDelay);
+                await Task.Delay(TimeSpan.FromSeconds(transaction.Options.StandardDelaySeconds));
             }
 
             return true;
