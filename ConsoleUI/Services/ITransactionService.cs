@@ -2,5 +2,7 @@
 
 public interface ITransactionService
 {
-    Task RunTransactions();
+    bool LoadFromJson<T>(string folderPath, List<T> itemList);
+    bool LoadUserData();
+    void RunPlaylists();
 }
