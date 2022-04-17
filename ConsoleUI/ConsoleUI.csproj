@@ -29,7 +29,7 @@
 		<Content Include="AvailableScreens.json">
 		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
-		<Content Include="Playlist.json">
+		<Content Include="SamplePlaylist\EdgePlaylist.json">
 		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Simulation.json">
@@ -50,12 +50,18 @@
 
 	<ItemGroup>
 	  <None Remove="AvailableScreens.json" />
-	  <None Remove="Playlist.json" />
+	  <None Remove="EdgePlaylist.json" />
 	  <None Remove="Simulation.json" />
 	</ItemGroup>
 
 	<ItemGroup>
 	  <ProjectReference Include="..\ParagonAtmLibrary\ParagonAtmLibrary.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Update="SampleTransactions\EdgeBalanceInquiryEnglish.json">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
 	</ItemGroup>
 
 </Project>

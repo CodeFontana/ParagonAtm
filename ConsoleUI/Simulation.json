@@ -12,6 +12,7 @@
     "WebFast": "/api/v1/wft"
   },
   "Preferences": {
+    "TransactionsPath": "SampleTransactions",
     "DownloadPath": "C:\\Users\\Brian\\Desktop\\Screenshots"
   },
   "Terminal": {

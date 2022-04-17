@@ -28,7 +28,6 @@ class Program
                     config.AddJsonFile($"appSettings.{env}.json", true, true);
                     config.AddJsonFile($"Simulation.json", false, true);
                     config.AddJsonFile($"AvailableScreens.json", false, true);
-                    config.AddJsonFile($"PlayList.json", false, true);
                     config.AddUserSecrets<Program>(optional: true);
                     config.AddEnvironmentVariables();
                 })
