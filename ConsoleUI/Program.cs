@@ -43,6 +43,7 @@ class Program
                     services.AddScoped<IClientService, ClientService>();
                     services.AddScoped<IConsumerTransactionService, ConsumerTransactionService>();
                     services.AddScoped<ITransactionService, TransactionService>();
+                    services.AddTransient<IPlaylistServiceFactory, PlaylistServiceFactory>();
                     services.AddParagonAtmLibrary();
                     services.AddHostedService<ClientApp>();
                 })

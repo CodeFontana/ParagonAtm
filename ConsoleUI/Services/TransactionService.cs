@@ -1,7 +1,7 @@
-﻿using ConsoleUI.Models;
+﻿using ConsoleUI.Interfaces;
+using ConsoleUI.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using ParagonAtmLibrary.Services;
 using System.Text.Json;
 
 namespace ConsoleUI.Services;
@@ -10,26 +10,20 @@ public class TransactionService : ITransactionService
 {
     private readonly IConfiguration _config;
     private readonly ILogger<TransactionService> _logger;
-    private readonly IVirtualMachineService _vmService;
-    private readonly IAtmService _atmService;
-    private readonly IAutomationService _autoService;
-    private readonly IClientService _clientService;
+    private readonly ILoggerFactory _loggerFactory;
+    private readonly IPlaylistServiceFactory _playlistServiceFactory;
     private readonly List<TransactionModel> _transactions;
     private readonly List<PlaylistModel> _playlists;
 
     public TransactionService(IConfiguration configuration,
                               ILogger<TransactionService> logger,
-                              IVirtualMachineService vmService,
-                              IAtmService atmService,
-                              IAutomationService autoService,
-                              IClientService clientService)
+                              ILoggerFactory loggerFactory,
+                              IPlaylistServiceFactory playlistServiceFactory)
     {
         _config = configuration;
         _logger = logger;
-        _vmService = vmService;
-        _atmService = atmService;
-        _autoService = autoService;
-        _clientService = clientService;
+        _loggerFactory = loggerFactory;
+        _playlistServiceFactory = playlistServiceFactory;
         _transactions = new List<TransactionModel>();
         _playlists = new List<PlaylistModel>();
     }
@@ -38,7 +32,9 @@ public class TransactionService : ITransactionService
     {
         _playlists.ForEach(p =>
         {
-            _logger.LogInformation($"Running playlist: {p}");
+            IPlaylistService ps = _playlistServiceFactory.GetPlaylistService(_loggerFactory, _transactions, p);
+            ps.RunPlaylist();
+
         });
     }
 
