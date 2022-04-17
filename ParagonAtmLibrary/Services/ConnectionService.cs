@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using ParagonAtmLibrary.Interfaces;
 using System.Net.Http.Json;
 
 namespace ParagonAtmLibrary.Services;

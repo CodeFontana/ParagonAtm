@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using ParagonAtmLibrary.Interfaces;
 using ParagonAtmLibrary.Models;
 using System.Text.Json;
 
