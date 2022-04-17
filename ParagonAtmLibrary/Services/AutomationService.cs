@@ -52,12 +52,12 @@ public class AutomationService : IAutomationService
 
                 if (confidence >= matchConfidence)
                 {
-                    _logger.LogDebug($"Phrase Matched -- {JsonSerializer.Serialize(phrase)} [Confidence {confidence:0.00}]");
+                    _logger.LogDebug($"Phrase Matched -- {JsonSerializer.Serialize(phrase)} [Confidence {confidence:0.00}] [Required {matchConfidence:0.00}]");
                     return true;
                 }
             }
 
-            _logger.LogDebug($"Phrase NotMatched -- {JsonSerializer.Serialize(phrase)} [Confidence {confidence:0.00}]");
+            _logger.LogDebug($"Phrase NotMatched -- {JsonSerializer.Serialize(phrase)} [Confidence {confidence:0.00}] [Required {matchConfidence:0.00}]");
         }
 
         return false;
