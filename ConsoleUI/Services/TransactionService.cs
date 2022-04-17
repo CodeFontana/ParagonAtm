@@ -2,6 +2,7 @@
 using ConsoleUI.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using ParagonAtmLibrary.Interfaces;
 using System.Text.Json;
 
 namespace ConsoleUI.Services;
@@ -12,31 +13,36 @@ public class TransactionService : ITransactionService
     private readonly ILogger<TransactionService> _logger;
     private readonly ILoggerFactory _loggerFactory;
     private readonly IPlaylistServiceFactory _playlistServiceFactory;
+    private readonly IAtmService _atmService;
+    private readonly IAutomationService _autoService;
     private readonly List<TransactionModel> _transactions;
     private readonly List<PlaylistModel> _playlists;
 
     public TransactionService(IConfiguration configuration,
                               ILogger<TransactionService> logger,
                               ILoggerFactory loggerFactory,
-                              IPlaylistServiceFactory playlistServiceFactory)
+                              IPlaylistServiceFactory playlistServiceFactory,
+                              IAtmService atmService,
+                              IAutomationService autoService)
     {
         _config = configuration;
         _logger = logger;
         _loggerFactory = loggerFactory;
         _playlistServiceFactory = playlistServiceFactory;
+        _atmService = atmService;
+        _autoService = autoService;
         _transactions = new List<TransactionModel>();
         _playlists = new List<PlaylistModel>();
     }
 
-    public void RunPlaylists()
+    public async Task RunPlaylists()
     {
-        _playlists.ForEach(p =>
+        foreach (PlaylistModel p in _playlists)
         {
-            IPlaylistService ps = _playlistServiceFactory.GetPlaylistService(_loggerFactory, _transactions, p);
-            ps.RunPlaylist();
-
-        });
-    }
+            IPlaylistService ps = _playlistServiceFactory.GetPlaylistService(_config, _loggerFactory, _transactions, p, _atmService, _autoService);
+            await ps.RunPlaylist();
+        }
+            }
 
     public bool LoadUserData()
     {

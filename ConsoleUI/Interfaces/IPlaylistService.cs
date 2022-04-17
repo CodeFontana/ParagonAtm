@@ -2,5 +2,5 @@
 
 public interface IPlaylistService
 {
-    bool RunPlaylist();
+    Task<bool> RunPlaylist();
 }
