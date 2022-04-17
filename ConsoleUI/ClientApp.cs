@@ -72,15 +72,17 @@ public class ClientApp : IHostedService
     {
         try
         {
-            bool sessionOpened = await _clientService.ConnectAsync();
-
-            if (sessionOpened == false)
+            if (_transactionService.LoadUserData() == false)
+            {
+                return;
+            }
+            else if (await _clientService.ConnectAsync() == false)
             {
                 return;
             }
 
-            await _consumerTransactionService.BalanceInquiry();
-            //await _transactionService.RunTransactions();
+            //await _consumerTransactionService.BalanceInquiry();
+            _transactionService.RunPlaylists();
         }
         catch (Exception ex)
         {
