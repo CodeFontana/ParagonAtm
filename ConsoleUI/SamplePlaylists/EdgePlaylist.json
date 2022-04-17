@@ -1,7 +1,7 @@
 {
   "Name": "Demo",
   "Options": {
-    "Repeat": "1",
+    "Repeat": 1,
     "RepeatDelay": 10000,
     "Shuffle": false
   },
