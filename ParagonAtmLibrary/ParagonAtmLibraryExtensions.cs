@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using ParagonAtmLibrary.Interfaces;
 using ParagonAtmLibrary.Services;
 
 namespace ParagonAtmLibrary;

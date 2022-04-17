@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using System.Net.Http.Json;
 using ParagonAtmLibrary.Models;
+using ParagonAtmLibrary.Interfaces;
 
 namespace ParagonAtmLibrary.Services;
 
