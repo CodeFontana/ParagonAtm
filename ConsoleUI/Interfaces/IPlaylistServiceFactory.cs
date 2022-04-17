@@ -13,5 +13,6 @@ public interface IPlaylistServiceFactory
                                        PlaylistModel playlistModel,
                                        IClientService clientService,
                                        IAtmService atmService,
+                                       IVirtualMachineService vmService,
                                        IAutomationService autoService);
 }

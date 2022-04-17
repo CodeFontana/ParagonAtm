@@ -14,6 +14,7 @@ public class PlaylistServiceFactory : IPlaylistServiceFactory
                                               PlaylistModel playlistModel,
                                               IClientService clientService,
                                               IAtmService atmService,
+                                              IVirtualMachineService vmService,
                                               IAutomationService autoService)
     {
         return new PlaylistService(config,
@@ -22,6 +23,7 @@ public class PlaylistServiceFactory : IPlaylistServiceFactory
                                    playlistModel,
                                    clientService,
                                    atmService,
+                                   vmService,
                                    autoService);
     }
 }

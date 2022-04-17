@@ -15,6 +15,7 @@ public class PlaylistService : IPlaylistService
     private readonly PlaylistModel _playlistModel;
     private readonly IClientService _clientService;
     private readonly IAtmService _atmService;
+    private readonly IVirtualMachineService _vmService;
     private readonly IAutomationService _autoService;
     private readonly List<AtmScreenModel> _atmScreens;
 
@@ -24,6 +25,7 @@ public class PlaylistService : IPlaylistService
                            PlaylistModel playlistModel,
                            IClientService clientService,
                            IAtmService atmService,
+                           IVirtualMachineService virtualMachine,
                            IAutomationService autoService)
     {
         _logger = loggerFactory.CreateLogger(playlistModel.Name);
@@ -32,6 +34,7 @@ public class PlaylistService : IPlaylistService
         _playlistModel = playlistModel;
         _clientService = clientService;
         _atmService = atmService;
+        _vmService = virtualMachine;
         _autoService = autoService;
         _atmScreens = _config.GetSection("AvailableScreens").Get<List<AtmScreenModel>>();
     }
@@ -64,10 +67,17 @@ public class PlaylistService : IPlaylistService
         try
         {
             string saveFolder = Path.Combine(_config["Preferences:DownloadPath"], DateTime.Now.ToString("yyyy-MM-dd--HH.mm.ss"));
-            await _clientService.SaveScreenShot(saveFolder);
+            List<AtmServiceModel> services = await _atmService.GetServicesAsync();
+
+            if (services is null)
+            {
+                _logger.LogError($"ATM service list is empty");
+                return false;
+            }
 
             foreach (TransactionScreenFlowModel sfm in transaction.ScreenFlow)
             {
+                await _clientService.SaveScreenShot(saveFolder);
                 _logger.LogInformation($"Processing screen -- {sfm.Screen}");
                 AtmScreenModel requestedScreen = _atmScreens.FirstOrDefault(s => s.Name.ToLower() == sfm.Screen.ToLower());
 
@@ -89,14 +99,6 @@ public class PlaylistService : IPlaylistService
                 switch (sfm.ActionType.ToLower())
                 {
                     case "insertcard":
-                        List<AtmServiceModel> services = await _atmService.GetServicesAsync();
-
-                        if (services is null)
-                        {
-                            _logger.LogError($"ATM service list is empty");
-                            return false;
-                        }
-
                         AtmServiceModel cardReader = services.FirstOrDefault(x => x.DeviceType.ToLower() == "idc");
 
                         if (cardReader == null)
@@ -121,12 +123,67 @@ public class PlaylistService : IPlaylistService
                         await Task.Delay(transaction.Options.StandardDelay);
                         break;
 
+                    case "button":
+                        LocationModel location = await _vmService.GetLocationByTextAsync(sfm.ActionValue);
+
+                        if (location is null || location.Found == false)
+                        {
+                            _logger.LogError($"{sfm.ActionValue} not found");
+                            return false;
+                        }
+
+                        success = await _vmService.ClickScreenAsync(new ClickScreenModel(location));
+
+                        if (success == false)
+                        {
+                            _logger.LogError($"Failed to click {sfm.ActionValue}");
+                            return false;
+                        }
+
+                        break;
+
+                    case "keypad":
+                        AtmServiceModel pinpad = services.FirstOrDefault(x => x.DeviceType.ToLower() == "pin");
+
+                        if (pinpad == null)
+                        {
+                            _logger.LogError($"Pinpad not found in device list");
+                            return false;
+                        }
+
+                        foreach (char c in sfm.ActionValue)
+                        {
+                            success = await _atmService.PressKeyAsync(new PressKeyModel(pinpad.Name, $"n{c}"));
+
+                            if (success == false)
+                            {
+                                _logger.LogError($"Failed to press pinpad key -- {c}");
+                                return false;
+                            }
+
+                            await Task.Delay(transaction.Options.KeypadDelay);
+                        }
+
+                        success = await _atmService.PressKeyAsync(new PressKeyModel(pinpad.Name, "Enter"));
+
+                        if (success == false)
+                        {
+                            _logger.LogError("Failed to press pinpad key -- Enter");
+                            return false;
+                        }
+
+                        break;
+
+                    case "takecard":
+                        await _atmService.TakeCardAsync();
+                        break;
+
                     default:
                         _logger.LogError($"Unknown action type -- {sfm.ActionType}");
                         return false;
                 }
 
-                await _clientService.SaveScreenShot(saveFolder);
+                await Task.Delay(transaction.Options.StandardDelay);
             }
 
             return true;

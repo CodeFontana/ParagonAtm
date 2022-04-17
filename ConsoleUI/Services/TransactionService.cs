@@ -15,6 +15,7 @@ public class TransactionService : ITransactionService
     private readonly IPlaylistServiceFactory _playlistServiceFactory;
     private readonly IClientService _clientService;
     private readonly IAtmService _atmService;
+    private readonly IVirtualMachineService _vmService;
     private readonly IAutomationService _autoService;
     private readonly List<TransactionModel> _transactions;
     private readonly List<PlaylistModel> _playlists;
@@ -25,6 +26,7 @@ public class TransactionService : ITransactionService
                               IPlaylistServiceFactory playlistServiceFactory,
                               IClientService clientService,
                               IAtmService atmService,
+                              IVirtualMachineService vmService,
                               IAutomationService autoService)
     {
         _config = configuration;
@@ -33,6 +35,7 @@ public class TransactionService : ITransactionService
         _playlistServiceFactory = playlistServiceFactory;
         _clientService = clientService;
         _atmService = atmService;
+        _vmService = vmService;
         _autoService = autoService;
         _transactions = new List<TransactionModel>();
         _playlists = new List<PlaylistModel>();
@@ -42,7 +45,7 @@ public class TransactionService : ITransactionService
     {
         foreach (PlaylistModel p in _playlists)
         {
-            IPlaylistService ps = _playlistServiceFactory.GetPlaylistService(_config, _loggerFactory, _transactions, p, _clientService, _atmService, _autoService);
+            IPlaylistService ps = _playlistServiceFactory.GetPlaylistService(_config, _loggerFactory, _transactions, p, _clientService, _atmService, _vmService, _autoService);
             await ps.RunPlaylist();
         }
             }
