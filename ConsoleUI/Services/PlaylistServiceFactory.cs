@@ -20,7 +20,7 @@ public class PlaylistServiceFactory : IPlaylistServiceFactory
                                    loggerFactory,
                                    availableTransactions,
                                    playlistModel,
-                                   clientService
+                                   clientService,
                                    atmService,
                                    autoService);
     }

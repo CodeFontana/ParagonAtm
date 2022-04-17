@@ -13,6 +13,7 @@ public class TransactionService : ITransactionService
     private readonly ILogger<TransactionService> _logger;
     private readonly ILoggerFactory _loggerFactory;
     private readonly IPlaylistServiceFactory _playlistServiceFactory;
+    private readonly IClientService _clientService;
     private readonly IAtmService _atmService;
     private readonly IAutomationService _autoService;
     private readonly List<TransactionModel> _transactions;
@@ -22,6 +23,7 @@ public class TransactionService : ITransactionService
                               ILogger<TransactionService> logger,
                               ILoggerFactory loggerFactory,
                               IPlaylistServiceFactory playlistServiceFactory,
+                              IClientService clientService,
                               IAtmService atmService,
                               IAutomationService autoService)
     {
@@ -29,6 +31,7 @@ public class TransactionService : ITransactionService
         _logger = logger;
         _loggerFactory = loggerFactory;
         _playlistServiceFactory = playlistServiceFactory;
+        _clientService = clientService;
         _atmService = atmService;
         _autoService = autoService;
         _transactions = new List<TransactionModel>();
@@ -39,7 +42,7 @@ public class TransactionService : ITransactionService
     {
         foreach (PlaylistModel p in _playlists)
         {
-            IPlaylistService ps = _playlistServiceFactory.GetPlaylistService(_config, _loggerFactory, _transactions, p, _atmService, _autoService);
+            IPlaylistService ps = _playlistServiceFactory.GetPlaylistService(_config, _loggerFactory, _transactions, p, _clientService, _atmService, _autoService);
             await ps.RunPlaylist();
         }
             }
