@@ -37,7 +37,7 @@ public class ConsumerTransactionService : IConsumerTransactionService
     /// </summary>
     /// <remarks>
     /// It relies upon an array of AtmScreenModels being defined in 
-    /// appSettings.json, so screen can be properly matched and waited.
+    /// AvailableScreens.json, so screen can be properly matched and waited.
     /// </remarks>
     /// <remarks>
     /// This approach is useful for C# developers as transactions can
