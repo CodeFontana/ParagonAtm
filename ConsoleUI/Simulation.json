@@ -13,7 +13,7 @@
   },
   "Preferences": {
     "TransactionsPath": "SampleTransactions",
-    "PlaylistsPath": "SamplePlaylists"
+    "PlaylistsPath": "SamplePlaylists",
     "DownloadPath": "C:\\Users\\Brian\\Desktop\\Screenshots"
   },
   "Terminal": {
