@@ -28,7 +28,7 @@ public class ConsumerTransactionService : IConsumerTransactionService
         _atmService = atmService;
         _autoService = autoService;
         _clientService = clientService;
-        _atmScreens = _config.GetSection("Screens").Get<List<AtmScreenModel>>();
+        _atmScreens = _config.GetSection("ConsumerTransaction:ScreenDefinitions").Get<List<AtmScreenModel>>();
     }
 
     public async Task BalanceInquiry()
@@ -72,7 +72,7 @@ public class ConsumerTransactionService : IConsumerTransactionService
             }
 
             // Insert specified card
-            CardModel card = new(_config["Card:Id"], cardReader.Name);
+            CardModel card = new(_config["ConsumerTransaction:Card:Id"], cardReader.Name);
             bool success = await _atmService.InsertCardAsync(card);
 
             if (success == false)
@@ -81,7 +81,7 @@ public class ConsumerTransactionService : IConsumerTransactionService
                 return;
             }
 
-            int standardDelay = _config.GetValue<int>("Transaction:StandardDelay");
+            int standardDelay = _config.GetValue<int>("ConsumerTransaction:StandardDelay");
             await Task.Delay(standardDelay);
 
             // Validate -- Language selection screen
@@ -99,7 +99,7 @@ public class ConsumerTransactionService : IConsumerTransactionService
             await _clientService.SaveScreenShot(saveFolder);
 
             // Get location of transaction language
-            string language = _config["Transaction:Language"];
+            string language = _config["ConsumerTransaction:Language"];
             LocationModel location = await _vmService.GetLocationByTextAsync(language);
 
             if (location is null || location.Found == false)
@@ -143,7 +143,7 @@ public class ConsumerTransactionService : IConsumerTransactionService
             }
 
             // Type PIN
-            foreach (char c in _config["Card:Pin"])
+            foreach (char c in _config["ConsumerTransaction:Card:Pin"])
             {
                 success = await _atmService.PressKeyAsync(new PressKeyModel(pinpad.Name, $"n{c}"));
 
@@ -218,7 +218,7 @@ public class ConsumerTransactionService : IConsumerTransactionService
             await _clientService.SaveScreenShot(saveFolder);
 
             // Find transaction account type
-            string accountType = _config["Transaction:AccountType"];
+            string accountType = _config["ConsumerTransaction:AccountType"];
             location = await _vmService.GetLocationByTextAsync(accountType);
 
             if (location is null || location.Found == false)
@@ -253,7 +253,7 @@ public class ConsumerTransactionService : IConsumerTransactionService
             await _clientService.SaveScreenShot(saveFolder);
 
             // Find display balance button
-            string receiptOption = _config["Transaction:ReceiptOption"];
+            string receiptOption = _config["ConsumerTransaction:ReceiptOption"];
             location = await _vmService.GetLocationByTextAsync(receiptOption);
 
             if (location is null || location.Found == false)
@@ -288,7 +288,7 @@ public class ConsumerTransactionService : IConsumerTransactionService
             await _clientService.SaveScreenShot(saveFolder);
 
             // Find specified account button
-            string accountName = _config["Transaction:AccountName"];
+            string accountName = _config["ConsumerTransaction:AccountName"];
             location = await _vmService.GetLocationByTextAsync(accountName);
 
             if (location is null || location.Found == false)
