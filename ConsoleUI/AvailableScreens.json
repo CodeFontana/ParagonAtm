@@ -18,35 +18,40 @@
     {
       "Name": "LanguageSelection",
       "Text": [
-        "Please select the language you wish to use"
+        "Please select the language you wish to use",
+        "Por favor seleccione el idioma que desea usar"
       ],
       "MatchConfidence": 0.80
     },
     {
       "Name": "PIN",
       "Text": [
-        "Please enter your Personal Identification Number"
+        "Please enter your Personal Identification Number",
+        "Por favor ingrese su Numero de Identificacion Personal"
       ],
       "MatchConfidence": 0.80
     },
     {
       "Name": "TransactionType",
       "Text": [
-        "Please select the type of transaction by pressing the appropriate key"
+        "Please select the type of transaction by pressing the appropriate key",
+        "Por favor escoja el tipo de transaccion oprimiendo la tecla apropiada"
       ],
       "MatchConfidence": 0.80
     },
     {
       "Name": "AccountType",
       "Text": [
-        "Please select an account type"
+        "Please select an account type",
+        "Cuenta Corriente"
       ],
       "MatchConfidence": 1.00
     },
     {
       "Name": "BalanceDestination",
       "Text": [
-        "Where would you like your balance"
+        "Where would you like your balance",
+        "Donde desea ver su saldo"
       ],
       "MatchConfidence": 0.80
     },
@@ -67,29 +72,34 @@
     {
       "Name": "AccountName",
       "Text": [
-        "Please select the desired account"
+        "Please select the desired account",
+        "Por favor escoja la cuenta deseada"
       ],
       "MatchConfidence": 0.80
     },
     {
       "Name": "BalanceInquiry",
       "Text": [
-        "Balance inquiry Available Total"
+        "Balance inquiry Available Total",
+        "Saldo para Disponible total"
       ],
       "MatchConfidence": 0.80
     },
     {
       "Name": "AnotherTransaction",
       "Text": [
-        "Do you want another transaction"
+        "Do you want another transaction",
+        "Desea otra transaccion",
+        "Desea otra transaccien"
       ],
-      "MatchConfidence": 0.80
+      "MatchConfidence": 0.60
     },
     {
       "Name": "MoreTime",
       "Text": [
         "Do you need more time",
-        "Would you like more time"
+        "Would you like more time",
+        "Quiere usted mas tiempo"
       ],
       "MatchConfidence": 0.80
     },
@@ -106,6 +116,14 @@
         "Please take your card"
       ],
       "MatchConfidence": 0.80
+    },
+    {
+      "Name": "TakeCard",
+      "Text": [
+        "Please take your card",
+        "Por favor retire su tarjeta"
+      ],
+      "MatchConfidence": 1.00
     }
   ]
 }
