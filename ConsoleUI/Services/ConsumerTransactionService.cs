@@ -379,9 +379,7 @@ public class ConsumerTransactionService : IConsumerTransactionService
 
             if (receipt is not null)
             {
-                _logger.LogInformation("Receipt text...");
-                receipt.OcrData.Elements.ToList()
-                    .ForEach(e => _logger.LogInformation(e.text));
+                _logger.LogInformation($"Receipt text -- {receipt.OcrData.Elements.ToList().Select(e => e.text)}");
             }
 
             // Validate -- Another transaction screen
