@@ -6,6 +6,7 @@
     "Shuffle": false
   },
   "Transactions": [
-    "EdgeBalanceInquiryEnglish"
+    "EdgeBalanceInquiryEnglish",
+    "EdgeFastCashEnglish"
   ]
 }

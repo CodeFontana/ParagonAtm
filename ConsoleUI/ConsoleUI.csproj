@@ -62,6 +62,9 @@
 	  <None Update="SampleTransactions\EdgeBalanceInquiryEnglish.json">
 	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </None>
+	  <None Update="SampleTransactions\EdgeFastCashEnglish.json">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
 	</ItemGroup>
 
 </Project>
