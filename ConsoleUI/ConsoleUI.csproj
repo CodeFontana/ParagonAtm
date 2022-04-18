@@ -29,9 +29,6 @@
 		<Content Include="AvailableScreens.json">
 		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
-		<Content Include="SamplePlaylists\EdgePlaylist.json">
-		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
 		<Content Include="Simulation.json">
 		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
@@ -43,9 +40,13 @@
 
 	<ItemGroup>
 	  <Compile Remove="log\**" />
+	  <Compile Remove="SamplePlaylists\**" />
 	  <Content Remove="log\**" />
+	  <Content Remove="SamplePlaylists\**" />
 	  <EmbeddedResource Remove="log\**" />
+	  <EmbeddedResource Remove="SamplePlaylists\**" />
 	  <None Remove="log\**" />
+	  <None Remove="SamplePlaylists\**" />
 	</ItemGroup>
 
 	<ItemGroup>

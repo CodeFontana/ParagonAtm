@@ -13,15 +13,13 @@ public class ClientApp : IHostedService
     private readonly IConnectionService _connectionService;
     private readonly IClientService _clientService;
     private readonly IConsumerTransactionService _consumerTransactionService;
-    private readonly ITransactionService _transactionService;
 
     public ClientApp(IHostApplicationLifetime hostApplicationLifetime,
                      ILogger<ClientApp> logger,
                      IAgentService agentService,
                      IConnectionService connectionService,
                      IClientService clientService,
-                     IConsumerTransactionService consumerTransactionService,
-                     ITransactionService transactionService)
+                     IConsumerTransactionService consumerTransactionService)
     {
         _hostApplicationLifetime = hostApplicationLifetime;
         _logger = logger;
@@ -29,7 +27,6 @@ public class ClientApp : IHostedService
         _connectionService = connectionService;
         _clientService = clientService;
         _consumerTransactionService = consumerTransactionService;
-        _transactionService = transactionService;
     }
 
     public Task StartAsync(CancellationToken cancellationToken)
@@ -64,11 +61,7 @@ public class ClientApp : IHostedService
     {
         try
         {
-            if (_transactionService.LoadUserData() == false)
-            {
-                return;
-            }
-            else if (await _clientService.ConnectAsync() == false)
+            if (await _clientService.ConnectAsync() == false)
             {
                 return;
             }

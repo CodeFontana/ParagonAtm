@@ -41,8 +41,6 @@ class Program
                 {
                     services.AddScoped(sp => new HttpClient(new RequestHandler(new HttpClientHandler(), sp.GetRequiredService<ILogger<RequestHandler>>())));
                     services.AddScoped<IConsumerTransactionService, ConsumerTransactionService>();
-                    services.AddScoped<ITransactionService, TransactionService>();
-                    services.AddTransient<IPlaylistServiceFactory, PlaylistServiceFactory>();
                     services.AddParagonAtmLibrary();
                     services.AddHostedService<ClientApp>();
                 })
