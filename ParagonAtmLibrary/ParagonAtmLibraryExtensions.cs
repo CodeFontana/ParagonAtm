@@ -8,6 +8,7 @@ public static class ParagonAtmLibraryExtensions
 {
     public static IServiceCollection AddParagonAtmLibrary(this IServiceCollection services)
     {
+        services.AddScoped<IClientService, ClientService>();
         services.AddScoped<IAgentService, AgentService>();
         services.AddScoped<IConnectionService, ConnectionService>();
         services.AddScoped<IVirtualMachineService, VirtualMachineService>();
