@@ -9,13 +9,13 @@ Add latest **CodeFoxtrot.ParagonAtmLibrary** to your project via 'Manage Nuget P
 or via command line...
 
 ```
-dotnet add package CodeFoxtrot.ParagonAtmLibrary --version 1.4.2
+dotnet add package CodeFoxtrot.ParagonAtmLibrary --version 1.4.6
 ```
 
 or via your .csproj file...
 
 ```
-<PackageReference Include="CodeFoxtrot.ParagonAtmLibrary" Version="1.4.2" />
+<PackageReference Include="CodeFoxtrot.ParagonAtmLibrary" Version="1.4.6" />
 ```
 
 Add this to your ConfigureServices() method:
@@ -25,6 +25,12 @@ services.AddParagonAtmLibrary();
 ```
 
 Inject any of the following services to consume their methods...
+* **ClientService**
+  + ConnectAsync()
+  + DisconnectAsync()
+  + DispatchToIdleAsync()
+  + TakeAllMediaAsync()
+  + SaveScreenshotsync()
 * **AgentService**
   + GetAgentStatusAsync()
   + GetUserGroupsAsync()
