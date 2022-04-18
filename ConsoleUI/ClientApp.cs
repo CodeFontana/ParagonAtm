@@ -57,15 +57,7 @@ public class ClientApp : IHostedService
 
     public async Task StopAsync(CancellationToken cancellationToken)
     {
-        try
-        {
-            await _clientService.DispatchToIdle();
-        }
-        finally
-        {
-            await _connectionService.CloseAsync();
-            await _agentService.CloseSesisonAsync();
-        }
+        await _clientService.DisconnectAsync();
     }
 
     public async Task ExecuteAsync()
@@ -81,11 +73,7 @@ public class ClientApp : IHostedService
                 return;
             }
 
-            // Method 1: Hard-coded transaction
-            //await _consumerTransactionService.BalanceInquiry();
-
-            // Method 2: Automated transaction playback, as defined using JSON files
-            await _transactionService.RunPlaylists();
+            await _consumerTransactionService.BalanceInquiry();
         }
         catch (Exception ex)
         {

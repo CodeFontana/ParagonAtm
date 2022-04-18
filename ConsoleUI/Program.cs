@@ -40,7 +40,6 @@ class Program
                 .ConfigureServices((hostContext, services) =>
                 {
                     services.AddScoped(sp => new HttpClient(new RequestHandler(new HttpClientHandler(), sp.GetRequiredService<ILogger<RequestHandler>>())));
-                    services.AddScoped<IClientService, ClientService>();
                     services.AddScoped<IConsumerTransactionService, ConsumerTransactionService>();
                     services.AddScoped<ITransactionService, TransactionService>();
                     services.AddTransient<IPlaylistServiceFactory, PlaylistServiceFactory>();
