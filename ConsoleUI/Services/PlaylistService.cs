@@ -50,6 +50,8 @@ public class PlaylistService : IPlaylistService
 
         for (int i = 0; i < _playlistModel.Options.Repeat; i++)
         {
+            _logger.LogInformation($"Begin playlist -- {_playlistModel.Name} [Iteration: {i}]");
+            
             foreach (string playlistTransaction in _playlistModel.Transactions)
             {
                 TransactionModel t = _availableTransactions.First(at => at.Name.ToLower() == playlistTransaction.ToLower());
@@ -57,15 +59,18 @@ public class PlaylistService : IPlaylistService
 
                 if (playlistSuccess == false)
                 {
+                    _logger.LogError($"Playlist failed -- {_playlistModel.Name} [Iteration: {i}]");
                     return false;
                 }
 
                 if (await _clientService.DispatchToIdle() == false)
                 {
+                    _logger.LogError($"Playlist failed -- {_playlistModel.Name} [Iteration: {i}]");
                     return false;
                 }
             }
 
+            _logger.LogInformation($"Playlist complete -- {_playlistModel.Name} [Iteration: {i}]");
             await Task.Delay(TimeSpan.FromSeconds(_playlistModel.Options.RepeatSeconds));
         }
 
