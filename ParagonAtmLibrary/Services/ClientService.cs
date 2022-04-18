@@ -131,7 +131,7 @@ public class ClientService : IClientService
 
             if (curScreen.Name.ToLower() != "welcome" && curScreen.Name.ToLower() != "outofservice")
             {
-                return await DispatchToIdle();
+                return await DispatchToIdleAsync();
             }
 
             return true;
@@ -147,7 +147,7 @@ public class ClientService : IClientService
     {
         try
         {
-            await DispatchToIdle();
+            await DispatchToIdleAsync();
         }
         finally
         {
@@ -156,7 +156,7 @@ public class ClientService : IClientService
         }
     }
 
-    public async Task<bool> DispatchToIdle()
+    public async Task<bool> DispatchToIdleAsync()
     {
         _logger.LogInformation("Dispatch to idle...");
         List<string> curScreen = await _autoService.GetScreenWordsAsync();
@@ -177,7 +177,7 @@ public class ClientService : IClientService
         {
             _logger.LogInformation("Dispatch - Please wait");
             await Task.Delay(standardDelay);
-            return await DispatchToIdle();
+            return await DispatchToIdleAsync();
         }
         else if (_autoService.MatchScreen(_atmScreens.First(s => s.Name.ToLower() == "moretime"), curScreen))
         {
@@ -190,7 +190,7 @@ public class ClientService : IClientService
             }
 
             await Task.Delay(standardDelay);
-            return await DispatchToIdle();
+            return await DispatchToIdleAsync();
         }
         else if (_autoService.MatchScreen(_atmScreens.First(s => s.Name.ToLower() == "anothertransaction"), curScreen))
         {
@@ -203,24 +203,24 @@ public class ClientService : IClientService
             }
 
             await Task.Delay(standardDelay);
-            return await DispatchToIdle();
+            return await DispatchToIdleAsync();
         }
         else if (_autoService.MatchScreen(_atmScreens.First(s => s.Name.ToLower() == "takecard"), curScreen))
         {
             _logger.LogInformation("Dispatch - Take card");
-            await TakeAllMedia();
+            await TakeAllMediaAsync();
             await Task.Delay(standardDelay);
-            return await DispatchToIdle();
+            return await DispatchToIdleAsync();
         }
         else
         {
             _logger.LogInformation("Dispatch - Unrecognized screen");
             await Task.Delay(standardDelay);
-            return await DispatchToIdle();
+            return await DispatchToIdleAsync();
         }
     }
 
-    public async Task TakeAllMedia()
+    public async Task TakeAllMediaAsync()
     {
         await _atmService.TakeCardAsync();
         List<AtmServiceModel> services = await _atmService.GetServicesAsync();
@@ -268,7 +268,7 @@ public class ClientService : IClientService
         }
     }
 
-    public async Task<bool> SaveScreenShot(string folder)
+    public async Task<bool> SaveScreenshotAsync(string folder)
     {
         try
         {

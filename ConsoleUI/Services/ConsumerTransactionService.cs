@@ -69,7 +69,7 @@ public class ConsumerTransactionService : IConsumerTransactionService
                 return;
             }
 
-            await _clientService.SaveScreenShot(saveFolder);
+            await _clientService.SaveScreenshotAsync(saveFolder);
 
             // Get ATM services
             List<AtmServiceModel> services = await _atmService.GetServicesAsync();
@@ -119,7 +119,7 @@ public class ConsumerTransactionService : IConsumerTransactionService
                 return;
             }
 
-            await _clientService.SaveScreenShot(saveFolder);
+            await _clientService.SaveScreenshotAsync(saveFolder);
 
             // Get location of transaction language
             LocationModel location = await _vmService.GetLocationByTextAsync(language);
@@ -153,7 +153,7 @@ public class ConsumerTransactionService : IConsumerTransactionService
                 return;
             }
 
-            await _clientService.SaveScreenShot(saveFolder);
+            await _clientService.SaveScreenshotAsync(saveFolder);
 
             // Isolate pinpad service
             AtmServiceModel pinpad = services?.FirstOrDefault(x => x.DeviceType.ToLower() == "pin");
@@ -178,7 +178,7 @@ public class ConsumerTransactionService : IConsumerTransactionService
                 await Task.Delay(1000);
             }
 
-            await _clientService.SaveScreenShot(saveFolder);
+            await _clientService.SaveScreenshotAsync(saveFolder);
 
             // Press ENTER
             success = await _atmService.PressKeyAsync(new PressKeyModel(pinpad.Name, "Enter"));
@@ -203,7 +203,7 @@ public class ConsumerTransactionService : IConsumerTransactionService
                 return;
             }
 
-            await _clientService.SaveScreenShot(saveFolder);
+            await _clientService.SaveScreenshotAsync(saveFolder);
 
             // Find account balance button
             location = await _vmService.GetLocationByTextAsync(transactionType);
@@ -237,7 +237,7 @@ public class ConsumerTransactionService : IConsumerTransactionService
                 return;
             }
 
-            await _clientService.SaveScreenShot(saveFolder);
+            await _clientService.SaveScreenshotAsync(saveFolder);
 
             // Find transaction account type
             location = await _vmService.GetLocationByTextAsync(accountType);
@@ -271,7 +271,7 @@ public class ConsumerTransactionService : IConsumerTransactionService
                 return;
             }
 
-            await _clientService.SaveScreenShot(saveFolder);
+            await _clientService.SaveScreenshotAsync(saveFolder);
 
             // Find display balance button
             location = await _vmService.GetLocationByTextAsync(receiptOption);
@@ -305,7 +305,7 @@ public class ConsumerTransactionService : IConsumerTransactionService
                 return;
             }
 
-            await _clientService.SaveScreenShot(saveFolder);
+            await _clientService.SaveScreenshotAsync(saveFolder);
 
             // Find specified account button
             location = await _vmService.GetLocationByTextAsync(accountName);
@@ -339,7 +339,7 @@ public class ConsumerTransactionService : IConsumerTransactionService
                 return;
             }
 
-            await _clientService.SaveScreenShot(saveFolder);
+            await _clientService.SaveScreenshotAsync(saveFolder);
 
             // Find continue button
             location = await _vmService.GetLocationByTextAsync("continue");
@@ -396,7 +396,7 @@ public class ConsumerTransactionService : IConsumerTransactionService
                 return;
             }
 
-            await _clientService.SaveScreenShot(saveFolder);
+            await _clientService.SaveScreenshotAsync(saveFolder);
 
             // Find no button
             location = await _vmService.GetLocationByTextAsync("no");
@@ -421,10 +421,10 @@ public class ConsumerTransactionService : IConsumerTransactionService
                 return;
             }
 
-            await _clientService.SaveScreenShot(saveFolder);
+            await _clientService.SaveScreenshotAsync(saveFolder);
             await _atmService.TakeCardAsync();
             await Task.Delay(standardDelay);
-            await _clientService.SaveScreenShot(saveFolder);
+            await _clientService.SaveScreenshotAsync(saveFolder);
         }
         catch (Exception ex)
         {
