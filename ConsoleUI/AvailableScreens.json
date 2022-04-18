@@ -47,7 +47,15 @@
       "Name": "BalanceDestination",
       "Text": [
         "Where would you like your balance"
-      ]
+      ],
+      "MatchConfidence": 0.80
+    },
+    {
+      "Name": "FastCash",
+      "Text": [
+        "Please select a Fast Cash amount"
+      ],
+      "MatchConfidence": 0.80
     },
     {
       "Name": "PleaseWait",
