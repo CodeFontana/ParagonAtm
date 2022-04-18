@@ -131,7 +131,7 @@ public class ClientService : IClientService
 
             if (curScreen.Name.ToLower() != "welcome" && curScreen.Name.ToLower() != "outofservice")
             {
-                await DispatchToIdle();
+                return await DispatchToIdle();
             }
 
             return true;
@@ -143,7 +143,7 @@ public class ClientService : IClientService
         }
     }
 
-    public async Task DispatchToIdle()
+    public async Task<bool> DispatchToIdle()
     {
         _logger.LogInformation("Dispatch to idle...");
         List<string> curScreen = await _autoService.GetScreenWordsAsync();
@@ -152,52 +152,52 @@ public class ClientService : IClientService
         if (curScreen is null)
         {
             _logger.LogError("Dispatch - Failed to read screen");
+            return false;
         }
         else if (_autoService.MatchScreen(_atmScreens.First(s => s.Name.ToLower() == "welcome"), curScreen)
             || _autoService.MatchScreen(_atmScreens.First(s => s.Name.ToLower() == "outofservice"), curScreen))
         {
             _logger.LogInformation("Dispatch - ATM is idle");
+            return true;
         }
         else if (_autoService.MatchScreen(_atmScreens.First(s => s.Name.ToLower() == "pleasewait"), curScreen))
         {
             _logger.LogInformation("Dispatch - Please wait");
             await Task.Delay(standardDelay);
-            await DispatchToIdle();
+            return await DispatchToIdle();
         }
         else if (_autoService.MatchScreen(_atmScreens.First(s => s.Name.ToLower() == "moretime"), curScreen))
         {
             _logger.LogInformation("Dispatch - More time");
-
             var location = await _vmService.GetLocationByTextAsync("no");
 
             if (location is not null && location.Found)
             {
                 await _vmService.ClickScreenAsync(new ClickScreenModel(location));
-                await Task.Delay(standardDelay);
             }
 
-            await DispatchToIdle();
+            await Task.Delay(standardDelay);
+            return await DispatchToIdle();
         }
         else if (_autoService.MatchScreen(_atmScreens.First(s => s.Name.ToLower() == "anothertransaction"), curScreen))
         {
             _logger.LogInformation("Dispatch - Another transaction");
-
             var location = await _vmService.GetLocationByTextAsync("no");
 
             if (location is not null && location.Found)
             {
                 await _vmService.ClickScreenAsync(new ClickScreenModel(location));
-                await Task.Delay(standardDelay);
             }
 
-            await DispatchToIdle();
+            await Task.Delay(standardDelay);
+            return await DispatchToIdle();
         }
         else if (_autoService.MatchScreen(_atmScreens.First(s => s.Name.ToLower() == "takecard"), curScreen))
         {
             _logger.LogInformation("Dispatch - Take card");
-            await _atmService.TakeCardAsync();
+            await TakeAllMedia();
             await Task.Delay(standardDelay);
-            await DispatchToIdle();
+            return await DispatchToIdle();
         }
         else
         {

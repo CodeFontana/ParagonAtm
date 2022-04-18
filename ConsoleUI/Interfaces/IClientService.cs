@@ -7,6 +7,6 @@ public interface IClientService
     WebFastUserModel WebFastUser { get; set; }
 
     Task<bool> ConnectAsync();
-    Task DispatchToIdle();
+    Task<bool> DispatchToIdle();
     Task<bool> SaveScreenShot(string folder);
 }
