@@ -129,7 +129,7 @@ public class ClientService : IClientService
                 return true;
             }
 
-            if (curScreen.Name.ToLower() != "welcome" && curScreen.Name.ToLower() != "OutOfService")
+            if (curScreen.Name.ToLower() != "welcome" && curScreen.Name.ToLower() != "outofservice")
             {
                 await DispatchToIdle();
             }
