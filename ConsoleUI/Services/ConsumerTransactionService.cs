@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using ParagonAtmLibrary.Interfaces;
 using ParagonAtmLibrary.Models;
+using System.Text.Json;
 
 namespace ConsoleUI.Services;
 
@@ -379,7 +380,8 @@ public class ConsumerTransactionService : IConsumerTransactionService
 
             if (receipt is not null)
             {
-                _logger.LogInformation($"Receipt text -- {receipt.OcrData.Elements.ToList().Select(e => e.text)}");
+                string receiptText = JsonSerializer.Serialize(receipt.OcrData.Elements.ToList().Select(e => e.text));
+                _logger.LogInformation($"Take receipt -- {receiptText}");
             }
 
             // Validate -- Another transaction screen

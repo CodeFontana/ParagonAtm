@@ -227,7 +227,8 @@ public class ClientService : IClientService
 
             if (receipt is not null)
             {
-                _logger.LogInformation($"Take receipt -- {receipt.OcrData.Elements.ToList().Select(e => e.text)}");
+                string receiptText = JsonSerializer.Serialize(receipt.OcrData.Elements.ToList().Select(e => e.text));
+                _logger.LogInformation($"Take receipt -- {receiptText}");
             }
         }
 
