@@ -212,6 +212,13 @@ public class ClientService : IClientService
             await Task.Delay(standardDelay);
             return await DispatchToIdleAsync();
         }
+        else if (_autoService.MatchScreen(_atmScreens.First(s => s.Name.ToLower() == "thankyou"), curScreen))
+        {
+            _logger.LogInformation("Dispatch - Thank you");
+            await TakeAllMediaAsync();
+            await Task.Delay(standardDelay);
+            return await DispatchToIdleAsync();
+        }
         else
         {
             _logger.LogInformation("Dispatch - Unrecognized screen");
