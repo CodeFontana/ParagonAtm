@@ -96,7 +96,7 @@ public class TransactionService : ITransactionService
                     string json = File.ReadAllText(f);
                     var t = JsonSerializer.Deserialize<T>(json);
                     itemList.Add(t);
-                    _logger.LogInformation($"Loaded -- {t}");
+                    _logger.LogInformation($"{t}");
                 }
                 catch (Exception ex)
                 {
