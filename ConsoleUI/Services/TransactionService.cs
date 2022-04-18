@@ -45,10 +45,17 @@ public class TransactionService : ITransactionService
     {
         foreach (PlaylistModel p in _playlists)
         {
-            IPlaylistService ps = _playlistServiceFactory.GetPlaylistService(_config, _loggerFactory, _transactions, p, _clientService, _atmService, _vmService, _autoService);
+            IPlaylistService ps = _playlistServiceFactory.GetPlaylistService(_config,
+                                                                             _loggerFactory,
+                                                                             _transactions,
+                                                                             p,
+                                                                             _clientService,
+                                                                             _atmService,
+                                                                             _vmService,
+                                                                             _autoService);
             await ps.RunPlaylist();
         }
-            }
+    }
 
     public bool LoadUserData()
     {
