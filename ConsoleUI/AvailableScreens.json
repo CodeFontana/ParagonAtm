@@ -111,9 +111,10 @@
       "MatchConfidence": 0.80
     },
     {
-      "Name": "TakeCard",
+      "Name": "ThankYou",
       "Text": [
-        "Please take your card"
+        "Thank you for using this ATM",
+        "Gracias por usar este cajero de"
       ],
       "MatchConfidence": 0.80
     },
