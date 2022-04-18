@@ -9,4 +9,5 @@ public interface IClientService
     Task<bool> ConnectAsync();
     Task<bool> DispatchToIdle();
     Task<bool> SaveScreenShot(string folder);
+    Task TakeAllMedia();
 }

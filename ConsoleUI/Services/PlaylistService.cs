@@ -60,6 +60,10 @@ public class PlaylistService : IPlaylistService
                     return false;
                 }
 
+                if (await _clientService.DispatchToIdle() == false)
+                {
+                    return false;
+                }
             }
 
             await Task.Delay(TimeSpan.FromSeconds(_playlistModel.Options.RepeatSeconds));
@@ -180,7 +184,7 @@ public class PlaylistService : IPlaylistService
                         break;
 
                     case "takecard":
-                        await _atmService.TakeCardAsync();
+                        await _clientService.TakeAllMedia();
                         break;
 
                     default:

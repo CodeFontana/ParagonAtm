@@ -3,6 +3,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using ParagonAtmLibrary.Interfaces;
 using ParagonAtmLibrary.Models;
+using System.Text.Json;
+using static ParagonAtmLibrary.Services.AtmService;
 
 namespace ConsoleUI.Services;
 
@@ -203,7 +205,54 @@ public class ClientService : IClientService
         {
             _logger.LogInformation("Dispatch - Unrecognized screen");
             await Task.Delay(standardDelay);
-            await DispatchToIdle();
+            return await DispatchToIdle();
+        }
+    }
+
+    public async Task TakeAllMedia()
+    {
+        await _atmService.TakeCardAsync();
+        List<AtmServiceModel> services = await _atmService.GetServicesAsync();
+
+        if (services is null)
+        {
+            return;
+        }
+
+        AtmServiceModel receiptPrinter = services.FirstOrDefault(x => x.DeviceType.ToLower() == "ptr");
+
+        if (receiptPrinter is not null && receiptPrinter.Media > 0)
+        {
+            ReceiptModel receipt = await _atmService.TakeReceiptAsync(receiptPrinter.Name);
+
+            if (receipt is not null)
+            {
+                _logger.LogInformation($"Take receipt -- {receipt.OcrData.Elements.ToList().Select(e => e.text)}");
+            }
+        }
+
+        AtmServiceModel dispenser = services.FirstOrDefault(x => x.DeviceType.ToLower() == "cdm");
+
+        if (dispenser is not null && dispenser.Media > 0)
+        {
+            AuditData auditData = await _atmService.TakeMediaAsync(dispenser.Name, dispenser.Media);
+
+            if (auditData is not null)
+            {
+                _logger.LogInformation($"Take cash -- {JsonSerializer.Serialize(auditData)}");
+            }
+        }
+
+        AtmServiceModel itemProcessor = services.FirstOrDefault(x => x.DeviceType.ToLower() == "ipm");
+
+        if (itemProcessor is not null && itemProcessor.Media > 0)
+        {
+            AuditData auditData = await _atmService.TakeMediaAsync(itemProcessor.Name, itemProcessor.Media);
+
+            if (auditData is not null)
+            {
+                _logger.LogInformation($"Take media -- {JsonSerializer.Serialize(auditData)}");
+            }
         }
     }
 
