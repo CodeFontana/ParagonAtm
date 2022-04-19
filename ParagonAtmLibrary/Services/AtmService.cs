@@ -11,17 +11,13 @@ public class AtmService : IAtmService
     private readonly IConfiguration _config;
     private readonly ILogger<AgentService> _logger;
     private readonly HttpClient _httpClient;
-    private readonly IAtmService _atmService;
-
     public AtmService(IConfiguration configuration,
                       ILogger<AgentService> logger,
-                      HttpClient httpClient,
-                      IAtmService atmService)
+                      HttpClient httpClient)
     {
         _config = configuration;
         _logger = logger;
         _httpClient = httpClient;
-        _atmService = atmService;
     }
 
     public record AtmServices(List<AtmServiceModel> services);
@@ -93,7 +89,7 @@ public class AtmService : IAtmService
             return false;
         }
 
-        await _atmService.TakeCardAsync(); // In the case of a dip reader, immediately take the card back
+        await TakeCardAsync(); // In the case of a dip reader, immediately take the card back
         return true;
     }
 
