@@ -192,58 +192,38 @@ The **MatchConfidence** is provided to accomodate variability with the Paragon s
 }
 ```
 
-### Code your transaction
+### Code your transaction -- API method chart
 Using the Paragon-provided APIs and the additional automations provided by this library, inject any of the following services and consume their methods in whatever sequence works for what you are attempting to achieve!  
 
-* **IClientService**
-  + ConnectAsync()
-  + DisconnectAsync()
-  + DispatchToIdleAsync()
-  + TakeAllMediaAsync()
-  + SaveScreenshotsync()
-* **IAgentService**
-  + GetAgentStatusAsync()
-  + GetUserGroupsAsync()
-  + OpenHwProfileAsync()
-  + StartAtmAppAsync()
-  + OpenSesisonAsync()
-  + CloseSesisonAsync()
-* **IConnectionService**
-  + OpenAsync()
-  + CloseAsync()
-  + SaveCloseAsync()
-  + SaveCloseRebootAsync()
-  + CloseRebootAsync()
-* **IAtmService**
-  + GetServicesAsync()
-  + GetDeviceStateAsync()
-  + InsertCardAsync()
-  + TakeCardAsync()
-  + PressKeyAsync()
-  + PressTtuKeyAsync()
-  + GetPinpadKeysAsync()
-  + ChangeOperatorSwitchAsync()
-  + PushOperatorSwitchAsync()
-  + EnterDieboldSupervisorModeAsync()
-  + ExitDieboldSupervisorModeAsync()
-  + OperatorSwitchStatusAsync()
-  + InsertMediaAsync()
-  + TakeMediaAsync()
-  + TakeReceiptAsync()
-  + RecoverAsync()
-* **IVirtualMachineService**
-  + GetScreenJpegAsync()
-  + GetScreenTextAsync()
-  + ClickScreenAsync()
-  + GetLocationByTextAsync()
-* **IAutomationService**
-  + CompareText()
-  + CompareTextAsync()
-  + GetScreenWordsAsync()
-  + MatchScreen()
-  + MatchScreenAsync()
-  + WaitForScreenAsync()
-  + WaitForTextAsync()
+#### Paragon Built-in API methods
+
+| IAgentService           | IConnectionService      | IVirtualMachineService     |
+|-------------------------|-------------------------|----------------------------|
+| GetAgentStatusAsync()   | OpenAsync()             | GetScreenJpegAsync()       |
+| GetUserGroupsAsync()    | CloseAsync()            | GetScreenTextAsync()       |
+| OpenHwProfileAsync()    | SaveCloseAsync()        | ClickScreenAsync()         |
+| StartAtmAppAsync()      | SaveCloseRebootAsync()  | GetLocationByTextAsync()   |
+| OpenSesisonAsync()      | CloseRebootAsync()      |                            |
+| CloseSesisonAsync()     |                         |                            |
+
+| IAtmService                       | IAtmService (cont.)              | IAtmService (cont.)         |
+|-----------------------------------|----------------------------------|-----------------------------|
+| GetServicesAsync()                | GetDeviceStateAsync()            | InsertCardAsync()           |
+| TakeCardAsync()                   | PressKeyAsync()                  | PressTtuKeyAsync()          |
+| GetPinpadKeysAsync()              | ChangeOperatorSwitchAsync()      | PushOperatorSwitchAsync()   |
+| EnterDieboldSupervisorModeAsync() | ExitDieboldSupervisorModeAsync() | OperatorSwitchStatusAsync() |
+| InsertMediaAsync()                | TakeMediaAsync()                 | TakeReceiptAsync()          |
+| RecoverAsync()
+
+#### Library-provided API methods
+
+| IClientService         | IAutomationService
+|------------------------|------------------------------------|
+| ConnectAsync()         | CompareText() / CompareTextAsync() |
+| DisconnectAsync()      | GetScreenWordsAsync()              |
+| DispatchToIdleAsync()  | MatchScreen() / MatchScreenAsync() |
+| TakeAllMediaAsync()    | WaitForScreenAsync()               |
+| SaveScreenshotsync()   | WaitForTextAsync()                 |
 
 ### Sample Balance Inquiry on an NCR Edge Virtual ATM -- ConsumerTransactionService.cs
 Note this is totally dependent on your ATMs screen flow!  
@@ -635,6 +615,10 @@ public async Task BalanceInquiry()
         }
     }
 ```
+#### And it goes like this...
+
+![2022-04-19_00-46-34](https://user-images.githubusercontent.com/41308769/163922140-478fb29d-81ca-4451-a8f6-dd7324f10f41.gif)
+
 
 ## More Information about Paragon Virtual ATM
 https://www.paragonedge.com/products/virtualatm
