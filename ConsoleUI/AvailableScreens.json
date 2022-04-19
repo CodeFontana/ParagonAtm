@@ -65,7 +65,8 @@
     {
       "Name": "PleaseWait",
       "Text": [
-        "Please wait"
+        "Please wait",
+        "Por favor espere"
       ],
       "MatchConfidence": 1.00
     },
