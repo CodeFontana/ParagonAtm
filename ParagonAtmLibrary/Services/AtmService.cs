@@ -89,6 +89,7 @@ public class AtmService : IAtmService
             return false;
         }
 
+        await Task.Delay(1000); // Brief delay to allow for card insert
         await TakeCardAsync(); // In the case of a dip reader, immediately take the card back
         return true;
     }
