@@ -197,12 +197,13 @@ Using the Paragon-provided APIs and the additional automations provided by this 
 
 #### Paragon Built-in API methods
 
-<table>
+<div align="center">
+  <table>
    <thead>
       <tr>
-         <th>IAgentService</th>
-         <th>IConnectionService</th>
-         <th>IVirtualMachineService</th>
+         <th><strong>IAgentService</strong></th>
+         <th><strong>IConnectionService</strong></th>
+         <th><strong>IVirtualMachineService</strong></th>
       </tr>
    </thead>
    <tbody>
@@ -237,59 +238,62 @@ Using the Paragon-provided APIs and the additional automations provided by this 
          <td></td>
       </tr>
    </tbody>
-</table>
+  </table>
 
-<table>
-   <thead>
-      <tr>
-         <th>IAtmService</th>
-         <th>IAtmService (cont.)</th>
-         <th>IAtmService (cont.)</th>
-      </tr>
-   </thead>
-   <tbody>
-      <tr>
-         <td>GetServicesAsync()</td>
-         <td>GetDeviceStateAsync()</td>
-         <td>InsertCardAsync()</td>
-      </tr>
-      <tr>
-         <td>TakeCardAsync()</td>
-         <td>PressKeyAsync()</td>
-         <td>PressTtuKeyAsync()</td>
-      </tr>
-     <tr>
-         <td>GetPinpadKeysAsync()</td>
-         <td>ChangeOperatorSwitchAsync()</td>
-         <td>PushOperatorSwitchAsync()</td>
-      </tr>
-     <tr>
-         <td>EnterDieboldSupervisorModeAsync()</td>
-         <td>ExitDieboldSupervisorModeAsync()</td>
-         <td>OperatorSwitchStatusAsync()</td>
-      </tr>
-     <tr>
-         <td>InsertMediaAsync()</td>
-         <td>TakeMediaAsync()</td>
-         <td>TakeReceiptAsync()</td>
-      </tr>
-     <tr>
-         <td>RecoverAsync()()</td>
-         <td></td>
-         <td></td>
-      </tr>
-   </tbody>
-</table>
+  <table>
+     <thead>
+        <tr>
+           <th><strong>IAtmService</strong></th>
+           <th><strong>IAtmService (cont.)</strong></th>
+           <th><strong>IAtmService (cont.)</strong></th>
+        </tr>
+     </thead>
+     <tbody>
+        <tr>
+           <td>GetServicesAsync()</td>
+           <td>GetDeviceStateAsync()</td>
+           <td>InsertCardAsync()</td>
+        </tr>
+        <tr>
+           <td>TakeCardAsync()</td>
+           <td>PressKeyAsync()</td>
+           <td>PressTtuKeyAsync()</td>
+        </tr>
+       <tr>
+           <td>GetPinpadKeysAsync()</td>
+           <td>ChangeOperatorSwitchAsync()</td>
+           <td>PushOperatorSwitchAsync()</td>
+        </tr>
+       <tr>
+           <td>EnterDieboldSupervisorModeAsync()</td>
+           <td>ExitDieboldSupervisorModeAsync()</td>
+           <td>OperatorSwitchStatusAsync()</td>
+        </tr>
+       <tr>
+           <td>InsertMediaAsync()</td>
+           <td>TakeMediaAsync()</td>
+           <td>TakeReceiptAsync()</td>
+        </tr>
+       <tr>
+           <td>RecoverAsync()()</td>
+           <td></td>
+           <td></td>
+        </tr>
+     </tbody>
+  </table>
+  
+  
+  #### Library-provided API methods
 
-#### Library-provided API methods
-
-| IClientService         | IAutomationService
-|------------------------|------------------------------------|
-| ConnectAsync()         | CompareText() / CompareTextAsync() |
-| DisconnectAsync()      | GetScreenWordsAsync()              |
-| DispatchToIdleAsync()  | MatchScreen() / MatchScreenAsync() |
-| TakeAllMediaAsync()    | WaitForScreenAsync()               |
-| SaveScreenshotsync()   | WaitForTextAsync()                 |
+  | IClientService         | IAutomationService
+  |------------------------|------------------------------------|
+  | ConnectAsync()         | CompareText() / CompareTextAsync() |
+  | DisconnectAsync()      | GetScreenWordsAsync()              |
+  | DispatchToIdleAsync()  | MatchScreen() / MatchScreenAsync() |
+  | TakeAllMediaAsync()    | WaitForScreenAsync()               |
+  | SaveScreenshotsync()   | WaitForTextAsync()                 |
+  
+</div>
 
 ### Sample Balance Inquiry on an NCR Edge Virtual ATM -- ConsumerTransactionService.cs
 Note this is totally dependent on your ATMs screen flow!  
