@@ -60,7 +60,19 @@ public class ClientApp : IHostedService
                 return;
             }
 
-            await _consumerTransactionService.BalanceInquiry();
+            await _consumerTransactionService.BalanceInquiry("f2305283-bb84-49fe-aba6-cd3f7bcfa5ba",
+                                                             "1234",
+                                                             "English",
+                                                             "Checking",
+                                                             "Checking|T",
+                                                             "Print and Display");
+
+            await _consumerTransactionService.BalanceInquiry("f2305283-bb84-49fe-aba6-cd3f7bcfa5ba",
+                                                             "1234",
+                                                             "Espanol",
+                                                             "Cuenta Corriente",
+                                                             "Checking|T",
+                                                             "Imprimir y Mostrar");
         }
         catch (Exception ex)
         {
