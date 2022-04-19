@@ -197,23 +197,89 @@ Using the Paragon-provided APIs and the additional automations provided by this 
 
 #### Paragon Built-in API methods
 
-| IAgentService           | IConnectionService      | IVirtualMachineService     |
-|-------------------------|-------------------------|----------------------------|
-| GetAgentStatusAsync()   | OpenAsync()             | GetScreenJpegAsync()       |
-| GetUserGroupsAsync()    | CloseAsync()            | GetScreenTextAsync()       |
-| OpenHwProfileAsync()    | SaveCloseAsync()        | ClickScreenAsync()         |
-| StartAtmAppAsync()      | SaveCloseRebootAsync()  | GetLocationByTextAsync()   |
-| OpenSesisonAsync()      | CloseRebootAsync()      |                            |
-| CloseSesisonAsync()     |                         |                            |
+<table>
+   <thead>
+      <tr>
+         <th>IAgentService</th>
+         <th>IConnectionService</th>
+         <th>IVirtualMachineService</th>
+      </tr>
+   </thead>
+   <tbody>
+      <tr>
+         <td>GetAgentStatusAsync()</td>
+         <td>OpenAsync()</td>
+         <td>GetScreenJpegAsync()</td>
+      </tr>
+      <tr>
+         <td>GetUserGroupsAsync()</td>
+         <td>CloseAsync()</td>
+         <td>GetScreenTextAsync()</td>
+      </tr>
+     <tr>
+         <td>OpenHwProfileAsync()</td>
+         <td>SaveCloseAsync()</td>
+         <td>ClickScreenAsync()</td>
+      </tr>
+     <tr>
+         <td>StartAtmAppAsync()</td>
+         <td>SaveCloseRebootAsync()</td>
+         <td>GetLocationByTextAsync()</td>
+      </tr>
+     <tr>
+         <td>OpenSesisonAsync()</td>
+         <td>CloseRebootAsync()</td>
+         <td></td>
+      </tr>
+     <tr>
+         <td>CloseSesisonAsync()</td>
+         <td></td>
+         <td></td>
+      </tr>
+   </tbody>
+</table>
 
-| IAtmService                       | IAtmService (cont.)              | IAtmService (cont.)         |
-|-----------------------------------|----------------------------------|-----------------------------|
-| GetServicesAsync()                | GetDeviceStateAsync()            | InsertCardAsync()           |
-| TakeCardAsync()                   | PressKeyAsync()                  | PressTtuKeyAsync()          |
-| GetPinpadKeysAsync()              | ChangeOperatorSwitchAsync()      | PushOperatorSwitchAsync()   |
-| EnterDieboldSupervisorModeAsync() | ExitDieboldSupervisorModeAsync() | OperatorSwitchStatusAsync() |
-| InsertMediaAsync()                | TakeMediaAsync()                 | TakeReceiptAsync()          |
-| RecoverAsync()
+<table>
+   <thead>
+      <tr>
+         <th>IAtmService</th>
+         <th>IAtmService (cont.)</th>
+         <th>IAtmService (cont.)</th>
+      </tr>
+   </thead>
+   <tbody>
+      <tr>
+         <td>GetServicesAsync()</td>
+         <td>GetDeviceStateAsync()</td>
+         <td>InsertCardAsync()</td>
+      </tr>
+      <tr>
+         <td>TakeCardAsync()</td>
+         <td>PressKeyAsync()</td>
+         <td>PressTtuKeyAsync()</td>
+      </tr>
+     <tr>
+         <td>GetPinpadKeysAsync()</td>
+         <td>ChangeOperatorSwitchAsync()</td>
+         <td>PushOperatorSwitchAsync()</td>
+      </tr>
+     <tr>
+         <td>EnterDieboldSupervisorModeAsync()</td>
+         <td>ExitDieboldSupervisorModeAsync()</td>
+         <td>OperatorSwitchStatusAsync()</td>
+      </tr>
+     <tr>
+         <td>InsertMediaAsync()</td>
+         <td>TakeMediaAsync()</td>
+         <td>TakeReceiptAsync()</td>
+      </tr>
+     <tr>
+         <td>RecoverAsync()()</td>
+         <td></td>
+         <td></td>
+      </tr>
+   </tbody>
+</table>
 
 #### Library-provided API methods
 
