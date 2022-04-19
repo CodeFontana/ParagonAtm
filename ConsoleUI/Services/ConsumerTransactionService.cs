@@ -46,18 +46,23 @@ public class ConsumerTransactionService : IConsumerTransactionService
     /// be built purely in C# code.
     /// </remarks>
     /// <returns>A task representing a balance inquiry transaction</returns>
-    public async Task BalanceInquiry()
+    public async Task BalanceInquiry(string cardId = "f2305283-bb84-49fe-aba6-cd3f7bcfa5ba",
+                                     string cardPin = "1234",
+                                     string language = "English",
+                                     string accountType = "Checking",
+                                     string accountName = "Checking|T",
+                                     string receiptOption = "Print and Display")
     {
         try
         {
             string saveFolder = Path.Combine(_config["Preferences:DownloadPath"], DateTime.Now.ToString("yyyy-MM-dd--HH.mm.ss"));
-            string cardId = "f2305283-bb84-49fe-aba6-cd3f7bcfa5ba";
-            string cardPin = "1234";
-            string language = "English";
+            
             string transactionType = "Account Balance";
-            string accountType = "Checking";
-            string accountName = "Checking|T";
-            string receiptOption = "Print and Display";
+
+            if (language.ToLower() == "espanol")
+            {
+                transactionType = "Saldos de Cuenta";
+            }
 
             // Starting point -- InService/Welcome screen
             AtmScreenModel welcomeScreen = _atmScreens.First(s => s.Name.ToLower() == "welcome");
@@ -342,7 +347,14 @@ public class ConsumerTransactionService : IConsumerTransactionService
             await _clientService.SaveScreenshotAsync(saveFolder);
 
             // Find continue button
-            location = await _vmService.GetLocationByTextAsync("continue");
+            if (language.ToLower() == "espanol")
+            {
+                location = await _vmService.GetLocationByTextAsync("continuar");
+            }
+            else
+            {
+                location = await _vmService.GetLocationByTextAsync("continue");
+            }
 
             if (location is null || location.Found == false)
             {

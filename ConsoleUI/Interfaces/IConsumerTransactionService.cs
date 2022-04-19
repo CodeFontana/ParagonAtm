@@ -2,5 +2,10 @@
 
 public interface IConsumerTransactionService
 {
-    Task BalanceInquiry();
+    Task BalanceInquiry(string cardId,
+                        string cardPin,
+                        string language,
+                        string accountType,
+                        string accountName,
+                        string receiptOption);
 }
