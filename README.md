@@ -195,9 +195,10 @@ The **MatchConfidence** is provided to accomodate variability with the Paragon s
 ### Code your transaction -- API method chart
 Using the Paragon-provided APIs and the additional automations provided by this library, inject any of the following services and consume their methods in whatever sequence works for what you are attempting to achieve!  
 
-#### Paragon Built-in API methods
-
 <div align="center">
+  
+  #### Paragon Built-in API methods
+  
   <table>
    <thead>
       <tr>
@@ -239,7 +240,8 @@ Using the Paragon-provided APIs and the additional automations provided by this 
       </tr>
    </tbody>
   </table>
-
+  
+    
   <table>
      <thead>
         <tr>
@@ -282,6 +284,7 @@ Using the Paragon-provided APIs and the additional automations provided by this 
      </tbody>
   </table>
   
+    
   
   #### Library-provided API methods
 
