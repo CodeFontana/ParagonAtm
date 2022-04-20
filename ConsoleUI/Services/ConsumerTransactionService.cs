@@ -7,18 +7,18 @@ using System.Text.Json;
 
 namespace ConsoleUI.Services;
 
-public class ConsumerTransactionService : IConsumerTransactionService
+public class EdgeConsumerTransactionService : IEdgeConsumerTransactionService
 {
     private readonly IConfiguration _config;
-    private readonly ILogger<ConsumerTransactionService> _logger;
+    private readonly ILogger<EdgeConsumerTransactionService> _logger;
     private readonly IVirtualMachineService _vmService;
     private readonly IAtmService _atmService;
     private readonly IAutomationService _autoService;
     private readonly IClientService _clientService;
     private readonly List<AtmScreenModel> _atmScreens;
 
-    public ConsumerTransactionService(IConfiguration configuration,
-                                      ILogger<ConsumerTransactionService> logger,
+    public EdgeConsumerTransactionService(IConfiguration configuration,
+                                      ILogger<EdgeConsumerTransactionService> logger,
                                       IVirtualMachineService vmService,
                                       IAtmService atmService,
                                       IAutomationService autoService,

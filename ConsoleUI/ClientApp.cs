@@ -10,12 +10,12 @@ public class ClientApp : IHostedService
     private readonly IHostApplicationLifetime _hostApplicationLifetime;
     private readonly ILogger<ClientApp> _logger;
     private readonly IClientService _clientService;
-    private readonly IConsumerTransactionService _consumerTransactionService;
+    private readonly IEdgeConsumerTransactionService _consumerTransactionService;
 
     public ClientApp(IHostApplicationLifetime hostApplicationLifetime,
                      ILogger<ClientApp> logger,
                      IClientService clientService,
-                     IConsumerTransactionService consumerTransactionService)
+                     IEdgeConsumerTransactionService consumerTransactionService)
     {
         _hostApplicationLifetime = hostApplicationLifetime;
         _logger = logger;
