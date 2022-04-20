@@ -6,6 +6,7 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>disable</Nullable>
 		<UserSecretsId>7aa8cc7f-4160-4610-bf08-83cd642cb531</UserSecretsId>
+		<AssemblyName>ParagonAtm</AssemblyName>
 	</PropertyGroup>
 
 	<ItemGroup>
