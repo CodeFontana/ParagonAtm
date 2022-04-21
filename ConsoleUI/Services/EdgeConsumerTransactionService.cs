@@ -126,21 +126,9 @@ public class EdgeConsumerTransactionService : IEdgeConsumerTransactionService
 
             await _clientService.SaveScreenshotAsync(saveFolder);
 
-            // Get location of transaction language
-            LocationModel location = await _vmService.GetLocationByTextAsync(language);
-
-            if (location is null || location.Found == false)
+            if (await _autoService.FindAndClickAsync(language) == false)
             {
-                _logger.LogError($"{language} not found");
-                return;
-            }
-
-            // Click language button
-            success = await _vmService.ClickScreenAsync(new ClickScreenModel(location));
-
-            if (success == false)
-            {
-                _logger.LogError($"Failed to click {language}");
+                _logger.LogError($"Failed to find and click '{language}' button");
                 return;
             }
 
@@ -210,21 +198,9 @@ public class EdgeConsumerTransactionService : IEdgeConsumerTransactionService
 
             await _clientService.SaveScreenshotAsync(saveFolder);
 
-            // Find account balance button
-            location = await _vmService.GetLocationByTextAsync(transactionType);
-
-            if (location is null || location.Found == false)
+            if (await _autoService.FindAndClickAsync(transactionType) == false)
             {
-                _logger.LogError($"{transactionType} option not found");
-                return;
-            }
-
-            // Click account balance button
-            success = await _vmService.ClickScreenAsync(new ClickScreenModel(location));
-
-            if (success == false)
-            {
-                _logger.LogError($"Failed to click {transactionType}");
+                _logger.LogError($"Failed to find and click '{transactionType}' button");
                 return;
             }
 
@@ -244,21 +220,9 @@ public class EdgeConsumerTransactionService : IEdgeConsumerTransactionService
 
             await _clientService.SaveScreenshotAsync(saveFolder);
 
-            // Find transaction account type
-            location = await _vmService.GetLocationByTextAsync(accountType);
-
-            if (location is null || location.Found == false)
+            if (await _autoService.FindAndClickAsync(accountType) == false)
             {
-                _logger.LogError($"{accountType} account option not found");
-                return;
-            }
-
-            // Click account type
-            success = await _vmService.ClickScreenAsync(new ClickScreenModel(location));
-
-            if (success == false)
-            {
-                _logger.LogError($"Failed to click {accountType} account");
+                _logger.LogError($"Failed to find and click '{accountType}' button");
                 return;
             }
 
@@ -278,21 +242,9 @@ public class EdgeConsumerTransactionService : IEdgeConsumerTransactionService
 
             await _clientService.SaveScreenshotAsync(saveFolder);
 
-            // Find display balance button
-            location = await _vmService.GetLocationByTextAsync(receiptOption);
-
-            if (location is null || location.Found == false)
+            if (await _autoService.FindAndClickAsync(receiptOption) == false)
             {
-                _logger.LogError($"{receiptOption} option not found");
-                return;
-            }
-
-            // Click display balance button
-            success = await _vmService.ClickScreenAsync(new ClickScreenModel(location));
-
-            if (success == false)
-            {
-                _logger.LogError($"Failed to click {receiptOption}");
+                _logger.LogError($"Failed to find and click '{receiptOption}' button");
                 return;
             }
 
@@ -312,21 +264,9 @@ public class EdgeConsumerTransactionService : IEdgeConsumerTransactionService
 
             await _clientService.SaveScreenshotAsync(saveFolder);
 
-            // Find specified account button
-            location = await _vmService.GetLocationByTextAsync(accountName);
-
-            if (location is null || location.Found == false)
+            if (await _autoService.FindAndClickAsync(accountName) == false)
             {
-                _logger.LogError($"{accountName} account not found");
-                return;
-            }
-
-            // Click specified account button
-            success = await _vmService.ClickScreenAsync(new ClickScreenModel(location));
-
-            if (success == false)
-            {
-                _logger.LogError($"Failed to click {accountName}");
+                _logger.LogError($"Failed to find and click '{accountName}' button");
                 return;
             }
 
@@ -346,28 +286,9 @@ public class EdgeConsumerTransactionService : IEdgeConsumerTransactionService
 
             await _clientService.SaveScreenshotAsync(saveFolder);
 
-            // Find continue button
-            if (language.ToLower() == "espanol")
+            if (await _autoService.FindAndClickAsync(new string[] { "continue", "continuar" }) == false)
             {
-                location = await _vmService.GetLocationByTextAsync("continuar");
-            }
-            else
-            {
-                location = await _vmService.GetLocationByTextAsync("continue");
-            }
-
-            if (location is null || location.Found == false)
-            {
-                _logger.LogError("Continue not found");
-                return;
-            }
-
-            // Click continue button
-            success = await _vmService.ClickScreenAsync(new ClickScreenModel(location));
-
-            if (success == false)
-            {
-                _logger.LogError("Failed to click continue");
+                _logger.LogError($"Failed to find and click 'Continue' or 'Continuar' button");
                 return;
             }
 
@@ -410,13 +331,10 @@ public class EdgeConsumerTransactionService : IEdgeConsumerTransactionService
 
             await _clientService.SaveScreenshotAsync(saveFolder);
 
-            // Find no button
-            location = await _vmService.GetLocationByTextAsync("no");
-
-            if (location is not null && location.Found)
+            if (await _autoService.FindAndClickAsync("no") == false)
             {
-                // Click no button
-                await _vmService.ClickScreenAsync(new ClickScreenModel(location));
+                _logger.LogError($"Failed to find and click 'No' button");
+                return;
             }
 
             await Task.Delay(standardDelay);
