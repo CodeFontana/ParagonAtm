@@ -206,7 +206,7 @@ Using the Paragon-provided APIs and the additional automations provided by this 
   
 </div>
 
-### Sample Balance Inquiry on an NCR Edge Virtual ATM -- ConsumerTransactionService.cs
+### Sample Balance Inquiry on an NCR Edge Virtual ATM -- EdgeConsumerTransactionService.cs
 Note this is totally dependent on your ATMs screen flow!  
 
 ```
