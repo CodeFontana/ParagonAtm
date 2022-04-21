@@ -141,7 +141,7 @@ public class ClientService : IClientService
 
             if (curScreen.Name.ToLower() != "welcome" && curScreen.Name.ToLower() != "outofservice")
             {
-                return await DispatchToIdleAsync();
+                return await DispatchToIdleAsync(_config["Preferences:DownloadPath"]);
             }
 
             return true;
@@ -157,7 +157,7 @@ public class ClientService : IClientService
     {
         try
         {
-            await DispatchToIdleAsync();
+            await DispatchToIdleAsync(_config["Preferences:DownloadPath"]);
         }
         finally
         {
@@ -166,7 +166,7 @@ public class ClientService : IClientService
         }
     }
 
-    public async Task<bool> DispatchToIdleAsync()
+    public async Task<bool> DispatchToIdleAsync(string saveFolder = null)
     {
         _logger.LogInformation("Dispatch to idle...");
         List<string> curScreen = await _autoService.GetScreenWordsAsync();
@@ -187,7 +187,7 @@ public class ClientService : IClientService
         {
             _logger.LogInformation("Dispatch - Please wait");
             await Task.Delay(standardDelay);
-            return await DispatchToIdleAsync();
+            return await DispatchToIdleAsync(saveFolder);
         }
         else if (_autoService.MatchScreen(_atmScreens.First(s => s.Name.ToLower() == "moretime"), curScreen))
         {
@@ -214,7 +214,7 @@ public class ClientService : IClientService
             }
 
             await Task.Delay(standardDelay);
-            return await DispatchToIdleAsync();
+            return await DispatchToIdleAsync(saveFolder);
         }
         else if (_autoService.MatchScreen(_atmScreens.First(s => s.Name.ToLower() == "anothertransaction"), curScreen))
         {
@@ -227,31 +227,31 @@ public class ClientService : IClientService
             }
 
             await Task.Delay(standardDelay);
-            return await DispatchToIdleAsync();
+            return await DispatchToIdleAsync(saveFolder);
         }
         else if (_autoService.MatchScreen(_atmScreens.First(s => s.Name.ToLower() == "takecard"), curScreen))
         {
             _logger.LogInformation("Dispatch - Take card");
-            await TakeAllMediaAsync();
+            await TakeAllMediaAsync(saveFolder);
             await Task.Delay(standardDelay);
-            return await DispatchToIdleAsync();
+            return await DispatchToIdleAsync(saveFolder);
         }
         else if (_autoService.MatchScreen(_atmScreens.First(s => s.Name.ToLower() == "thankyou"), curScreen))
         {
             _logger.LogInformation("Dispatch - Thank you");
-            await TakeAllMediaAsync();
+            await TakeAllMediaAsync(saveFolder);
             await Task.Delay(standardDelay);
-            return await DispatchToIdleAsync();
+            return await DispatchToIdleAsync(saveFolder);
         }
         else
         {
             _logger.LogInformation("Dispatch - Unrecognized screen");
             await Task.Delay(standardDelay);
-            return await DispatchToIdleAsync();
+            return await DispatchToIdleAsync(saveFolder);
         }
     }
 
-    public async Task TakeAllMediaAsync()
+    public async Task TakeAllMediaAsync(string saveFolder = null)
     {
         await _atmService.TakeCardAsync();
         List<AtmServiceModel> services = await _atmService.GetServicesAsync();
@@ -265,7 +265,17 @@ public class ClientService : IClientService
 
         if (receiptPrinter is not null && receiptPrinter.Media > 0)
         {
-            ReceiptModel receipt = await _atmService.TakeReceiptAsync(receiptPrinter.Name);
+            if (string.IsNullOrWhiteSpace(saveFolder))
+            {
+                string downloadPath = _config["Preferences:DownloadPath"];
+
+                if (string.IsNullOrEmpty(downloadPath) == false)
+                {
+                    saveFolder = downloadPath;
+                }
+            }
+            
+            ReceiptModel receipt = await _atmService.TakeReceiptAsync(receiptPrinter.Name, saveFolder);
 
             if (receipt is not null)
             {
