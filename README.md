@@ -210,18 +210,22 @@ Using the Paragon-provided APIs and the additional automations provided by this 
 Note this is totally dependent on your ATMs screen flow!  
 
 ```
-public async Task BalanceInquiry()
+public async Task BalanceInquiry(string cardId = "f2305283-bb84-49fe-aba6-cd3f7bcfa5ba",
+                                 string cardPin = "1234",
+                                 string language = "English",
+                                 string accountType = "Checking",
+                                 string accountName = "Checking|T",
+                                 string receiptOption = "Print and Display")
 {
     try
     {
         string saveFolder = Path.Combine(_config["Preferences:DownloadPath"], DateTime.Now.ToString("yyyy-MM-dd--HH.mm.ss"));
-        string cardId = "f2305283-bb84-49fe-aba6-cd3f7bcfa5ba";
-        string cardPin = "1234";
-        string language = "English";
         string transactionType = "Account Balance";
-        string accountType = "Checking";
-        string accountName = "Checking|T";
-        string receiptOption = "Print and Display";
+
+        if (language.ToLower() == "espanol")
+        {
+            transactionType = "Saldos de Cuenta";
+        }
 
         // Starting point -- InService/Welcome screen
         AtmScreenModel welcomeScreen = _atmScreens.First(s => s.Name.ToLower() == "welcome");
@@ -285,21 +289,9 @@ public async Task BalanceInquiry()
 
         await _clientService.SaveScreenshotAsync(saveFolder);
 
-        // Get location of transaction language
-        LocationModel location = await _vmService.GetLocationByTextAsync(language);
-
-        if (location is null || location.Found == false)
+        if (await _autoService.FindAndClickAsync(language) == false)
         {
-            _logger.LogError($"{language} not found");
-            return;
-        }
-
-        // Click language button
-        success = await _vmService.ClickScreenAsync(new ClickScreenModel(location));
-
-        if (success == false)
-        {
-            _logger.LogError($"Failed to click {language}");
+            _logger.LogError($"Failed to find and click '{language}' button");
             return;
         }
 
@@ -369,21 +361,9 @@ public async Task BalanceInquiry()
 
         await _clientService.SaveScreenshotAsync(saveFolder);
 
-        // Find account balance button
-        location = await _vmService.GetLocationByTextAsync(transactionType);
-
-        if (location is null || location.Found == false)
+        if (await _autoService.FindAndClickAsync(transactionType) == false)
         {
-            _logger.LogError($"{transactionType} option not found");
-            return;
-        }
-
-        // Click account balance button
-        success = await _vmService.ClickScreenAsync(new ClickScreenModel(location));
-
-        if (success == false)
-        {
-            _logger.LogError($"Failed to click {transactionType}");
+            _logger.LogError($"Failed to find and click '{transactionType}' button");
             return;
         }
 
@@ -403,21 +383,9 @@ public async Task BalanceInquiry()
 
         await _clientService.SaveScreenshotAsync(saveFolder);
 
-        // Find transaction account type
-        location = await _vmService.GetLocationByTextAsync(accountType);
-
-        if (location is null || location.Found == false)
+        if (await _autoService.FindAndClickAsync(accountType) == false)
         {
-            _logger.LogError($"{accountType} account option not found");
-            return;
-        }
-
-        // Click account type
-        success = await _vmService.ClickScreenAsync(new ClickScreenModel(location));
-
-        if (success == false)
-        {
-            _logger.LogError($"Failed to click {accountType} account");
+            _logger.LogError($"Failed to find and click '{accountType}' button");
             return;
         }
 
@@ -437,21 +405,9 @@ public async Task BalanceInquiry()
 
         await _clientService.SaveScreenshotAsync(saveFolder);
 
-        // Find display balance button
-        location = await _vmService.GetLocationByTextAsync(receiptOption);
-
-        if (location is null || location.Found == false)
+        if (await _autoService.FindAndClickAsync(receiptOption) == false)
         {
-            _logger.LogError($"{receiptOption} option not found");
-            return;
-        }
-
-        // Click display balance button
-        success = await _vmService.ClickScreenAsync(new ClickScreenModel(location));
-
-        if (success == false)
-        {
-            _logger.LogError($"Failed to click {receiptOption}");
+            _logger.LogError($"Failed to find and click '{receiptOption}' button");
             return;
         }
 
@@ -471,21 +427,9 @@ public async Task BalanceInquiry()
 
         await _clientService.SaveScreenshotAsync(saveFolder);
 
-        // Find specified account button
-        location = await _vmService.GetLocationByTextAsync(accountName);
-
-        if (location is null || location.Found == false)
+        if (await _autoService.FindAndClickAsync(accountName) == false)
         {
-            _logger.LogError($"{accountName} account not found");
-            return;
-        }
-
-        // Click specified account button
-        success = await _vmService.ClickScreenAsync(new ClickScreenModel(location));
-
-        if (success == false)
-        {
-            _logger.LogError($"Failed to click {accountName}");
+            _logger.LogError($"Failed to find and click '{accountName}' button");
             return;
         }
 
@@ -505,21 +449,9 @@ public async Task BalanceInquiry()
 
         await _clientService.SaveScreenshotAsync(saveFolder);
 
-        // Find continue button
-        location = await _vmService.GetLocationByTextAsync("continue");
-
-        if (location is null || location.Found == false)
+        if (await _autoService.FindAndClickAsync(new string[] { "continue", "continuar" }) == false)
         {
-            _logger.LogError("Continue not found");
-            return;
-        }
-
-        // Click continue button
-        success = await _vmService.ClickScreenAsync(new ClickScreenModel(location));
-
-        if (success == false)
-        {
-            _logger.LogError("Failed to click continue");
+            _logger.LogError($"Failed to find and click 'Continue' or 'Continuar' button");
             return;
         }
 
@@ -545,6 +477,7 @@ public async Task BalanceInquiry()
         if (receipt is not null)
         {
             string receiptText = JsonSerializer.Serialize(receipt.OcrData.Elements.ToList().Select(e => e.text));
+            _clientService.SaveReceiptAsync(saveFolder, receipt.result);
             _logger.LogInformation($"Take receipt -- {receiptText}");
         }
 
@@ -562,13 +495,10 @@ public async Task BalanceInquiry()
 
         await _clientService.SaveScreenshotAsync(saveFolder);
 
-        // Find no button
-        location = await _vmService.GetLocationByTextAsync("no");
-
-        if (location is not null && location.Found)
+        if (await _autoService.FindAndClickAsync("no") == false)
         {
-            // Click no button
-            await _vmService.ClickScreenAsync(new ClickScreenModel(location));
+            _logger.LogError($"Failed to find and click 'No' button");
+            return;
         }
 
         await Task.Delay(standardDelay);
