@@ -11,7 +11,6 @@ public class EdgeConsumerTransactionService : IEdgeConsumerTransactionService
 {
     private readonly IConfiguration _config;
     private readonly ILogger<EdgeConsumerTransactionService> _logger;
-    private readonly IVirtualMachineService _vmService;
     private readonly IAtmService _atmService;
     private readonly IAutomationService _autoService;
     private readonly IClientService _clientService;
@@ -19,14 +18,12 @@ public class EdgeConsumerTransactionService : IEdgeConsumerTransactionService
 
     public EdgeConsumerTransactionService(IConfiguration configuration,
                                       ILogger<EdgeConsumerTransactionService> logger,
-                                      IVirtualMachineService vmService,
                                       IAtmService atmService,
                                       IAutomationService autoService,
                                       IClientService clientService)
     {
         _config = configuration;
         _logger = logger;
-        _vmService = vmService;
         _atmService = atmService;
         _autoService = autoService;
         _clientService = clientService;
