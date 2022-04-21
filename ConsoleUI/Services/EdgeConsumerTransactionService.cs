@@ -17,10 +17,10 @@ public class EdgeConsumerTransactionService : IEdgeConsumerTransactionService
     private readonly List<AtmScreenModel> _atmScreens;
 
     public EdgeConsumerTransactionService(IConfiguration configuration,
-                                      ILogger<EdgeConsumerTransactionService> logger,
-                                      IAtmService atmService,
-                                      IAutomationService autoService,
-                                      IClientService clientService)
+                                          ILogger<EdgeConsumerTransactionService> logger,
+                                          IAtmService atmService,
+                                          IAutomationService autoService,
+                                          IClientService clientService)
     {
         _config = configuration;
         _logger = logger;
@@ -53,7 +53,6 @@ public class EdgeConsumerTransactionService : IEdgeConsumerTransactionService
         try
         {
             string saveFolder = Path.Combine(_config["Preferences:DownloadPath"], DateTime.Now.ToString("yyyy-MM-dd--HH.mm.ss"));
-            
             string transactionType = "Account Balance";
 
             if (language.ToLower() == "espanol")
