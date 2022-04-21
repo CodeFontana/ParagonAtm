@@ -299,9 +299,9 @@ public class VistaConsumerTransactionService : IVistaConsumerTransactionService
 
             await _clientService.SaveScreenshotAsync(saveFolder);
 
-            if (await _autoService.FindAndClickAsync("No") == false)
+            if (await _autoService.FindAndClickAsync("Exit") == false)
             {
-                _logger.LogError($"Failed to find and click 'No' button");
+                _logger.LogError($"Failed to find and click 'Exit' button");
                 return;
             }
 
