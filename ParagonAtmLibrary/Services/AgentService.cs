@@ -83,13 +83,13 @@ public class AgentService : IAgentService
         }
     }
 
-    public async Task<bool> OpenHwProfileAsync(TerminalModel virtualAtm)
+    public async Task<bool> OpenHwProfileAsync(string hwProfileId)
     {
-        _logger.LogInformation($"Open profile [HwProfile={virtualAtm.HwProfile}]...");
+        _logger.LogInformation($"Open profile [HwProfile={hwProfileId}]...");
 
         var profileData = new
         {
-            profileId = virtualAtm.HwProfile
+            profileId = hwProfileId
         };
 
         return await AgentRequestAsync("open-profile", profileData);
