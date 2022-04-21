@@ -20,7 +20,8 @@
     "StartupApps": [
       "C:\\Users\\Public\\Desktop\\SSTAuto1.BAT"
     ],
-    "StandardDelay": 5000
+    "StandardDelayMS": 5000,
+    "StartupDelaySeconds": 420
   },
   "Terminal.Diebold": {
     "Host": "http://10.44.112.165:13467",
@@ -28,6 +29,7 @@
     "StartupApps": [
       "C:\\Phoenix\\bin\\mm99003.exe"
     ],
-    "StandardDelay": 5000
+    "StandardDelay": 5000,
+    "StartupDelaySeconds": 200
   }
 }

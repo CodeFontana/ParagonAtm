@@ -172,7 +172,7 @@ public class ClientService : IClientService
     {
         _logger.LogInformation("Dispatch to idle...");
         List<string> curScreen = await _autoService.GetScreenWordsAsync();
-        int standardDelay = _config.GetValue<int>("Terminal:StandardDelay");
+        int standardDelay = _config.GetValue<int>("Terminal:StandardDelayMS");
 
         if (curScreen is null)
         {
