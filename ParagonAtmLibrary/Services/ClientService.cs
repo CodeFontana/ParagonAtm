@@ -118,13 +118,11 @@ public class ClientService : IClientService
                 foreach (string app in _virtualAtm.StartupApps)
                 {
                     await _agentService.StartAtmAppAsync(app);
-                    await Task.Delay(5000);
                 }
 
-                await _atmService.RecoverAsync(); // In case a startup app disconnects API connection
-
-                _logger.LogInformation("Delaying for 7 minutes while ATM app starts...");
-                await Task.Delay(TimeSpan.FromMinutes(7));
+                TimeSpan startupDelay = TimeSpan.FromSeconds(int.Parse(_config["Terminal:StartupDelaySeconds"]));
+                _logger.LogInformation($"Delaying for {startupDelay.TotalSeconds} seconds while ATM app starts...");
+                await Task.Delay(startupDelay);
 
                 _logger.LogInformation("Validate welcome screen...");
                 success = await _autoService.WaitForScreenAsync(
