@@ -10,7 +10,7 @@ public class ClientApp : IHostedService
     private readonly IHostApplicationLifetime _hostApplicationLifetime;
     private readonly ILogger<ClientApp> _logger;
     private readonly IClientService _clientService;
-    private readonly IEdgeConsumerTransactionService _consumerTransactionService;
+    private readonly IEdgeConsumerTransactionService _edgeConsumerTransactionService;
 
     public ClientApp(IHostApplicationLifetime hostApplicationLifetime,
                      ILogger<ClientApp> logger,
@@ -20,7 +20,7 @@ public class ClientApp : IHostedService
         _hostApplicationLifetime = hostApplicationLifetime;
         _logger = logger;
         _clientService = clientService;
-        _consumerTransactionService = consumerTransactionService;
+        _edgeConsumerTransactionService = consumerTransactionService;
     }
 
     public Task StartAsync(CancellationToken cancellationToken)
@@ -60,14 +60,14 @@ public class ClientApp : IHostedService
                 return;
             }
 
-            await _consumerTransactionService.BalanceInquiry("f2305283-bb84-49fe-aba6-cd3f7bcfa5ba",
+            await _edgeConsumerTransactionService.BalanceInquiry("f2305283-bb84-49fe-aba6-cd3f7bcfa5ba",
                                                              "1234",
                                                              "English",
                                                              "Checking",
                                                              "Checking|T",
                                                              "Print and Display");
 
-            await _consumerTransactionService.BalanceInquiry("f2305283-bb84-49fe-aba6-cd3f7bcfa5ba",
+            await _edgeConsumerTransactionService.BalanceInquiry("f2305283-bb84-49fe-aba6-cd3f7bcfa5ba",
                                                              "1234",
                                                              "Espanol",
                                                              "Cuenta Corriente",
