@@ -472,7 +472,7 @@ public async Task BalanceInquiry(string cardId = "f2305283-bb84-49fe-aba6-cd3f7b
         }
 
         // Take receipt
-        ReceiptModel receipt = await _atmService.TakeReceiptAsync(receiptPrinter.Name);
+        ReceiptModel receipt = await _atmService.TakeReceiptAsync(receiptPrinter.Name, saveFolder);
 
         if (receipt is not null)
         {
