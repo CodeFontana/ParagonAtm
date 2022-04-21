@@ -9,13 +9,13 @@ Add latest **CodeFoxtrot.ParagonAtmLibrary** to your project via 'Manage Nuget P
 or via command line...
 
 ```
-dotnet add package CodeFoxtrot.ParagonAtmLibrary --version 1.5.3
+dotnet add package CodeFoxtrot.ParagonAtmLibrary --version 1.5.5
 ```
 
 or via your .csproj file...
 
 ```
-<PackageReference Include="CodeFoxtrot.ParagonAtmLibrary" Version="1.5.3" />
+<PackageReference Include="CodeFoxtrot.ParagonAtmLibrary" Version="1.5.5" />
 ```
 
 Add this to your ConfigureServices() method:
@@ -472,7 +472,7 @@ public async Task BalanceInquiry(string cardId = "f2305283-bb84-49fe-aba6-cd3f7b
         }
 
         // Take receipt
-        ReceiptModel receipt = await _atmService.TakeReceiptAsync(receiptPrinter.Name);
+        ReceiptModel receipt = await _atmService.TakeReceiptAsync(receiptPrinter.Name, saveFolder);
 
         if (receipt is not null)
         {
