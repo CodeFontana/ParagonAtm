@@ -15,12 +15,12 @@ public class ClientApp : IHostedService
     public ClientApp(IHostApplicationLifetime hostApplicationLifetime,
                      ILogger<ClientApp> logger,
                      IClientService clientService,
-                     IEdgeConsumerTransactionService consumerTransactionService)
+                     IEdgeConsumerTransactionService edgeConsumerTransactionService)
     {
         _hostApplicationLifetime = hostApplicationLifetime;
         _logger = logger;
         _clientService = clientService;
-        _edgeConsumerTransactionService = consumerTransactionService;
+        _edgeConsumerTransactionService = edgeConsumerTransactionService;
     }
 
     public Task StartAsync(CancellationToken cancellationToken)
