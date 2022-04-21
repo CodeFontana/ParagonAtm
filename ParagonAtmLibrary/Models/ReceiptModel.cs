@@ -8,10 +8,10 @@ public class ReceiptModel
     public long Timestamp { get; set; }
 
     [JsonPropertyName("format")]
-    public string format { get; set; }
+    public string Format { get; set; }
 
     [JsonPropertyName("result")]
-    public string result { get; set; }
+    public string Result { get; set; }
 
     [JsonPropertyName("ocrData")]
     public OcrDataModel OcrData { get; set; }
