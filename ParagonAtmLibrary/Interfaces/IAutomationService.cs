@@ -5,6 +5,8 @@ public interface IAutomationService
 {
     bool CompareText(List<string> screenWords, List<string> comparePhrases, decimal matchConfidence);
     Task<bool> CompareTextAsync(List<string> comparePhrases, decimal matchConfidence);
+    Task<bool> FindAndClickAsync(string findText);
+    Task<bool> FindAndClickAsync(string[] findText);
     Task<List<string>> GetScreenWordsAsync();
     bool MatchScreen(AtmScreenModel screen, List<string> screenWords);
     AtmScreenModel MatchScreen(List<AtmScreenModel> screens, List<string> screenWords);

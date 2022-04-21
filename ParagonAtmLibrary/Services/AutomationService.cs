@@ -78,6 +78,51 @@ public class AutomationService : IAutomationService
     }
 
     /// <summary>
+    /// Finds the location of the specified text and clicks it
+    /// </summary>
+    /// <param name="findText">The text to find on the screen</param>
+    /// <returns>True, if the specified text was located and successfully clicked, false otherwise.</returns>
+    public async Task<bool> FindAndClickAsync(string findText)
+    {
+        LocationModel location = await _vmService.GetLocationByTextAsync(findText);
+
+        if (location is null || location.Found == false)
+        {
+            return false;
+        }
+
+        if (await _vmService.ClickScreenAsync(new ClickScreenModel(location)) == false)
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    /// <summary>
+    /// Clicks the first element of the specified text array, that is found
+    /// </summary>
+    /// <param name="findText">An array of strings to find on the screen</param>
+    /// <returns>True, if any of the specified strings were located and clicked, false if none were found</returns>
+    public async Task<bool> FindAndClickAsync(string[] findText)
+    {
+        foreach (string item in findText)
+        {
+            LocationModel location = await _vmService.GetLocationByTextAsync(item);
+
+            if (location is not null && location.Found)
+            {
+                if (await _vmService.ClickScreenAsync(new ClickScreenModel(location)))
+                {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /// <summary>
     /// Simplification of Paragon API method /get-screen-text. This method
     /// flattens the returned result so the consumer doesn't have to 
     /// parse elements, lines and word arrays.
