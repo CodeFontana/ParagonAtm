@@ -270,7 +270,6 @@ public class ClientService : IClientService
             if (receipt is not null)
             {
                 string receiptText = JsonSerializer.Serialize(receipt.OcrData.Elements.ToList().Select(e => e.text));
-                SaveReceiptAsync(_config["Preferences:DownloadPath"], receipt.result);
                 _logger.LogInformation($"Take receipt -- {receiptText}");
             }
         }
@@ -312,27 +311,6 @@ public class ClientService : IClientService
                 File.WriteAllBytes(
                     Path.Combine(folder, $"Screenshot-{DateTime.Now.ToString("yyyy-MM-dd--HH.mm.ss")}.jpg"),
                     Convert.FromBase64String(jpeg));
-            }
-
-            return true;
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, ex.Message);
-            return false;
-        }
-    }
-
-    public bool SaveReceiptAsync(string folder, string receiptJpeg)
-    {
-        try
-        {
-            if (string.IsNullOrWhiteSpace(receiptJpeg) == false)
-            {
-                Directory.CreateDirectory(folder);
-                File.WriteAllBytes(
-                    Path.Combine(folder, $"Receipt-{DateTime.Now.ToString("yyyy-MM-dd--HH.mm.ss")}.jpg"),
-                    Convert.FromBase64String(receiptJpeg));
             }
 
             return true;

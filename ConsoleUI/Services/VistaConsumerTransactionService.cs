@@ -276,12 +276,11 @@ public class VistaConsumerTransactionService : IVistaConsumerTransactionService
             }
 
             // Take receipt
-            ReceiptModel receipt = await _atmService.TakeReceiptAsync(receiptPrinter.Name);
+            ReceiptModel receipt = await _atmService.TakeReceiptAsync(receiptPrinter.Name, saveFolder);
 
             if (receipt is not null)
             {
                 string receiptText = JsonSerializer.Serialize(receipt.OcrData.Elements.ToList().Select(e => e.text));
-                _clientService.SaveReceiptAsync(saveFolder, receipt.result);
                 _logger.LogInformation($"Take receipt -- {receiptText}");
             }
 

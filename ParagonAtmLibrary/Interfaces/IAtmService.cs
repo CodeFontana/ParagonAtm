@@ -19,5 +19,5 @@ public interface IAtmService
     Task<bool> RecoverAsync();
     Task<AtmService.AuditData> TakeCardAsync();
     Task<AtmService.AuditData> TakeMediaAsync(string deviceName, int count);
-    Task<ReceiptModel> TakeReceiptAsync(string deviceName);
+    Task<ReceiptModel> TakeReceiptAsync(string deviceName, string imageFolder = null);
 }

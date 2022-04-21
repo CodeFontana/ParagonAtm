@@ -284,7 +284,7 @@ public class AtmService : IAtmService
         }
     }
 
-    public async Task<ReceiptModel> TakeReceiptAsync(string deviceName)
+    public async Task<ReceiptModel> TakeReceiptAsync(string deviceName, string imageFolder = null)
     {
         try
         {
@@ -302,6 +302,12 @@ public class AtmService : IAtmService
             if (response.IsSuccessStatusCode)
             {
                 ReceiptModel result = await response.Content.ReadFromJsonAsync<ReceiptModel>();
+
+                if (string.IsNullOrWhiteSpace(imageFolder) == false)
+                {
+                    SaveReceiptAsync(imageFolder, result.Result);
+                }
+                
                 _logger.LogInformation($"Success [{response.StatusCode}] -- /take-receipt");
                 return result;
             }
@@ -345,6 +351,27 @@ public class AtmService : IAtmService
         catch (Exception e)
         {
             _logger.LogError($"Request failed [/{endpoint}] -- {e.Message}");
+            return false;
+        }
+    }
+
+    public bool SaveReceiptAsync(string folder, string receiptJpeg)
+    {
+        try
+        {
+            if (string.IsNullOrWhiteSpace(receiptJpeg) == false)
+            {
+                Directory.CreateDirectory(folder);
+                File.WriteAllBytes(
+                    Path.Combine(folder, $"Receipt-{DateTime.Now.ToString("yyyy-MM-dd--HH.mm.ss")}.jpg"),
+                    Convert.FromBase64String(receiptJpeg));
+            }
+
+            return true;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, ex.Message);
             return false;
         }
     }
