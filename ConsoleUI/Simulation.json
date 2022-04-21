@@ -26,8 +26,7 @@
     "Host": "http://10.44.112.165:13467",
     "HwProfile": "e0d41618-e129-4c24-a626-319dbbb65572",
     "StartupApps": [
-      "C:\\Users\\Manage_ATM\\Desktop\\RunAgt.vbs",
-      "C:\\Users\\Manage_ATM\\Desktop\\LaunchVista.vbs"
+      "C:\\Phoenix\\bin\\mm99003.exe"
     ],
     "StandardDelay": 5000
   }
