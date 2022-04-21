@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using ConsoleUI.Interfaces;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using ParagonAtmLibrary.Interfaces;
 using ParagonAtmLibrary.Models;
@@ -10,7 +11,6 @@ public class VistaConsumerTransactionService : IVistaConsumerTransactionService
 {
     private readonly IConfiguration _config;
     private readonly ILogger<EdgeConsumerTransactionService> _logger;
-    private readonly IVirtualMachineService _vmService;
     private readonly IAtmService _atmService;
     private readonly IAutomationService _autoService;
     private readonly IClientService _clientService;
@@ -18,14 +18,12 @@ public class VistaConsumerTransactionService : IVistaConsumerTransactionService
 
     public VistaConsumerTransactionService(IConfiguration configuration,
                                            ILogger<EdgeConsumerTransactionService> logger,
-                                           IVirtualMachineService vmService,
                                            IAtmService atmService,
                                            IAutomationService autoService,
                                            IClientService clientService)
     {
         _config = configuration;
         _logger = logger;
-        _vmService = vmService;
         _atmService = atmService;
         _autoService = autoService;
         _clientService = clientService;
@@ -167,24 +165,9 @@ public class VistaConsumerTransactionService : IVistaConsumerTransactionService
 
             await _clientService.SaveScreenshotAsync(saveFolder);
 
-
-
-
-            // Get location of Yes
-            LocationModel location = await _vmService.GetLocationByTextAsync("Yes");
-
-            if (location is null || location.Found == false)
+            if (await _autoService.FindAndClickAsync("Yes") == false)
             {
-                _logger.LogError($"'Yes' response not found");
-                return;
-            }
-
-            // Click yes button
-            success = await _vmService.ClickScreenAsync(new ClickScreenModel(location));
-
-            if (success == false)
-            {
-                _logger.LogError($"Failed to click 'Yes' button");
+                _logger.LogError($"Failed to find and click 'Yes' button");
                 return;
             }
 
@@ -204,21 +187,9 @@ public class VistaConsumerTransactionService : IVistaConsumerTransactionService
 
             await _clientService.SaveScreenshotAsync(saveFolder);
 
-            // Find display balance button
-            location = await _vmService.GetLocationByTextAsync(receiptOption);
-
-            if (location is null || location.Found == false)
+            if (await _autoService.FindAndClickAsync(receiptOption) == false)
             {
-                _logger.LogError($"{receiptOption} option not found");
-                return;
-            }
-
-            // Click display balance button
-            success = await _vmService.ClickScreenAsync(new ClickScreenModel(location));
-
-            if (success == false)
-            {
-                _logger.LogError($"Failed to click {receiptOption}");
+                _logger.LogError($"Failed to find and click '{receiptOption}' button");
                 return;
             }
 
@@ -238,21 +209,9 @@ public class VistaConsumerTransactionService : IVistaConsumerTransactionService
 
             await _clientService.SaveScreenshotAsync(saveFolder);
 
-            // Find transaction account type
-            location = await _vmService.GetLocationByTextAsync(accountType);
-
-            if (location is null || location.Found == false)
+            if (await _autoService.FindAndClickAsync(accountType) == false)
             {
-                _logger.LogError($"{accountType} account option not found");
-                return;
-            }
-
-            // Click account type
-            success = await _vmService.ClickScreenAsync(new ClickScreenModel(location));
-
-            if (success == false)
-            {
-                _logger.LogError($"Failed to click {accountType} account");
+                _logger.LogError($"Failed to find and click '{accountType}' button");
                 return;
             }
 
@@ -272,21 +231,9 @@ public class VistaConsumerTransactionService : IVistaConsumerTransactionService
 
             await _clientService.SaveScreenshotAsync(saveFolder);
 
-            // Find specified account button
-            location = await _vmService.GetLocationByTextAsync(accountName);
-
-            if (location is null || location.Found == false)
+            if (await _autoService.FindAndClickAsync(accountName) == false)
             {
-                _logger.LogError($"{accountName} account not found");
-                return;
-            }
-
-            // Click specified account button
-            success = await _vmService.ClickScreenAsync(new ClickScreenModel(location));
-
-            if (success == false)
-            {
-                _logger.LogError($"Failed to click {accountName}");
+                _logger.LogError($"Failed to find and click '{accountName}' button");
                 return;
             }
 
@@ -351,13 +298,10 @@ public class VistaConsumerTransactionService : IVistaConsumerTransactionService
 
             await _clientService.SaveScreenshotAsync(saveFolder);
 
-            // Find no button
-            location = await _vmService.GetLocationByTextAsync("no");
-
-            if (location is not null && location.Found)
+            if (await _autoService.FindAndClickAsync("No") == false)
             {
-                // Click no button
-                await _vmService.ClickScreenAsync(new ClickScreenModel(location));
+                _logger.LogError($"Failed to find and click 'No' button");
+                return;
             }
 
             await Task.Delay(standardDelay);
