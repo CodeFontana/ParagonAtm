@@ -68,13 +68,6 @@ public class ClientService : IClientService
                 && agentState.AgentStatus.ToUpper().Equals("PAUSED") == false)
             {
                 _logger.LogError("Agent must be in IDLE or PAUSED state to acquire session");
-                
-                if (await _atmService.RecoverAsync())
-                {
-                    _logger.LogInformation("Session recovered...");
-                    return await ConnectAsync();
-                }
-                
                 return false;
             }
             else if (agentState.AgentStatus.ToUpper().Equals("PAUSED"))
