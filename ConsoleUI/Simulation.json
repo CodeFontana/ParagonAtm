@@ -17,7 +17,18 @@
   "Terminal": {
     "Host": "http://10.44.112.155:13467",
     "HwProfile": "1744febb-dd28-433e-aa1b-33139c820d2e",
-    "AppStartup": "C:\\Users\\Public\\Desktop\\SSTAuto1.BAT",
+    "StartupApps": [
+      "C:\\Users\\Public\\Desktop\\SSTAuto1.BAT"
+    ],
+    "StandardDelay": 5000
+  },
+  "Terminal.Diebold": {
+    "Host": "http://10.44.112.165:13467",
+    "HwProfile": "e0d41618-e129-4c24-a626-319dbbb65572",
+    "StartupApps": [
+      "C:\\Users\\Manage_ATM\\Desktop\\RunAgt.vbs",
+      "C:\\Users\\Manage_ATM\\Desktop\\LaunchVista.vbs"
+    ],
     "StandardDelay": 5000
   }
 }

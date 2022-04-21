@@ -41,7 +41,7 @@ public class ClientService : IClientService
         {
             Host = _config["Terminal:Host"],
             HwProfile = _config["Terminal:HwProfile"],
-            StartupApp = _config["Terminal:AppStartup"]
+            StartupApps = _config.GetSection("Terminal:StartupApps").Get<List<string>>()
         };
 
         _webFastUser = new WebFastUserModel
@@ -91,11 +91,16 @@ public class ClientService : IClientService
 
             if (agentPaused == false)
             {
-                // Open hardware profile
-                await _agentService.OpenHwProfileAsync(_virtualAtm);
+                await _agentService.OpenHwProfileAsync(_virtualAtm.HwProfile);
             }
 
-            await _connectionService.OpenAsync();
+            bool success = await _connectionService.OpenAsync();
+
+            if (success == false)
+            {
+                _logger.LogError("Failed to open connection");
+                return false;
+            }
 
             _logger.LogInformation("Check if ATM app is running...");
             List<string> screenWords = await _autoService.GetScreenWordsAsync();
@@ -110,12 +115,19 @@ public class ClientService : IClientService
 
             if (curScreen == null)
             {
-                await _agentService.StartAtmAppAsync(_config["Terminal:AppStartup"]);
+                foreach (string app in _virtualAtm.StartupApps)
+                {
+                    await _agentService.StartAtmAppAsync(app);
+                    await Task.Delay(5000);
+                }
+
+                await _atmService.RecoverAsync(); // In case a startup app disconnects API connection
+
                 _logger.LogInformation("Delaying for 7 minutes while ATM app starts...");
                 await Task.Delay(TimeSpan.FromMinutes(7));
 
                 _logger.LogInformation("Validate welcome screen...");
-                bool success = await _autoService.WaitForScreenAsync(
+                success = await _autoService.WaitForScreenAsync(
                     _atmScreens.First(s => s.Name.ToLower() == "welcome"),
                     TimeSpan.FromMinutes(5),
                     TimeSpan.FromSeconds(15));
