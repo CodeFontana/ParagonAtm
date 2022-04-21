@@ -10,6 +10,9 @@ public class ReceiptModel
     [JsonPropertyName("format")]
     public string format { get; set; }
 
+    [JsonPropertyName("result")]
+    public string result { get; set; }
+
     [JsonPropertyName("ocrData")]
     public OcrDataModel OcrData { get; set; }
 }

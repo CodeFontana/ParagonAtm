@@ -311,6 +311,7 @@ public class EdgeConsumerTransactionService : IEdgeConsumerTransactionService
             if (receipt is not null)
             {
                 string receiptText = JsonSerializer.Serialize(receipt.OcrData.Elements.ToList().Select(e => e.text));
+                _clientService.SaveReceiptAsync(saveFolder, receipt.result);
                 _logger.LogInformation($"Take receipt -- {receiptText}");
             }
 
