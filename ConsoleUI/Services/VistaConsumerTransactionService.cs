@@ -6,7 +6,7 @@ using System.Text.Json;
 
 namespace ConsoleUI.Services;
 
-public class VistaConsumerTransactionService
+public class VistaConsumerTransactionService : IVistaConsumerTransactionService
 {
     private readonly IConfiguration _config;
     private readonly ILogger<EdgeConsumerTransactionService> _logger;
@@ -166,6 +166,9 @@ public class VistaConsumerTransactionService
             }
 
             await _clientService.SaveScreenshotAsync(saveFolder);
+
+
+
 
             // Get location of Yes
             LocationModel location = await _vmService.GetLocationByTextAsync("Yes");

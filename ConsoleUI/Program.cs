@@ -41,6 +41,7 @@ class Program
                 {
                     services.AddScoped(sp => new HttpClient(new RequestHandler(new HttpClientHandler(), sp.GetRequiredService<ILogger<RequestHandler>>())));
                     services.AddScoped<IEdgeConsumerTransactionService, EdgeConsumerTransactionService>();
+                    services.AddScoped<IVistaConsumerTransactionService, VistaConsumerTransactionService>();
                     services.AddParagonAtmLibrary();
                     services.AddHostedService<ClientApp>();
                 })
