@@ -23,7 +23,7 @@
     "StandardDelayMS": 5000,
     "StartupDelaySeconds": 420
   },
-  "Terminal.Diebold": {
+  "Terminal.Vista": {
     "Host": "http://10.44.112.165:13467",
     "HwProfile": "e0d41618-e129-4c24-a626-319dbbb65572",
     "StartupApps": [
