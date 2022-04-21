@@ -9,13 +9,13 @@ Add latest **CodeFoxtrot.ParagonAtmLibrary** to your project via 'Manage Nuget P
 or via command line...
 
 ```
-dotnet add package CodeFoxtrot.ParagonAtmLibrary --version 1.5.1
+dotnet add package CodeFoxtrot.ParagonAtmLibrary --version 1.5.3
 ```
 
 or via your .csproj file...
 
 ```
-<PackageReference Include="CodeFoxtrot.ParagonAtmLibrary" Version="1.5.1" />
+<PackageReference Include="CodeFoxtrot.ParagonAtmLibrary" Version="1.5.3" />
 ```
 
 Add this to your ConfigureServices() method:
@@ -25,7 +25,7 @@ services.AddParagonAtmLibrary();
 ```
 
 ### Set your preferences -- Simulation.json
-Specify your WebFast account, API endpoints if different from the defaults, a download path for storing screenshots, and the connection details for the Virtual ATM:
+Specify your WebFast account, API endpoints if different from the defaults, a download path for storing screenshots, and the connection details for the Virtual ATM...
 
 ```
 {
@@ -47,11 +47,24 @@ Specify your WebFast account, API endpoints if different from the defaults, a do
   "Terminal": {
     "Host": "http://10.44.112.155:13467",
     "HwProfile": "1744febb-dd28-433e-aa1b-33139c820d2e",
-    "AppStartup": "C:\\Users\\Public\\Desktop\\SSTAuto1.BAT",
-    "StandardDelay": 5000
+    "StartupApps": [
+      "C:\\Users\\Public\\Desktop\\SSTAuto1.BAT"
+    ],
+    "StandardDelayMS": 5000,
+    "StartupDelaySeconds": 420
+  },
+  "Terminal.Vista": {
+    "Host": "http://10.44.112.165:13467",
+    "HwProfile": "e0d41618-e129-4c24-a626-319dbbb65572",
+    "StartupApps": [
+      "C:\\Phoenix\\bin\\mm99003.exe"
+    ],
+    "StandardDelay": 5000,
+    "StartupDelaySeconds": 200
   }
 }
 ```
+Note: The "Terminal" configuration section is used by the demo to determine which Virtual ATM to connect with. In the above example, "Terminal.Vista" will be ignored, and you can rename the sections to swap which profile is the active one.
 
 ### Define your screen pool -- AvailableScreens.json
 This JSON is used to define each screen. This is completely subjective, so you'll need to adjust accordingly with your testing.  
@@ -62,132 +75,26 @@ The **MatchConfidence** is provided to accomodate variability with the Paragon s
 
 ```
 "AvailableScreens": [
-    {
-      "Name": "Welcome",
-      "Text": [
-        "Please insert and remove your card",
-        "Por favor inserte su tarjeta"
-      ],
-      "MatchConfidence": 0.80
-    },
-    {
-      "Name": "OutOfService",
-      "Text": [
-        "This ATM is temporarily unavailable We're sorry for the inconvenience"
-      ],
-      "MatchConfidence": 0.80
-    },
-    {
-      "Name": "LanguageSelection",
-      "Text": [
-        "Please select the language you wish to use",
-        "Por favor seleccione el idioma que desea usar"
-      ],
-      "MatchConfidence": 0.80
-    },
-    {
-      "Name": "PIN",
-      "Text": [
-        "Please enter your Personal Identification Number",
-        "Por favor ingrese su Numero de Identificacion Personal"
-      ],
-      "MatchConfidence": 0.80
-    },
-    {
-      "Name": "TransactionType",
-      "Text": [
-        "Please select the type of transaction by pressing the appropriate key",
-        "Por favor escoja el tipo de transaccion oprimiendo la tecla apropiada"
-      ],
-      "MatchConfidence": 0.80
-    },
-    {
-      "Name": "AccountType",
-      "Text": [
-        "Please select an account type",
-        "Cuenta Corriente"
-      ],
-      "MatchConfidence": 1.00
-    },
-    {
-      "Name": "BalanceDestination",
-      "Text": [
-        "Where would you like your balance",
-        "Donde desea ver su saldo"
-      ],
-      "MatchConfidence": 0.80
-    },
-    {
-      "Name": "FastCash",
-      "Text": [
-        "Please select a Fast Cash amount"
-      ],
-      "MatchConfidence": 0.80
-    },
-    {
-      "Name": "PleaseWait",
-      "Text": [
-        "Please wait"
-      ],
-      "MatchConfidence": 1.00
-    },
-    {
-      "Name": "AccountName",
-      "Text": [
-        "Please select the desired account",
-        "Por favor escoja la cuenta deseada"
-      ],
-      "MatchConfidence": 0.80
-    },
-    {
-      "Name": "BalanceInquiry",
-      "Text": [
-        "Balance inquiry Available Total",
-        "Saldo para Disponible total"
-      ],
-      "MatchConfidence": 0.80
-    },
-    {
-      "Name": "AnotherTransaction",
-      "Text": [
-        "Do you want another transaction",
-        "Desea otra transaccion",
-        "Desea otra transaccien"
-      ],
-      "MatchConfidence": 0.60
-    },
-    {
-      "Name": "MoreTime",
-      "Text": [
-        "Do you need more time",
-        "Would you like more time",
-        "Quiere usted mas tiempo"
-      ],
-      "MatchConfidence": 0.80
-    },
-    {
-      "Name": "TransactionCancelled",
-      "Text": [
-        "Your transaction has been cancelled"
-      ],
-      "MatchConfidence": 0.80
-    },
-    {
-      "Name": "ThankYou",
-      "Text": [
-        "Thank you for using this ATM",
-        "Gracias por usar este cajero de"
-      ],
-      "MatchConfidence": 0.80
-    },
-    {
-      "Name": "TakeCard",
-      "Text": [
-        "Please take your card",
-        "Por favor retire su tarjeta"
-      ],
-      "MatchConfidence": 1.00
-    }
+  {
+    "Name": "Welcome",
+    "Text": [
+      "Please insert your card",
+      "Por favor inserte su tarjeta",
+      "Please insert and remove your card",
+      "Por favor inserte y retire su tarjeta"
+    ],
+    "MatchConfidence": 0.80
+  },
+  {
+    "Name": "OutOfService",
+    "Text": [
+      "This ATM is temporarily unavailable We're sorry for the inconvenience",
+      "Sorry this ATM is temporarily out of service",
+      "Sorry this machine is temporarily out of service"
+    ],
+    "MatchConfidence": 0.80
+  },
+    ... etc. 
   ]
 }
 ```
@@ -291,10 +198,11 @@ Using the Paragon-provided APIs and the additional automations provided by this 
   | IClientService         | IAutomationService
   |------------------------|------------------------------------|
   | ConnectAsync()         | CompareText() / CompareTextAsync() |
-  | DisconnectAsync()      | GetScreenWordsAsync()              |
-  | DispatchToIdleAsync()  | MatchScreen() / MatchScreenAsync() |
-  | TakeAllMediaAsync()    | WaitForScreenAsync()               |
-  | SaveScreenshotsync()   | WaitForTextAsync()                 |
+  | DisconnectAsync()      | FindAndClickAsync()                |
+  | DispatchToIdleAsync()  | GetScreenWordsAsync()              |
+  | TakeAllMediaAsync()    | MatchScreen() / MatchScreenAsync() |
+  | SaveScreenshotsync()   | WaitForScreenAsync()               |
+  |                        | WaitForTextAsync()                 |
   
 </div>
 
