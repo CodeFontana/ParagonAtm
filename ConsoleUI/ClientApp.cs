@@ -11,16 +11,19 @@ public class ClientApp : IHostedService
     private readonly ILogger<ClientApp> _logger;
     private readonly IClientService _clientService;
     private readonly IEdgeConsumerTransactionService _edgeConsumerTransactionService;
+    private readonly IVistaConsumerTransactionService _vistaConsumerTransactionService;
 
     public ClientApp(IHostApplicationLifetime hostApplicationLifetime,
                      ILogger<ClientApp> logger,
                      IClientService clientService,
-                     IEdgeConsumerTransactionService edgeConsumerTransactionService)
+                     IEdgeConsumerTransactionService edgeConsumerTransactionService,
+                     IVistaConsumerTransactionService vistaConsumerTransactionService)
     {
         _hostApplicationLifetime = hostApplicationLifetime;
         _logger = logger;
         _clientService = clientService;
         _edgeConsumerTransactionService = edgeConsumerTransactionService;
+        _vistaConsumerTransactionService = vistaConsumerTransactionService;
     }
 
     public Task StartAsync(CancellationToken cancellationToken)
@@ -61,18 +64,24 @@ public class ClientApp : IHostedService
             }
 
             await _edgeConsumerTransactionService.BalanceInquiry("f2305283-bb84-49fe-aba6-cd3f7bcfa5ba",
-                                                             "1234",
-                                                             "English",
-                                                             "Checking",
-                                                             "Checking|T",
-                                                             "Print and Display");
+                                                                 "1234",
+                                                                 "English",
+                                                                 "Checking",
+                                                                 "Checking|T",
+                                                                 "Print and Display");
 
-            await _edgeConsumerTransactionService.BalanceInquiry("f2305283-bb84-49fe-aba6-cd3f7bcfa5ba",
-                                                             "1234",
-                                                             "Espanol",
-                                                             "Cuenta Corriente",
-                                                             "Checking|T",
-                                                             "Imprimir y Mostrar");
+            //await _edgeConsumerTransactionService.BalanceInquiry("f2305283-bb84-49fe-aba6-cd3f7bcfa5ba",
+            //                                                     "1234",
+            //                                                     "Espanol",
+            //                                                     "Cuenta Corriente",
+            //                                                     "Checking|T",
+            //                                                     "Imprimir y Mostrar");
+
+            //await _vistaConsumerTransactionService.BalanceInquiry("f2305283-bb84-49fe-aba6-cd3f7bcfa5ba",
+            //                                                      "1234",
+            //                                                      "Display Balance",
+            //                                                      "Checking",
+            //                                                      "Checking|T");
         }
         catch (Exception ex)
         {
