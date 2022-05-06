@@ -298,28 +298,41 @@ public class VistaConsumerTransactionService : IVistaConsumerTransactionService
 
             await _clientService.SaveScreenshotAsync(saveFolder);
 
-            if (await _autoService.FindAndClickAsync("Exit") == false)
+            if (await _autoService.FindAndClickAsync("Exit"))
             {
-                _logger.LogError($"Failed to find and click 'Exit' button");
+                await Task.Delay(standardDelay);
+
+                // Validate -- Take card screen
+                atScreen = await _autoService.WaitForScreenAsync(
+                    _atmScreens.First(s => s.Name.ToLower() == "takecard"),
+                    TimeSpan.FromSeconds(30),
+                    TimeSpan.FromSeconds(5));
+
+                if (atScreen == false)
+                {
+                    _logger.LogError("Take card screen not found");
+                    return;
+                }
+
+                await _clientService.SaveScreenshotAsync(saveFolder);
+                await _atmService.TakeCardAsync();
+            }
+            else if (await _autoService.FindAndClickAsync("Return card"))
+            {
+                for (int i = 0; i < 4; i++)
+                {
+                    await _atmService.TakeCardAsync();
+                    await Task.Delay(500);
+                }
+                
+                await _clientService.SaveScreenshotAsync(saveFolder);
+            }
+            else
+            {
+                _logger.LogError($"Failed to find and click 'Exit' or 'Return card' button");
                 return;
             }
 
-            await Task.Delay(standardDelay);
-
-            // Validate -- Take card screen
-            atScreen = await _autoService.WaitForScreenAsync(
-                _atmScreens.First(s => s.Name.ToLower() == "takecard"),
-                TimeSpan.FromSeconds(30),
-                TimeSpan.FromSeconds(5));
-
-            if (atScreen == false)
-            {
-                _logger.LogError("Take card screen not found");
-                return;
-            }
-
-            await _clientService.SaveScreenshotAsync(saveFolder);
-            await _atmService.TakeCardAsync();
             await Task.Delay(standardDelay);
             await _clientService.SaveScreenshotAsync(saveFolder);
         }
