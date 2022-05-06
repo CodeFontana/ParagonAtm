@@ -139,9 +139,12 @@
         "Your transaction is complete please make a selection",
         "Please take your cash and receipt",
         "Please take your cash",
+        "Please take vour cash",
         "Please take your card",
+        "Please take vour card",
+        "Please take vour cara",
         "Por favor retire su tarjeta",
-        "Please take vour cara"
+        "de ot a tek"
       ],
       "MatchConfidence": 0.80
     },
