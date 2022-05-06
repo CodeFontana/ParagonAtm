@@ -59,7 +59,7 @@ Specify your WebFast account, API endpoints if different from the defaults, a do
     "StartupApps": [
       "C:\\Phoenix\\bin\\mm99003.exe"
     ],
-    "StandardDelay": 5000,
+    "StandardDelayMS": 2000,
     "StartupDelaySeconds": 200
   }
 }
