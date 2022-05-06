@@ -49,7 +49,15 @@
       "Text": [
         "Please select the type of transaction by pressing the appropriate key",
         "Por favor escoja el tipo de transaccion oprimiendo la tecla apropiada",
-        "How can we help you today"
+        "How can we help you today",
+        "How can we help youftoday"
+      ],
+      "MatchConfidence": 0.80
+    },
+    {
+      "Name": "ReceiptSelection",
+      "Text": [
+        "Select an option no receipt"
       ],
       "MatchConfidence": 0.80
     },
@@ -127,7 +135,9 @@
     {
       "Name": "TransactionComplete",
       "Text": [
-        "Your transaction is complete please make a selection"
+        "Your transaction is complete please make a selection",
+        "Please take your cash and receipt",
+        "Please take your cash"
       ],
       "MatchConfidence": 0.80
     },
@@ -160,7 +170,8 @@
       "Name": "TakeCard",
       "Text": [
         "Please take your card",
-        "Por favor retire su tarjeta"
+        "Por favor retire su tarjeta",
+        "Please take vour cara"
       ],
       "MatchConfidence": 1.00
     }
