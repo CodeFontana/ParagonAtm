@@ -137,7 +137,10 @@
       "Text": [
         "Your transaction is complete please make a selection",
         "Please take your cash and receipt",
-        "Please take your cash"
+        "Please take your cash",
+        "Please take your card",
+        "Por favor retire su tarjeta",
+        "Please take vour cara"
       ],
       "MatchConfidence": 0.80
     },
