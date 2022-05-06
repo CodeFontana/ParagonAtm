@@ -243,6 +243,16 @@ public class ClientService : IClientService
             await Task.Delay(standardDelay);
             return await DispatchToIdleAsync(saveFolder);
         }
+        else if (_autoService.MatchScreen(_atmScreens.First(s => s.Name.ToLower() == "pin"), curScreen))
+        {
+            _logger.LogInformation("Dispatch - PIN screen");
+            List<AtmServiceModel> services = await _atmService.GetServicesAsync();
+            AtmServiceModel pinpad = services?.FirstOrDefault(x => x.DeviceType.ToLower() == "pin");
+            await _atmService.PressKeyAsync(new PressKeyModel(pinpad.Name, "Cancel"));
+            await Task.Delay(standardDelay);
+            return await DispatchToIdleAsync(saveFolder);
+        }
+
         else
         {
             _logger.LogInformation("Dispatch - Unrecognized screen");
