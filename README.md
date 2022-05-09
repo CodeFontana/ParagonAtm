@@ -50,7 +50,7 @@ Specify your WebFast account, API endpoints if different from the defaults, a do
     "StartupApps": [
       "C:\\Users\\Public\\Desktop\\SSTAuto1.BAT"
     ],
-    "StandardDelayMS": 5000,
+    "StandardDelayMS": 2000,
     "StartupDelaySeconds": 420
   },
   "Terminal.Vista": {
@@ -202,6 +202,7 @@ Using the Paragon-provided APIs and the additional automations provided by this 
   | DispatchToIdleAsync()  | GetScreenWordsAsync()              |
   | TakeAllMediaAsync()    | MatchScreen() / MatchScreenAsync() |
   | SaveScreenshotsync()   | WaitForScreenAsync()               |
+  |                        | WaitForScreensAsync()
   |                        | WaitForTextAsync()                 |
   
 </div>
