@@ -312,7 +312,7 @@ public class EdgeConsumerTransactionService : IEdgeConsumerTransactionService
                 string receiptText = JsonSerializer.Serialize(receipt.OcrData.Elements.ToList().Select(e => e.text));
                 _logger.LogInformation($"Take receipt -- {receiptText}");
             }
-
+            
             // Validate -- Another transaction screen
             atScreen = await _autoService.WaitForScreenAsync(
                 _atmScreens.First(s => s.Name.ToLower() == "anothertransaction"),
