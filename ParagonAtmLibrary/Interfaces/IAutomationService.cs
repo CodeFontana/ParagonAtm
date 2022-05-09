@@ -13,6 +13,7 @@ public interface IAutomationService
     Task<bool> MatchScreenAsync(AtmScreenModel screen);
     Task<AtmScreenModel> MatchScreenAsync(List<AtmScreenModel> screens);
     Task<bool> WaitForScreenAsync(AtmScreenModel screen, TimeSpan timeout, TimeSpan refreshInterval);
+    Task<AtmScreenModel> WaitForScreensAsync(List<AtmScreenModel> screens, TimeSpan timeout, TimeSpan refreshInterval);
     Task<bool> WaitForTextAsync(List<string> phrases, decimal matchConfidence, TimeSpan timeout, TimeSpan refreshInterval);
     Task<bool> WaitForTextAsync(string[] phrases, decimal matchConfidence, TimeSpan timeout, TimeSpan refreshInterval);
 }

@@ -228,6 +228,44 @@ public class AutomationService : IAutomationService
     }
 
     /// <summary>
+    /// Waits for any of the specified AtmScreenModels to be displayed on the screen.
+    /// </summary>
+    /// <param name="screens">List of AtmScreenModels to wait for.</param>
+    /// <param name="timeout">The overall timeout to wait for this screen match.</param>
+    /// <param name="refreshInterval">How often to refresh the screen OCR data to check for a match.</param>
+    /// <returns>Returns the AtmScreenModel from the supplied list that matches the current screen, null if no match is found after the specified timeout.</returns>
+    public async Task<AtmScreenModel> WaitForScreensAsync(List<AtmScreenModel> screens, TimeSpan timeout, TimeSpan refreshInterval)
+    {
+        _logger.LogDebug($"Wait for screens -- {string.Join(",", screens.Select(s => s.Name))}");
+
+        try
+        {
+            DateTime curTime = DateTime.Now;
+            DateTime endTime = curTime + timeout;
+
+            while (DateTime.Now < endTime)
+            {
+                foreach (AtmScreenModel screenModel in screens)
+                {
+                    if (await MatchScreenAsync(screenModel))
+                    {
+                        return screenModel;
+                    }
+                }
+
+                await Task.Delay(refreshInterval);
+            }
+
+            return null;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Unexpected error waiting for ATM screen");
+            return null;
+        }
+    }
+
+    /// <summary>
     /// Waits for the specified text to be displayed on the ATM screen. This overload accepts
     /// a string list for input.
     /// </summary>
@@ -262,7 +300,7 @@ public class AutomationService : IAutomationService
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, ex.Message);
+            _logger.LogError(ex, "Unexpected error waiting for specified text");
             return false;
         }
     }
