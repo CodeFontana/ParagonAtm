@@ -19,6 +19,7 @@ public class ClientService : IClientService
     private readonly List<AtmScreenModel> _atmScreens;
     private readonly WebFastUserModel _webFastUser;
     private readonly TerminalModel _virtualAtm;
+    private bool _profileLoaded = false;
 
     public ClientService(IConfiguration configuration,
                          ILogger<ClientService> logger,
@@ -89,12 +90,22 @@ public class ClientService : IClientService
                 return false;
             }
 
+            bool success = false;
+
             if (agentPaused == false)
             {
-                await _agentService.OpenHwProfileAsync(_virtualAtm.HwProfile);
+                success = await _agentService.OpenHwProfileAsync(_virtualAtm.HwProfile);
+
+                if (success == false)
+                {
+                    _logger.LogError($"Failed to open hardware profile [{_virtualAtm.HwProfile}]");
+                    return false;
+                }
+
+                _profileLoaded = true;
             }
 
-            bool success = await _connectionService.OpenAsync();
+            success = await _connectionService.OpenAsync();
 
             if (success == false)
             {
@@ -161,7 +172,11 @@ public class ClientService : IClientService
         }
         finally
         {
-            await _connectionService.CloseAsync();
+            if (_profileLoaded)
+            {
+                await _connectionService.CloseAsync();
+            }
+            
             await _agentService.CloseSesisonAsync();
         }
     }
@@ -252,7 +267,11 @@ public class ClientService : IClientService
             await Task.Delay(standardDelay);
             return await DispatchToIdleAsync(saveFolder);
         }
-
+        else if (_autoService.CompareText(curScreen, new List<string>() { "Recycle bin" }, 1))
+        {
+            _logger.LogInformation("Dispatch - ATM is at desktop");
+            return true;
+        }
         else
         {
             _logger.LogInformation("Dispatch - Unrecognized screen");
