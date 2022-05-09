@@ -40,6 +40,8 @@
     {
       "Name": "AccountBalance",
       "Text": [
+        "Do you want to display your balance",
+        "Desea ver su saldo",
         "Would you like your account balance"
       ],
       "MatchConfidence": 0.80
@@ -152,7 +154,8 @@
       "Name": "TransactionCancelled",
       "Text": [
         "Your transaction has been cancelled",
-        "We're sorry but your transaction cannot be processed"
+        "We're sorry but your transaction cannot be processed",
+        "last transaction cancelled at your request"
       ],
       "MatchConfidence": 0.80
     },
