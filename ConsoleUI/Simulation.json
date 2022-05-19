@@ -21,8 +21,7 @@
       "C:\\Users\\Public\\Desktop\\SSTAuto1.BAT"
     ],
     "StandardDelayMS": 2000,
-    "StartupDelaySeconds": 420,
-    "DefaultEditDistance": 1
+    "StartupDelaySeconds": 420
   },
   "Terminal": {
     "Host": "http://10.44.112.165:13467",
@@ -31,7 +30,6 @@
       "C:\\Phoenix\\bin\\mm99003.exe"
     ],
     "StandardDelay": 2000,
-    "StartupDelaySeconds": 200,
-    "DefaultEditDistance": 1
+    "StartupDelaySeconds": 200
   }
 }
