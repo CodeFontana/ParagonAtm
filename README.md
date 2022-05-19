@@ -69,9 +69,13 @@ Note: The "Terminal" configuration section is used by the demo to determine whic
 ### Define your screen pool -- AvailableScreens.json
 This JSON is used to define each screen. This is completely subjective, so you'll need to adjust accordingly with your testing.  
 
-Each screen is given a name, an array of phrases and a confidence level.  The array of phrases allows you to define multiple potential values, e.g. English vs Spanish phrases.  Or you might have different scenarios with different text.  
+Each screen is given a name, an array of phrases, confidence level and acceptable edit distance.  The array of phrases allows you to define multiple potential values, e.g. English vs Spanish phrases.
 
-The **MatchConfidence** is provided to accomodate variability with the Paragon screen OCR technology. Not always will OCR read every word correctly, so how much of specific phrase do you require to match, in order to say the current ATM screen is a match for what you've defined here...  
+The **MatchConfidence** and **EditDistance** parameters are provided to accomodate variability with the Paragon screen OCR technology. OCR will not always read every word correctly from the screen.
+
+**EditDistance** - Similar to spell check, specify the maximum acceptable character difference when comparing two words for equality. E.g. with an EditDistance=2, 'vout' would be considered matching with the word 'your'.
+
+**MatchConfidence** - Specify the percentage of words from a given phrase that must match with the on-screen text, in order to declare the phrase as matching based on the on-screen text.
 
 ```
 "AvailableScreens": [
