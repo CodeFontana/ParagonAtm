@@ -14,7 +14,7 @@
   "Preferences": {
     "DownloadPath": "C:\\Users\\Brian\\Desktop\\Screenshots"
   },
-  "Terminal.Edge": {
+  "Terminal": {
     "Host": "http://10.44.112.155:13467",
     "HwProfile": "1744febb-dd28-433e-aa1b-33139c820d2e",
     "StartupApps": [
@@ -23,7 +23,7 @@
     "StandardDelayMS": 2000,
     "StartupDelaySeconds": 420
   },
-  "Terminal": {
+  "Terminal.Vista": {
     "Host": "http://10.44.112.165:13467",
     "HwProfile": "debae18a-1308-4089-ad77-7eae88410753",
     "StartupApps": [
