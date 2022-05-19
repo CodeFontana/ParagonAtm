@@ -8,7 +8,8 @@
         "Please insert and remove your card",
         "Por favor inserte y retire su tarjeta"
       ],
-      "MatchConfidence": 0.80
+      "MatchConfidence": 0.80,
+      "EditDistance": 1
     },
     {
       "Name": "OutOfService",
@@ -17,7 +18,8 @@
         "Sorry this ATM is temporarily out of service",
         "Sorry this machine is temporarily out of service"
       ],
-      "MatchConfidence": 0.80
+      "MatchConfidence": 0.80,
+      "EditDistance": 1
     },
     {
       "Name": "LanguageSelection",
@@ -25,17 +27,19 @@
         "Please select the language you wish to use",
         "Por favor seleccione el idioma que desea usar"
       ],
-      "MatchConfidence": 0.80
+      "MatchConfidence": 0.80,
+      "EditDistance": 1
     },
     {
       "Name": "PIN",
       "Text": [
         "Please enter your Personal Identification Number",
         "Por favor ingrese su Numero de Identificacion Personal",
-        "Enter PIN then make a selection",
+        "Enter PIN then make selection",
         "A minimum of 4 digits is required"
       ],
-      "MatchConfidence": 0.80
+      "MatchConfidence": 0.80,
+      "EditDistance": 1
     },
     {
       "Name": "AccountBalance",
@@ -44,24 +48,26 @@
         "Desea ver su saldo",
         "Would you like your account balance"
       ],
-      "MatchConfidence": 0.80
+      "MatchConfidence": 0.80,
+      "EditDistance": 1
     },
     {
       "Name": "TransactionType",
       "Text": [
         "Please select the type of transaction by pressing the appropriate key",
         "Por favor escoja el tipo de transaccion oprimiendo la tecla apropiada",
-        "How can we help you today",
-        "How can we help youftoday"
+        "How can we help you today"
       ],
-      "MatchConfidence": 0.80
+      "MatchConfidence": 0.80,
+      "EditDistance": 1
     },
     {
       "Name": "ReceiptSelection",
       "Text": [
         "Select an option no receipt"
       ],
-      "MatchConfidence": 0.80
+      "MatchConfidence": 0.80,
+      "EditDistance": 1
     },
     {
       "Name": "AccountType",
@@ -70,7 +76,8 @@
         "Cuenta Corriente",
         "Balance from which account"
       ],
-      "MatchConfidence": 1.00
+      "MatchConfidence": 1.00,
+      "EditDistance": 1
     },
     {
       "Name": "AccountName",
@@ -80,7 +87,8 @@
         "Balance from which account",
         "bey em dean"
       ],
-      "MatchConfidence": 0.80
+      "MatchConfidence": 0.80,
+      "EditDistance": 1
     },
     {
       "Name": "BalanceDestination",
@@ -89,14 +97,16 @@
         "Donde desea ver su saldo",
         "Display or print balance"
       ],
-      "MatchConfidence": 0.80
+      "MatchConfidence": 0.80,
+      "EditDistance": 1
     },
     {
       "Name": "FastCash",
       "Text": [
-        "Please select a Fast Cash amount"
+        "Please select Fast Cash amount"
       ],
-      "MatchConfidence": 0.80
+      "MatchConfidence": 0.80,
+      "EditDistance": 1
     },
     {
       "Name": "PleaseWait",
@@ -106,7 +116,8 @@
         "We are retrieving your information",
         "One moment please"
       ],
-      "MatchConfidence": 1.00
+      "MatchConfidence": 1.00,
+      "EditDistance": 1
     },
     {
       "Name": "BalanceInquiry",
@@ -115,16 +126,17 @@
         "Saldo para Disponible total",
         "Account Balance Available Total"
       ],
-      "MatchConfidence": 0.80
+      "MatchConfidence": 0.80,
+      "EditDistance": 1
     },
     {
       "Name": "AnotherTransaction",
       "Text": [
         "Do you want another transaction",
-        "Desea otra transaccion",
-        "Desea otra transaccien"
+        "Desea otra transaccion"
       ],
-      "MatchConfidence": 0.60
+      "MatchConfidence": 0.60,
+      "EditDistance": 1
     },
     {
       "Name": "MoreTime",
@@ -133,22 +145,21 @@
         "Would you like more time",
         "Quiere usted mas tiempo"
       ],
-      "MatchConfidence": 0.80
+      "MatchConfidence": 0.80,
+      "EditDistance": 1
     },
     {
       "Name": "TransactionComplete",
       "Text": [
-        "Your transaction is complete please make a selection",
+        "Your transaction is complete please make selection",
         "Please take your cash and receipt",
         "Please take your cash",
-        "Please take vour cash",
         "Please take your card",
-        "Please take vour card",
-        "Please take vour cara",
         "Por favor retire su tarjeta",
         "de ot a tek"
       ],
-      "MatchConfidence": 0.80
+      "MatchConfidence": 0.80,
+      "EditDistance": 2
     },
     {
       "Name": "TransactionCancelled",
@@ -157,7 +168,8 @@
         "We're sorry but your transaction cannot be processed",
         "last transaction cancelled at your request"
       ],
-      "MatchConfidence": 0.80
+      "MatchConfidence": 0.80,
+      "EditDistance": 1
     },
     {
       "Name": "ThankYou",
@@ -166,15 +178,16 @@
         "Gracias por usar este cajero de",
         "Thank you"
       ],
-      "MatchConfidence": 0.80
+      "MatchConfidence": 0.80,
+      "EditDistance": 1
     },
     {
       "Name": "TakeReceipt",
       "Text": [
-        "Please take your receipt",
-        "Please take vout receipt"
+        "Please take your receipt"
       ],
-      "MatchConfidence": 1.00
+      "MatchConfidence": 1.00,
+      "EditDistance": 1
     },
     {
       "Name": "TakeCard",
@@ -183,7 +196,8 @@
         "Por favor retire su tarjeta",
         "Please take vour cara"
       ],
-      "MatchConfidence": 1.00
+      "MatchConfidence": 1.00,
+      "EditDistance": 2
     }
   ]
 }

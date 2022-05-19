@@ -27,8 +27,9 @@ public class AutomationService : IAutomationService
     /// <param name="screenWords">List of words on the screen, which the caller can obtain using GetScreenWords().</param>
     /// <param name="comparePhrases">List of phrases, each may contain one or more words for comparison.</param>
     /// <param name="matchConfidence">Required confidence level for any single phrase to be considered a match.</param>
+    /// <param name="acceptableEditDistance">Acceptable edit distance when comparing words for equality.</param>
     /// <returns>True, if any phrase matches above the specified confidence level, false otherwise.</returns>
-    public bool CompareText(List<string> screenWords, List<string> comparePhrases, decimal matchConfidence)
+    public bool CompareText(List<string> screenWords, List<string> comparePhrases, decimal matchConfidence, int acceptableEditDistance = 0)
     {
         ArgumentNullException.ThrowIfNull(screenWords);
         ArgumentNullException.ThrowIfNull(comparePhrases);
@@ -36,20 +37,31 @@ public class AutomationService : IAutomationService
 
         foreach (string phrase in comparePhrases)
         {
-            int matchCount = 0;
             decimal confidence = 0;
+            List<string> matches = new();
 
-            IEnumerable<string> matches = screenWords
-                .Select(s => s.ToLower())
-                .Intersect(phrase.Split(_splitChars)
-                    .Select(s => s.Trim().ToLower())
-                    .Where(s => string.IsNullOrWhiteSpace(s) == false));
+            foreach (string pWord in phrase.Split(_splitChars))
+            {
+                foreach (string sWord in screenWords)
+                {
+                    if (sWord.ToLower().Trim() == pWord.ToLower().Trim())
+                    {
+                        matches.Add(pWord);
+                        break;
+                    }
+                    else if (acceptableEditDistance > 0 
+                        && ComputeEditDistance(sWord.ToLower().Trim(), pWord.ToLower().Trim()) <= acceptableEditDistance)
+                    {
+                        matches.Add(pWord);
+                        break;
+                    }
+                }
+            }
 
-            if (matches.Count() > 0)
+            if (matches.Count > 0)
             {
                 _logger.LogDebug($"Mathcing words -- {JsonSerializer.Serialize(matches)}");
-                matchCount += matches.Count();
-                confidence = matchCount / (decimal)phrase.Split(_splitChars).Length;
+                confidence = matches.Count / (decimal)phrase.Split(_splitChars).Length;
 
                 if (confidence >= matchConfidence)
                 {
@@ -70,12 +82,55 @@ public class AutomationService : IAutomationService
     /// </summary>
     /// <param name="comparePhrases">List of phrases, each may contain one or more words for comparison.</param>
     /// <param name="matchConfidence">Required confidence level for any single phrase to be considered a match.</param>
+    /// <param name="acceptableEditDistance">Acceptable edit distance when comparing words for equality.</param>
     /// <returns>True, if any phrase matches above the specified confidence level, false otherwise.</returns>
-    public async Task<bool> CompareTextAsync(List<string> comparePhrases, decimal matchConfidence)
+    public async Task<bool> CompareTextAsync(List<string> comparePhrases, decimal matchConfidence, int acceptableEditDistance = 0)
     {
         List<string> screenWords = await GetScreenWordsAsync();
-        return CompareText(screenWords, comparePhrases, matchConfidence);
+        return CompareText(screenWords, comparePhrases, matchConfidence, acceptableEditDistance);
     }
+
+    private static int ComputeEditDistance(string left, string right)
+    {
+        if (left.Length == 0)
+        {
+            return right.Length;
+        }
+
+        if (right.Length == 0)
+        {
+            return left.Length;
+        }
+
+        var d = new int[left.Length + 1, right.Length + 1];
+
+        for (int i = 0; i <= left.Length; i++)
+        {
+            d[i, 0] = i;
+        }
+
+        for (int j = 0; j <= right.Length; j++)
+        {
+            d[0, j] = j;
+        }
+
+        for (int i = 1; i <= left.Length; i++)
+        {
+            for (int j = 1; j <= right.Length; j++)
+            {
+                int cost = (right[j - 1] == left[i - 1]) ? 0 : 1;
+
+                d[i, j] = ComputeMin(
+                    d[i - 1, j] + 1,
+                    d[i, j - 1] + 1,
+                    d[i - 1, j - 1] + cost);
+            }
+        }
+
+        return d[left.Length, right.Length];
+    }
+
+    private static int ComputeMin(int e1, int e2, int e3) => Math.Min(Math.Min(e1, e2), e3);
 
     /// <summary>
     /// Finds the location of the specified text and clicks it
@@ -164,7 +219,7 @@ public class AutomationService : IAutomationService
     /// <returns>True, if the AtmScreenModel matches above its required confidence level, false otherwise.</returns>
     public bool MatchScreen(AtmScreenModel screen, List<string> screenWords)
     {
-        return CompareText(screenWords, screen.Text, screen.MatchConfidence);
+        return CompareText(screenWords, screen.Text, screen.MatchConfidence, screen.EditDistance);
     }
 
     /// <summary>
@@ -174,13 +229,13 @@ public class AutomationService : IAutomationService
     /// prefers to only grab the screen words only once.
     /// </summary>
     /// <param name="screens">List of AtmScreenModels to check.</param>
-    /// <param name="screenWords">List of words on the screen, which the caller can obtain using GetScreenWords().</param></param>
+    /// <param name="screenWords">List of words on the screen, which the caller can obtain using GetScreenWords().</param>
     /// <returns>If matched, returns the matching AtmScreenModel, null otherwise.</returns>
     public AtmScreenModel MatchScreen(List<AtmScreenModel> screens, List<string> screenWords)
     {
         foreach (AtmScreenModel s in screens)
         {
-            if (CompareText(screenWords, s.Text, s.MatchConfidence))
+            if (CompareText(screenWords, s.Text, s.MatchConfidence, s.EditDistance))
             {
                 _logger.LogDebug($"Found match -- {s.Name}");
                 return s;
@@ -199,7 +254,7 @@ public class AutomationService : IAutomationService
     public async Task<bool> MatchScreenAsync(AtmScreenModel screen)
     {
         List<string> screenText = await GetScreenWordsAsync();
-        return CompareText(screenText, screen.Text, screen.MatchConfidence);
+        return CompareText(screenText, screen.Text, screen.MatchConfidence, screen.EditDistance);
     }
 
     /// <summary>
@@ -224,7 +279,7 @@ public class AutomationService : IAutomationService
     public async Task<bool> WaitForScreenAsync(AtmScreenModel screen, TimeSpan timeout, TimeSpan refreshInterval)
     {
         _logger.LogDebug($"Wait for screen -- {screen.Name}");
-        return await WaitForTextAsync(screen.Text, screen.MatchConfidence, timeout, refreshInterval);
+        return await WaitForTextAsync(screen.Text, screen.MatchConfidence, timeout, refreshInterval, screen.EditDistance);
     }
 
     /// <summary>
@@ -273,8 +328,9 @@ public class AutomationService : IAutomationService
     /// <param name="matchConfidence">Required confidence level the words must match with the screen words.</param>
     /// <param name="timeout">The overall timeout to wait for this screen match.</param>
     /// <param name="refreshInterval">How often to refresh the screen OCR data to check for a match.</param>
+    /// <param name="acceptableEditDistance">Acceptable edit distance when comparing words for equality.</param>
     /// <returns>Returns true, if the specified word list matches above the specified confidence level, and within the specified timeout, false otherwise.</returns>
-    public async Task<bool> WaitForTextAsync(List<string> phrases, decimal matchConfidence, TimeSpan timeout, TimeSpan refreshInterval)
+    public async Task<bool> WaitForTextAsync(List<string> phrases, decimal matchConfidence, TimeSpan timeout, TimeSpan refreshInterval, int acceptableEditDistance = 0)
     {
         ArgumentNullException.ThrowIfNull(phrases);
         ArgumentNullException.ThrowIfNull(matchConfidence);
@@ -288,7 +344,7 @@ public class AutomationService : IAutomationService
 
             while (DateTime.Now < endTime)
             {
-                if (await CompareTextAsync(phrases, matchConfidence))
+                if (await CompareTextAsync(phrases, matchConfidence, acceptableEditDistance))
                 {
                     return true;
                 }
@@ -313,9 +369,10 @@ public class AutomationService : IAutomationService
     /// <param name="matchConfidence">Required confidence level the words must match with the screen words.</param>
     /// <param name="timeout">The overall timeout to wait for this screen match.</param>
     /// <param name="refreshInterval">How often to refresh the screen OCR data to check for a match.</param>
+    /// <param name="acceptableEditDistance">Acceptable edit distance when comparing words for equality.</param>
     /// <returns>Returns true, if the specified word array matches above the specified confidence level, and within the specified timeout, false otherwise.</returns>
-    public async Task<bool> WaitForTextAsync(string[] phrases, decimal matchConfidence, TimeSpan timeout, TimeSpan refreshInterval)
+    public async Task<bool> WaitForTextAsync(string[] phrases, decimal matchConfidence, TimeSpan timeout, TimeSpan refreshInterval, int acceptableEditDistance = 0)
     {
-        return await WaitForTextAsync(phrases.ToList(), matchConfidence, timeout, refreshInterval);
+        return await WaitForTextAsync(phrases.ToList(), matchConfidence, timeout, refreshInterval, acceptableEditDistance);
     }
 }
