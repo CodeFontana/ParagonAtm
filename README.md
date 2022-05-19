@@ -9,13 +9,13 @@ Add latest **CodeFoxtrot.ParagonAtmLibrary** to your project via 'Manage Nuget P
 or via command line...
 
 ```
-dotnet add package CodeFoxtrot.ParagonAtmLibrary --version 1.5.8
+dotnet add package CodeFoxtrot.ParagonAtmLibrary --version 1.6.1
 ```
 
 or via your .csproj file...
 
 ```
-<PackageReference Include="CodeFoxtrot.ParagonAtmLibrary" Version="1.5.8" />
+<PackageReference Include="CodeFoxtrot.ParagonAtmLibrary" Version="1.6.1" />
 ```
 
 Add this to your ConfigureServices() method:
@@ -83,7 +83,8 @@ The **MatchConfidence** is provided to accomodate variability with the Paragon s
       "Please insert and remove your card",
       "Por favor inserte y retire su tarjeta"
     ],
-    "MatchConfidence": 0.80
+    "MatchConfidence": 0.80,
+    "EditDistance": 2
   },
   {
     "Name": "OutOfService",
@@ -92,7 +93,8 @@ The **MatchConfidence** is provided to accomodate variability with the Paragon s
       "Sorry this ATM is temporarily out of service",
       "Sorry this machine is temporarily out of service"
     ],
-    "MatchConfidence": 0.80
+    "MatchConfidence": 0.80,
+    "EditDistance": 1
   },
     ... etc. 
   ]
@@ -202,7 +204,7 @@ Using the Paragon-provided APIs and the additional automations provided by this 
   | DispatchToIdleAsync()  | GetScreenWordsAsync()              |
   | TakeAllMediaAsync()    | MatchScreen() / MatchScreenAsync() |
   | SaveScreenshotsync()   | WaitForScreenAsync()               |
-  |                        | WaitForScreensAsync()
+  |                        | WaitForScreensAsync()              |
   |                        | WaitForTextAsync()                 |
   
 </div>
