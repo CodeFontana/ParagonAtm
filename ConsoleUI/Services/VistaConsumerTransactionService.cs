@@ -298,7 +298,7 @@ public class VistaConsumerTransactionService : IVistaConsumerTransactionService
 
             await _clientService.SaveScreenshotAsync(saveFolder);
 
-            if (await _autoService.FindAndClickAsync("Exit"))
+            if (await _autoService.FindAndClickAsync("Return card"))
             {
                 await Task.Delay(standardDelay);
 
