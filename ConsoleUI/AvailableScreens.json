@@ -155,8 +155,7 @@
         "Please take your cash and receipt",
         "Please take your cash",
         "Please take your card",
-        "Por favor retire su tarjeta",
-        "de ot a tek"
+        "Por favor retire su tarjeta"
       ],
       "MatchConfidence": 0.80,
       "EditDistance": 2
