@@ -16,6 +16,12 @@ public class ClickScreenModel
         YCoordinate = s.Location.y;
     }
 
+    public ClickScreenModel(ScreenCoordinates s)
+    {
+        XCoordinate = s.x;
+        YCoordinate = s.y;
+    }
+
     [JsonPropertyName("x")]
     public float XCoordinate { get; set; }
 

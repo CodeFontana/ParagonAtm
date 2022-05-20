@@ -16,7 +16,7 @@ public class AutomationService : IAutomationService
     {
         _logger = logger;
         _vmService = vmService;
-        _splitChars = new[] { ' ', ',', '.', '?', ';', ':' };
+        _splitChars = new[] { ' ', ',', '.', '?', ';', ':', '\n' };
     }
 
     /// <summary>
@@ -49,7 +49,7 @@ public class AutomationService : IAutomationService
                         matches.Add(pWord);
                         break;
                     }
-                    else if (acceptableEditDistance > 0 
+                    else if (acceptableEditDistance > 0
                         && ComputeEditDistance(sWord.ToLower().Trim(), pWord.ToLower().Trim()) <= acceptableEditDistance)
                     {
                         matches.Add(pWord);
@@ -130,21 +130,143 @@ public class AutomationService : IAutomationService
         return d[left.Length, right.Length];
     }
 
+    private static ScreenCoordinates ComputeMidpoint(float x0, float y0, float x1, float y1)
+    {
+        ScreenCoordinates result = new();
+        result.x = (x0 + x1) / 2;
+        result.y = (y0 + y1) / 2;
+        return result;
+    }
+
     private static int ComputeMin(int e1, int e2, int e3) => Math.Min(Math.Min(e1, e2), e3);
 
     /// <summary>
-    /// Finds the location of the specified text and clicks it
+    /// Finds the location of the specified text and clicks it. If matching text is found
+    /// in multiple locations, the location of the best match is chosen.
     /// </summary>
     /// <param name="findText">The text to find on the screen</param>
+    /// <param name="acceptableEditDistance">Acceptable edit distance when comparing words for equality.</param>
     /// <returns>True, if the specified text was located and successfully clicked, false otherwise.</returns>
-    public async Task<bool> FindAndClickAsync(string findText)
+    public async Task<bool> FindAndClickAsync(string findText, int acceptableEditDistance = 0)
     {
-        LocationModel location = await _vmService.GetLocationByTextAsync(findText);
+        OcrDataModel screenText = await _vmService.GetScreenTextAsync();
+        List<Tuple<ScreenCoordinates, string, decimal>> textMatches = new();
 
-        if (location is null || location.Found == false)
+        if (screenText == null)
         {
+            _logger.LogError("Unable to read screen text");
             return false;
         }
+
+        string[] findWords = findText.ToLower().Split(_splitChars, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+
+        foreach (Element element in screenText.Elements)
+        {
+            if (string.IsNullOrEmpty(element.text))
+            {
+                continue;
+            }
+            
+            int wordMatchCount = 0;
+            string[] elementWords = element.text.Split(_splitChars, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+
+            foreach (string eWord in elementWords)
+            {
+                if (findWords.Contains(eWord.ToLower()))
+                {
+                    wordMatchCount++;
+                }
+                else if (acceptableEditDistance > 0
+                        && findWords.Any(f => ComputeEditDistance(eWord.ToLower(), f) <= acceptableEditDistance))
+                {
+                    wordMatchCount++;
+                }
+            }
+
+            decimal confidence = wordMatchCount / elementWords.Length;
+
+            if (confidence > 0)
+            {
+                ScreenCoordinates midPoint = ComputeMidpoint(element.x0, element.y0, element.x1, element.y1);
+                _logger.LogDebug($"Element match -- {element.text} [x:{midPoint.x} y:{midPoint.y}] [Confidence {confidence:0.00}]");
+                textMatches.Add(new Tuple<ScreenCoordinates, string, decimal>(midPoint, element.text, confidence));
+            }
+
+            if (elementWords.Length > 1)
+            {
+                foreach (Line line in element.lines)
+                {
+                    if (string.IsNullOrEmpty(line.text))
+                    {
+                        continue;
+                    }
+
+                    wordMatchCount = 0;
+                    string[] lineWords = line.text.Split(_splitChars, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+
+                    foreach (string lWord in lineWords)
+                    {
+                        if (findWords.Contains(lWord.ToLower()))
+                        {
+                            wordMatchCount++;
+                        }
+                        else if (acceptableEditDistance > 0
+                                && findWords.Any(f => ComputeEditDistance(lWord.ToLower(), f) <= acceptableEditDistance))
+                        {
+                            wordMatchCount++;
+                        }
+                    }
+
+                    confidence = confidence = wordMatchCount / (decimal)lineWords.Length;
+
+                    if (confidence > 0)
+                    {
+                        ScreenCoordinates midPoint = ComputeMidpoint(line.x0, line.y0, line.x1, line.y1);
+                        _logger.LogDebug($"Line match -- {string.Join(' ', lineWords)} [x:{midPoint.x} y:{midPoint.y}] [Confidence {confidence:0.00}]");
+                        textMatches.Add(new Tuple<ScreenCoordinates, string, decimal>(midPoint, line.text, confidence));
+                    }
+
+                    if (lineWords.Length > 1)
+                    {
+                        foreach (Word word in line.words)
+                        {
+                            wordMatchCount = 0;
+                            string[] words = word.text.Split(_splitChars, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+
+                            foreach (string w in words)
+                            {
+                                if (findWords.Contains(w.ToLower()))
+                                {
+                                    wordMatchCount++;
+                                }
+                                else if (acceptableEditDistance > 0
+                                        && findWords.Any(f => ComputeEditDistance(w.ToLower().Trim(), f) <= acceptableEditDistance))
+                                {
+                                    wordMatchCount++;
+                                }
+                            }
+
+                            confidence = wordMatchCount / (decimal)findWords.Length;
+
+                            if (confidence > 0)
+                            {
+                                ScreenCoordinates midPoint = ComputeMidpoint(word.x0, word.y0, word.x1, word.y1);
+                                _logger.LogDebug($"Word match -- {word.text} [x:{midPoint.x} y:{midPoint.y}] [Confidence {confidence:0.00}]");
+                                textMatches.Add(new Tuple<ScreenCoordinates, string, decimal>(midPoint, word.text, confidence));
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        if (textMatches.Count == 0)
+        {
+            _logger.LogError($"Text not found -- {findText}");
+            return false;
+        }
+
+        ScreenCoordinates location = textMatches.First(tm => tm.Item3 == textMatches.Max(m => m.Item3)).Item1;
 
         if (await _vmService.ClickScreenAsync(new ClickScreenModel(location)) == false)
         {
