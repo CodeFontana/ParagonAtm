@@ -90,6 +90,12 @@ public class AutomationService : IAutomationService
         return CompareText(screenWords, comparePhrases, matchConfidence, acceptableEditDistance);
     }
 
+    /// <summary>
+    /// Find minimum number of edits (operations) required to convert 'left' into 'right'.
+    /// </summary>
+    /// <param name="left">String for comparison</param>
+    /// <param name="right">String for comparison</param>
+    /// <returns>An integer representing the edit distance or character difference between the two strings.</returns>
     private static int ComputeEditDistance(string left, string right)
     {
         if (left.Length == 0)
@@ -130,6 +136,14 @@ public class AutomationService : IAutomationService
         return d[left.Length, right.Length];
     }
 
+    /// <summary>
+    /// Computes the midpoint between two points.
+    /// </summary>
+    /// <param name="x0">X coordinate of first point</param>
+    /// <param name="y0">Y coordinate of first point</param>
+    /// <param name="x1">X coordinate of second point</param>
+    /// <param name="y1">Y coordinate of second point</param>
+    /// <returns>Screen coordinates representing the midpoint between the two points.</returns>
     private static ScreenCoordinates ComputeMidpoint(float x0, float y0, float x1, float y1)
     {
         ScreenCoordinates result = new();
@@ -138,11 +152,19 @@ public class AutomationService : IAutomationService
         return result;
     }
 
+    /// <summary>
+    /// Computes the minimum value of the inputs.
+    /// </summary>
+    /// <param name="e1">First input</param>
+    /// <param name="e2">Second input</param>
+    /// <param name="e3">Third input</param>
+    /// <returns>The minimum of the three values</returns>
     private static int ComputeMin(int e1, int e2, int e3) => Math.Min(Math.Min(e1, e2), e3);
 
     /// <summary>
     /// Finds the location of the specified text and clicks it. If matching text is found
-    /// in multiple locations, the location of the best match is chosen.
+    /// in multiple locations, the location of the best match is chosen based on a weighted
+    /// algorithm.
     /// </summary>
     /// <param name="findText">The text to find on the screen</param>
     /// <param name="acceptableEditDistance">Acceptable edit distance when comparing words for equality.</param>
@@ -158,6 +180,7 @@ public class AutomationService : IAutomationService
             return false;
         }
 
+        _logger.LogDebug($"Find text: {findText}");
         string[] findWords = findText.ToLower().Split(_splitChars, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
 
         foreach (Element element in screenText.Elements)
@@ -183,7 +206,8 @@ public class AutomationService : IAutomationService
                 }
             }
 
-            decimal confidence = wordMatchCount / elementWords.Length;
+            // has to be max of higher value -- findWords.Length vs elementWords.Length (or should we add them up?)
+            decimal confidence = wordMatchCount / (decimal)Math.Max(findWords.Length, elementWords.Length);
 
             if (confidence > 0)
             {
@@ -215,7 +239,7 @@ public class AutomationService : IAutomationService
                     }
                 }
 
-                confidence = wordMatchCount / (decimal)lineWords.Length;
+                confidence = wordMatchCount / (decimal)Math.Max(findWords.Length, lineWords.Length);
 
                 if (confidence > 0)
                 {
@@ -242,7 +266,7 @@ public class AutomationService : IAutomationService
                         }
                     }
 
-                    confidence = wordMatchCount / (decimal)findWords.Length;
+                    confidence = wordMatchCount / (decimal)Math.Max(findWords.Length, words.Length);
 
                     if (confidence > 0)
                     {
