@@ -100,14 +100,14 @@ public class VistaConsumerTransactionService : IVistaConsumerTransactionService
                 return;
             }
 
-            int standardDelay = 5000;
+            int standardDelay = _config.GetValue("Terminal:StandardDelayMS", 2000);
             await Task.Delay(standardDelay);
 
             // Validate -- PIN screen
             atScreen = await _autoService.WaitForScreenAsync(
                 _atmScreens.First(s => s.Name.ToLower() == "pin"),
-                TimeSpan.FromSeconds(30),
-                TimeSpan.FromSeconds(5));
+                TimeSpan.FromSeconds(20),
+                TimeSpan.FromMilliseconds(standardDelay));
 
             if (atScreen == false)
             {
@@ -158,8 +158,8 @@ public class VistaConsumerTransactionService : IVistaConsumerTransactionService
             // Validate -- Would you like your account balance?
             AtmScreenModel balanceRequest = _atmScreens.First(s => s.Name.ToLower() == "accountbalance");
             atScreen = await _autoService.WaitForScreenAsync(balanceRequest,
-                TimeSpan.FromSeconds(30),
-                TimeSpan.FromSeconds(5));
+                TimeSpan.FromSeconds(20),
+                TimeSpan.FromMilliseconds(standardDelay));
 
             if (atScreen == false)
             {
@@ -181,8 +181,8 @@ public class VistaConsumerTransactionService : IVistaConsumerTransactionService
             // Validate -- Balance destination screen
             atScreen = await _autoService.WaitForScreenAsync(
                 _atmScreens.First(s => s.Name.ToLower() == "balancedestination"),
-                TimeSpan.FromSeconds(30),
-                TimeSpan.FromSeconds(5));
+                TimeSpan.FromSeconds(20),
+                TimeSpan.FromMilliseconds(standardDelay));
 
             if (atScreen == false)
             {
@@ -204,8 +204,8 @@ public class VistaConsumerTransactionService : IVistaConsumerTransactionService
             // Validate -- Account type screen
             atScreen = await _autoService.WaitForScreenAsync(
                 _atmScreens.First(s => s.Name.ToLower() == "accounttype"),
-                TimeSpan.FromSeconds(30),
-                TimeSpan.FromSeconds(5));
+                TimeSpan.FromSeconds(20),
+                TimeSpan.FromMilliseconds(standardDelay));
 
             if (atScreen == false)
             {
@@ -227,8 +227,8 @@ public class VistaConsumerTransactionService : IVistaConsumerTransactionService
             // Validate -- Account name screen
             atScreen = await _autoService.WaitForScreenAsync(
                 _atmScreens.First(s => s.Name.ToLower() == "accountname"),
-                TimeSpan.FromSeconds(30),
-                TimeSpan.FromSeconds(5));
+                TimeSpan.FromSeconds(20),
+                TimeSpan.FromMilliseconds(standardDelay));
 
             if (atScreen == false)
             {
@@ -250,8 +250,8 @@ public class VistaConsumerTransactionService : IVistaConsumerTransactionService
             // Validate -- balance inquiry screen
             atScreen = await _autoService.WaitForScreenAsync(
                 _atmScreens.First(s => s.Name.ToLower() == "balanceinquiry"),
-                TimeSpan.FromSeconds(30),
-                TimeSpan.FromSeconds(5));
+                TimeSpan.FromSeconds(20),
+                TimeSpan.FromMilliseconds(standardDelay));
 
             if (atScreen == false)
             {
@@ -296,8 +296,8 @@ public class VistaConsumerTransactionService : IVistaConsumerTransactionService
             // Validate -- Transaction complete
             atScreen = await _autoService.WaitForScreenAsync(
                 _atmScreens.First(s => s.Name.ToLower() == "transactioncomplete"),
-                TimeSpan.FromSeconds(30),
-                TimeSpan.FromSeconds(5));
+                TimeSpan.FromSeconds(20),
+                TimeSpan.FromMilliseconds(standardDelay));
 
             if (atScreen == false)
             {
@@ -314,8 +314,8 @@ public class VistaConsumerTransactionService : IVistaConsumerTransactionService
                 // Validate -- Take card screen
                 atScreen = await _autoService.WaitForScreenAsync(
                     _atmScreens.First(s => s.Name.ToLower() == "takecard"),
-                    TimeSpan.FromSeconds(30),
-                    TimeSpan.FromSeconds(5));
+                    TimeSpan.FromSeconds(20),
+                    TimeSpan.FromMilliseconds(standardDelay));
 
                 if (atScreen == false)
                 {

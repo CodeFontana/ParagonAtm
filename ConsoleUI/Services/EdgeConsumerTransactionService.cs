@@ -107,14 +107,14 @@ public class EdgeConsumerTransactionService : IEdgeConsumerTransactionService
                 return;
             }
 
-            int standardDelay = 5000;
+            int standardDelay = _config.GetValue("Terminal:StandardDelayMS", 2000);
             await Task.Delay(standardDelay);
 
             // Validate -- Language selection screen
             AtmScreenModel languageScreen = _atmScreens.First(s => s.Name.ToLower() == "languageselection");
             atScreen = await _autoService.WaitForScreenAsync(languageScreen,
-                TimeSpan.FromSeconds(30),
-                TimeSpan.FromSeconds(5));
+                TimeSpan.FromSeconds(20),
+                TimeSpan.FromMilliseconds(standardDelay));
 
             if (atScreen == false)
             {
@@ -134,10 +134,9 @@ public class EdgeConsumerTransactionService : IEdgeConsumerTransactionService
             await Task.Delay(standardDelay);
 
             // Validate -- PIN screen
-            atScreen = await _autoService.WaitForScreenAsync(
-                _atmScreens.First(s => s.Name.ToLower() == "pin"),
-                TimeSpan.FromSeconds(30),
-                TimeSpan.FromSeconds(5));
+            atScreen = await _autoService.WaitForScreenAsync(_atmScreens.First(s => s.Name.ToLower() == "pin"),
+                TimeSpan.FromSeconds(20),
+                TimeSpan.FromMilliseconds(standardDelay));
 
             if (atScreen == false)
             {
@@ -186,10 +185,9 @@ public class EdgeConsumerTransactionService : IEdgeConsumerTransactionService
             await Task.Delay(standardDelay);
 
             // Validate -- Transaction type screen
-            atScreen = await _autoService.WaitForScreenAsync(
-                _atmScreens.First(s => s.Name.ToLower() == "transactiontype"),
-                TimeSpan.FromSeconds(30),
-                TimeSpan.FromSeconds(5));
+            atScreen = await _autoService.WaitForScreenAsync(_atmScreens.First(s => s.Name.ToLower() == "transactiontype"),
+                TimeSpan.FromSeconds(20),
+                TimeSpan.FromMilliseconds(standardDelay));
 
             if (atScreen == false)
             {
@@ -209,10 +207,9 @@ public class EdgeConsumerTransactionService : IEdgeConsumerTransactionService
             await Task.Delay(standardDelay);
 
             // Validate -- Account type screen
-            atScreen = await _autoService.WaitForScreenAsync(
-                _atmScreens.First(s => s.Name.ToLower() == "accounttype"),
-                TimeSpan.FromSeconds(30),
-                TimeSpan.FromSeconds(5));
+            atScreen = await _autoService.WaitForScreenAsync(_atmScreens.First(s => s.Name.ToLower() == "accounttype"),
+                TimeSpan.FromSeconds(20),
+                TimeSpan.FromMilliseconds(standardDelay));
 
             if (atScreen == false)
             {
@@ -232,10 +229,9 @@ public class EdgeConsumerTransactionService : IEdgeConsumerTransactionService
             await Task.Delay(standardDelay);
 
             // Validate -- Balance destination screen
-            atScreen = await _autoService.WaitForScreenAsync(
-                _atmScreens.First(s => s.Name.ToLower() == "balancedestination"),
-                TimeSpan.FromSeconds(30),
-                TimeSpan.FromSeconds(5));
+            atScreen = await _autoService.WaitForScreenAsync(_atmScreens.First(s => s.Name.ToLower() == "balancedestination"),
+                TimeSpan.FromSeconds(20),
+                TimeSpan.FromMilliseconds(standardDelay));
 
             if (atScreen == false)
             {
@@ -255,10 +251,9 @@ public class EdgeConsumerTransactionService : IEdgeConsumerTransactionService
             await Task.Delay(standardDelay);
 
             // Validate -- Account name screen
-            atScreen = await _autoService.WaitForScreenAsync(
-                _atmScreens.First(s => s.Name.ToLower() == "accountname"),
-                TimeSpan.FromSeconds(30),
-                TimeSpan.FromSeconds(5));
+            atScreen = await _autoService.WaitForScreenAsync(_atmScreens.First(s => s.Name.ToLower() == "accountname"),
+                TimeSpan.FromSeconds(20),
+                TimeSpan.FromMilliseconds(standardDelay));
 
             if (atScreen == false)
             {
@@ -278,10 +273,9 @@ public class EdgeConsumerTransactionService : IEdgeConsumerTransactionService
             await Task.Delay(standardDelay);
 
             // Validate -- balance inquiry screen
-            atScreen = await _autoService.WaitForScreenAsync(
-                _atmScreens.First(s => s.Name.ToLower() == "balanceinquiry"),
-                TimeSpan.FromSeconds(30),
-                TimeSpan.FromSeconds(5));
+            atScreen = await _autoService.WaitForScreenAsync(_atmScreens.First(s => s.Name.ToLower() == "balanceinquiry"),
+                TimeSpan.FromSeconds(20),
+                TimeSpan.FromMilliseconds(standardDelay));
 
             if (atScreen == false)
             {
@@ -324,10 +318,9 @@ public class EdgeConsumerTransactionService : IEdgeConsumerTransactionService
             }
             
             // Validate -- Another transaction screen
-            atScreen = await _autoService.WaitForScreenAsync(
-                _atmScreens.First(s => s.Name.ToLower() == "anothertransaction"),
-                TimeSpan.FromSeconds(30),
-                TimeSpan.FromSeconds(5));
+            atScreen = await _autoService.WaitForScreenAsync(_atmScreens.First(s => s.Name.ToLower() == "anothertransaction"),
+                TimeSpan.FromSeconds(20),
+                TimeSpan.FromMilliseconds(standardDelay));
 
             if (atScreen == false)
             {
@@ -346,10 +339,9 @@ public class EdgeConsumerTransactionService : IEdgeConsumerTransactionService
             await Task.Delay(standardDelay);
 
             // Validate -- Take card screen
-            atScreen = await _autoService.WaitForScreenAsync(
-                _atmScreens.First(s => s.Name.ToLower() == "takecard"),
-                TimeSpan.FromSeconds(30),
-                TimeSpan.FromSeconds(5));
+            atScreen = await _autoService.WaitForScreenAsync(_atmScreens.First(s => s.Name.ToLower() == "takecard"),
+                TimeSpan.FromSeconds(20),
+                TimeSpan.FromMilliseconds(standardDelay));
 
             if (atScreen == false)
             {
