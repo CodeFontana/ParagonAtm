@@ -204,6 +204,36 @@ public class ClientService : IClientService
             await Task.Delay(standardDelay);
             return await DispatchToIdleAsync(saveFolder);
         }
+        else if (_autoService.MatchScreen(_atmScreens.First(s => s.Name.ToLower() == "TransactionCancelled"), curScreen))
+        {
+            _logger.LogInformation("Dispatch - Transaction cancelled");
+            await TakeAllMediaAsync(saveFolder);
+            await Task.Delay(standardDelay);
+            return await DispatchToIdleAsync(saveFolder);
+        }
+        else if (_autoService.MatchScreen(_atmScreens.First(s => s.Name.ToLower() == "takecard"), curScreen))
+        {
+            _logger.LogInformation("Dispatch - Take card");
+            await TakeAllMediaAsync(saveFolder);
+            await Task.Delay(standardDelay);
+            return await DispatchToIdleAsync(saveFolder);
+        }
+        else if (_autoService.MatchScreen(_atmScreens.First(s => s.Name.ToLower() == "thankyou"), curScreen))
+        {
+            _logger.LogInformation("Dispatch - Thank you");
+            await TakeAllMediaAsync(saveFolder);
+            await Task.Delay(standardDelay);
+            return await DispatchToIdleAsync(saveFolder);
+        }
+        else if (_autoService.MatchScreen(_atmScreens.First(s => s.Name.ToLower() == "pin"), curScreen))
+        {
+            _logger.LogInformation("Dispatch - PIN screen");
+            List<AtmServiceModel> services = await _atmService.GetServicesAsync();
+            AtmServiceModel pinpad = services?.FirstOrDefault(x => x.DeviceType.ToLower() == "pin");
+            await _atmService.PressKeyAsync(new PressKeyModel(pinpad.Name, "Cancel"));
+            await Task.Delay(standardDelay);
+            return await DispatchToIdleAsync(saveFolder);
+        }
         else if (_autoService.MatchScreen(_atmScreens.First(s => s.Name.ToLower() == "moretime"), curScreen))
         {
             _logger.LogInformation("Dispatch - More time");
@@ -255,29 +285,6 @@ public class ClientService : IClientService
                 await _vmService.ClickScreenAsync(new ClickScreenModel(location));
             }
 
-            await Task.Delay(standardDelay);
-            return await DispatchToIdleAsync(saveFolder);
-        }
-        else if (_autoService.MatchScreen(_atmScreens.First(s => s.Name.ToLower() == "takecard"), curScreen))
-        {
-            _logger.LogInformation("Dispatch - Take card");
-            await TakeAllMediaAsync(saveFolder);
-            await Task.Delay(standardDelay);
-            return await DispatchToIdleAsync(saveFolder);
-        }
-        else if (_autoService.MatchScreen(_atmScreens.First(s => s.Name.ToLower() == "thankyou"), curScreen))
-        {
-            _logger.LogInformation("Dispatch - Thank you");
-            await TakeAllMediaAsync(saveFolder);
-            await Task.Delay(standardDelay);
-            return await DispatchToIdleAsync(saveFolder);
-        }
-        else if (_autoService.MatchScreen(_atmScreens.First(s => s.Name.ToLower() == "pin"), curScreen))
-        {
-            _logger.LogInformation("Dispatch - PIN screen");
-            List<AtmServiceModel> services = await _atmService.GetServicesAsync();
-            AtmServiceModel pinpad = services?.FirstOrDefault(x => x.DeviceType.ToLower() == "pin");
-            await _atmService.PressKeyAsync(new PressKeyModel(pinpad.Name, "Cancel"));
             await Task.Delay(standardDelay);
             return await DispatchToIdleAsync(saveFolder);
         }
