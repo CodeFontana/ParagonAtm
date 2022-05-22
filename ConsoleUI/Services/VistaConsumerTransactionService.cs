@@ -270,6 +270,18 @@ public class VistaConsumerTransactionService : IVistaConsumerTransactionService
 
             await Task.Delay(standardDelay);
 
+            // Validate -- Take receipt screen
+            atScreen = await _autoService.WaitForScreenAsync(
+                _atmScreens.First(s => s.Name.ToLower() == "takereceipt"),
+                TimeSpan.FromSeconds(20),
+                TimeSpan.FromMilliseconds(standardDelay));
+
+            if (atScreen == false)
+            {
+                _logger.LogError("Balance inquiry screen not found");
+                return;
+            }
+
             // Isolate receipt printer service
             AtmServiceModel receiptPrinter = services?.FirstOrDefault(x => x.DeviceType.ToLower() == "ptr");
 
