@@ -241,6 +241,20 @@ public class ClientService : IClientService
                 await _vmService.ClickScreenAsync(new ClickScreenModel(location));
             }
 
+            location = await _vmService.GetLocationByTextAsync("exit");
+
+            if (location is not null && location.Found)
+            {
+                await _vmService.ClickScreenAsync(new ClickScreenModel(location));
+            }
+
+            location = await _vmService.GetLocationByTextAsync("return card");
+
+            if (location is not null && location.Found)
+            {
+                await _vmService.ClickScreenAsync(new ClickScreenModel(location));
+            }
+
             await Task.Delay(standardDelay);
             return await DispatchToIdleAsync(saveFolder);
         }
@@ -275,6 +289,10 @@ public class ClientService : IClientService
         else
         {
             _logger.LogInformation("Dispatch - Unrecognized screen");
+            List<AtmServiceModel> services = await _atmService.GetServicesAsync();
+            AtmServiceModel pinpad = services?.FirstOrDefault(x => x.DeviceType.ToLower() == "pin");
+            await _atmService.PressKeyAsync(new PressKeyModel(pinpad.Name, "Cancel"));
+            await _autoService.FindAndClickAsync("cancel");
             await Task.Delay(standardDelay);
             return await DispatchToIdleAsync(saveFolder);
         }
