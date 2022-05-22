@@ -165,7 +165,8 @@
       "Text": [
         "Your transaction has been cancelled",
         "We're sorry but your transaction cannot be processed",
-        "last transaction cancelled at your request"
+        "last transaction cancelled at your request",
+        "We are unable to process your transaction at this time"
       ],
       "MatchConfidence": 0.80,
       "EditDistance": 1
