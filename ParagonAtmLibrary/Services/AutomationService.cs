@@ -207,70 +207,74 @@ public class AutomationService : IAutomationService
                 }
             }
 
-            decimal elementConfidence = wordMatchCount / (decimal)Math.Max(findWords.Length, elementWords.Length);
-
-            if (elementConfidence > 0)
+            if (wordMatchCount > 0)
             {
+                decimal elementConfidence = wordMatchCount / (decimal)Math.Max(findWords.Length, elementWords.Length);
                 ScreenCoordinates midPoint = ComputeMidpoint(element.x0, element.y0, element.x1, element.y1);
                 _logger.LogDebug($"Element match -- {element.text} [x:{midPoint.x} y:{midPoint.y}] [Confidence {elementConfidence:0.00}]");
                 textMatches.Add(new FindAndClickModel(midPoint, element.text, elementConfidence));
 
-                foreach (Line line in element.lines)
+                if (elementConfidence < 1)
                 {
-                    if (string.IsNullOrEmpty(line.text))
+                    foreach (Line line in element.lines)
                     {
-                        continue;
-                    }
-
-                    wordMatchCount = 0;
-                    string[] lineWords = line.text.Split(_splitChars, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
-
-                    foreach (string lWord in lineWords)
-                    {
-                        if (findWords.Contains(lWord.ToLower()))
+                        if (string.IsNullOrEmpty(line.text))
                         {
-                            wordMatchCount++;
+                            continue;
                         }
-                        else if (acceptableEditDistance > 0
-                                && findWords.Any(f => ComputeEditDistance(lWord.ToLower(), f) <= acceptableEditDistance))
+
+                        wordMatchCount = 0;
+                        string[] lineWords = line.text.Split(_splitChars, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+
+                        foreach (string lWord in lineWords)
                         {
-                            wordMatchCount++;
-                        }
-                    }
-
-                    decimal lineConfidence = wordMatchCount / (decimal)Math.Max(findWords.Length, lineWords.Length) * (1 - elementConfidence);
-
-                    if (lineConfidence > 0)
-                    {
-                        midPoint = ComputeMidpoint(line.x0, line.y0, line.x1, line.y1);
-                        _logger.LogDebug($"Line match -- {string.Join(' ', lineWords)} [x:{midPoint.x} y:{midPoint.y}] [Confidence {lineConfidence:0.00}]");
-                        textMatches.Add(new FindAndClickModel(midPoint, line.text, lineConfidence));
-
-                        foreach (Word word in line.words)
-                        {
-                            wordMatchCount = 0;
-                            string[] words = word.text.Split(_splitChars, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
-
-                            foreach (string w in words)
+                            if (findWords.Contains(lWord.ToLower()))
                             {
-                                if (findWords.Contains(w.ToLower()))
-                                {
-                                    wordMatchCount++;
-                                }
-                                else if (acceptableEditDistance > 0
-                                        && findWords.Any(f => ComputeEditDistance(w.ToLower().Trim(), f) <= acceptableEditDistance))
-                                {
-                                    wordMatchCount++;
-                                }
+                                wordMatchCount++;
                             }
-
-                            decimal wordConfidence = wordMatchCount / (decimal)Math.Max(findWords.Length, words.Length) * (1 - lineConfidence);
-
-                            if (wordConfidence > 0)
+                            else if (acceptableEditDistance > 0
+                                    && findWords.Any(f => ComputeEditDistance(lWord.ToLower(), f) <= acceptableEditDistance))
                             {
-                                midPoint = ComputeMidpoint(word.x0, word.y0, word.x1, word.y1);
-                                _logger.LogDebug($"Word match -- {word.text} [x:{midPoint.x} y:{midPoint.y}] [Confidence {wordConfidence:0.00}]");
-                                textMatches.Add(new FindAndClickModel(midPoint, word.text, wordConfidence));
+                                wordMatchCount++;
+                            }
+                        }
+
+                        if (wordMatchCount > 0)
+                        {
+                            decimal lineConfidence = wordMatchCount / (decimal)Math.Max(findWords.Length, lineWords.Length);
+
+                            midPoint = ComputeMidpoint(line.x0, line.y0, line.x1, line.y1);
+                            _logger.LogDebug($"Line match -- {string.Join(' ', lineWords)} [x:{midPoint.x} y:{midPoint.y}] [Confidence {lineConfidence:0.00}]");
+                            textMatches.Add(new FindAndClickModel(midPoint, line.text, lineConfidence));
+
+                            if (lineConfidence < 1)
+                            {
+                                foreach (Word word in line.words)
+                                {
+                                    wordMatchCount = 0;
+                                    string[] words = word.text.Split(_splitChars, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+
+                                    foreach (string w in words)
+                                    {
+                                        if (findWords.Contains(w.ToLower()))
+                                        {
+                                            wordMatchCount++;
+                                        }
+                                        else if (acceptableEditDistance > 0
+                                                && findWords.Any(f => ComputeEditDistance(w.ToLower().Trim(), f) <= acceptableEditDistance))
+                                        {
+                                            wordMatchCount++;
+                                        }
+                                    }
+
+                                    if (wordMatchCount > 0)
+                                    {
+                                        decimal wordConfidence = wordMatchCount / (decimal)Math.Max(findWords.Length, words.Length) * lineConfidence;
+                                        midPoint = ComputeMidpoint(word.x0, word.y0, word.x1, word.y1);
+                                        _logger.LogDebug($"Word match -- {word.text} [x:{midPoint.x} y:{midPoint.y}] [Confidence {wordConfidence:0.00}]");
+                                        textMatches.Add(new FindAndClickModel(midPoint, word.text, wordConfidence));
+                                    }
+                                }
                             }
                         }
                     }
