@@ -74,13 +74,13 @@ public class ClientApp : IHostedService
                                                                  "Checking|T",
                                                                  "Print and Display");
 
-            await _edgeConsumerTransactionService.BalanceInquiry(_cancelTokenSource.Token,
-                                                                 "f2305283-bb84-49fe-aba6-cd3f7bcfa5ba",
-                                                                 "1234",
-                                                                 "Espanol",
-                                                                 "Cuenta Corriente",
-                                                                 "Checking|T",
-                                                                 "Imprimir y Mostrar");
+            //await _edgeConsumerTransactionService.BalanceInquiry(_cancelTokenSource.Token,
+            //                                                     "f2305283-bb84-49fe-aba6-cd3f7bcfa5ba",
+            //                                                     "1234",
+            //                                                     "Espanol",
+            //                                                     "Cuenta Corriente",
+            //                                                     "Checking|T",
+            //                                                     "Imprimir y Mostrar");
 
             //await _vistaConsumerTransactionService.BalanceInquiry(_cancelTokenSource.Token,
             //                                                      "f2305283-bb84-49fe-aba6-cd3f7bcfa5ba",
