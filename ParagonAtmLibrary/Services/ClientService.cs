@@ -192,6 +192,12 @@ public class ClientService : IClientService
             _logger.LogError("Dispatch - Failed to read screen");
             return false;
         }
+        else if (curScreen.Count == 0)
+        {
+            _logger.LogInformation("Dispatch - Empty screen");
+            await Task.Delay(standardDelay);
+            return await DispatchToIdleAsync(saveFolder);
+        }
         else if (_autoService.MatchScreen(_atmScreens.First(s => s.Name.ToLower() == "welcome"), curScreen)
             || _autoService.MatchScreen(_atmScreens.First(s => s.Name.ToLower() == "outofservice"), curScreen))
         {
