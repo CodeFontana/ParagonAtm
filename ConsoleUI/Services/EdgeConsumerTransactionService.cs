@@ -43,7 +43,8 @@ public class EdgeConsumerTransactionService : IEdgeConsumerTransactionService
     /// be built purely in C# code.
     /// </remarks>
     /// <returns>A task representing a balance inquiry transaction</returns>
-    public async Task BalanceInquiry(string cardId = "f2305283-bb84-49fe-aba6-cd3f7bcfa5ba",
+    public async Task BalanceInquiry(CancellationToken cancelToken,
+                                     string cardId = "f2305283-bb84-49fe-aba6-cd3f7bcfa5ba",
                                      string cardPin = "1234",
                                      string language = "English",
                                      string accountType = "Checking",
@@ -71,6 +72,7 @@ public class EdgeConsumerTransactionService : IEdgeConsumerTransactionService
             }
 
             await _clientService.SaveScreenshotAsync(saveFolder);
+            if (cancelToken.IsCancellationRequested) { _logger.LogInformation("Transaction cancelled"); return; }
 
             // Get ATM services
             List<AtmServiceModel> services = await _atmService.GetServicesAsync();
@@ -121,6 +123,7 @@ public class EdgeConsumerTransactionService : IEdgeConsumerTransactionService
             }
 
             await _clientService.SaveScreenshotAsync(saveFolder);
+            if (cancelToken.IsCancellationRequested) { _logger.LogInformation("Transaction cancelled"); return; }
 
             if (await _autoService.FindAndClickAsync(language) == false)
             {
@@ -143,6 +146,7 @@ public class EdgeConsumerTransactionService : IEdgeConsumerTransactionService
             }
 
             await _clientService.SaveScreenshotAsync(saveFolder);
+            if (cancelToken.IsCancellationRequested) { _logger.LogInformation("Transaction cancelled"); return; }
 
             // Isolate pinpad service
             AtmServiceModel pinpad = services?.FirstOrDefault(x => x.DeviceType.ToLower() == "pin");
@@ -168,6 +172,7 @@ public class EdgeConsumerTransactionService : IEdgeConsumerTransactionService
             }
 
             await _clientService.SaveScreenshotAsync(saveFolder);
+            if (cancelToken.IsCancellationRequested) { _logger.LogInformation("Transaction cancelled"); return; }
 
             // Press ENTER
             success = await _atmService.PressKeyAsync(new PressKeyModel(pinpad.Name, "Enter"));
@@ -193,6 +198,7 @@ public class EdgeConsumerTransactionService : IEdgeConsumerTransactionService
             }
 
             await _clientService.SaveScreenshotAsync(saveFolder);
+            if (cancelToken.IsCancellationRequested) { _logger.LogInformation("Transaction cancelled"); return; }
 
             if (await _autoService.FindAndClickAsync(transactionType) == false)
             {
@@ -215,6 +221,7 @@ public class EdgeConsumerTransactionService : IEdgeConsumerTransactionService
             }
 
             await _clientService.SaveScreenshotAsync(saveFolder);
+            if (cancelToken.IsCancellationRequested) { _logger.LogInformation("Transaction cancelled"); return; }
 
             if (await _autoService.FindAndClickAsync(accountType) == false)
             {
@@ -237,6 +244,7 @@ public class EdgeConsumerTransactionService : IEdgeConsumerTransactionService
             }
 
             await _clientService.SaveScreenshotAsync(saveFolder);
+            if (cancelToken.IsCancellationRequested) { _logger.LogInformation("Transaction cancelled"); return; }
 
             if (await _autoService.FindAndClickAsync(receiptOption) == false)
             {
@@ -259,6 +267,7 @@ public class EdgeConsumerTransactionService : IEdgeConsumerTransactionService
             }
 
             await _clientService.SaveScreenshotAsync(saveFolder);
+            if (cancelToken.IsCancellationRequested) { _logger.LogInformation("Transaction cancelled"); return; }
 
             if (await _autoService.FindAndClickAsync(accountName) == false)
             {
@@ -281,6 +290,7 @@ public class EdgeConsumerTransactionService : IEdgeConsumerTransactionService
             }
 
             await _clientService.SaveScreenshotAsync(saveFolder);
+            if (cancelToken.IsCancellationRequested) { _logger.LogInformation("Transaction cancelled"); return; }
 
             if (await _autoService.FindAndClickAsync(new string[] { "continue", "continuar" }) == false)
             {

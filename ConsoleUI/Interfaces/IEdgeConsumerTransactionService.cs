@@ -2,7 +2,8 @@
 
 public interface IEdgeConsumerTransactionService
 {
-    Task BalanceInquiry(string cardId,
+    Task BalanceInquiry(CancellationToken cancelToken,
+                        string cardId,
                         string cardPin,
                         string language,
                         string accountType,

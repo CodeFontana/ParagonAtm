@@ -12,6 +12,7 @@ public class ClientApp : IHostedService
     private readonly IClientService _clientService;
     private readonly IEdgeConsumerTransactionService _edgeConsumerTransactionService;
     private readonly IVistaConsumerTransactionService _vistaConsumerTransactionService;
+    private readonly CancellationTokenSource _cancelTokenSource;
 
     public ClientApp(IHostApplicationLifetime hostApplicationLifetime,
                      ILogger<ClientApp> logger,
@@ -24,6 +25,7 @@ public class ClientApp : IHostedService
         _clientService = clientService;
         _edgeConsumerTransactionService = edgeConsumerTransactionService;
         _vistaConsumerTransactionService = vistaConsumerTransactionService;
+        _cancelTokenSource = new CancellationTokenSource();
     }
 
     public Task StartAsync(CancellationToken cancellationToken)
@@ -51,6 +53,7 @@ public class ClientApp : IHostedService
 
     public async Task StopAsync(CancellationToken cancellationToken)
     {
+        _cancelTokenSource.Cancel();
         await _clientService.DisconnectAsync();
     }
 
@@ -63,21 +66,24 @@ public class ClientApp : IHostedService
                 return;
             }
 
-            await _edgeConsumerTransactionService.BalanceInquiry("f2305283-bb84-49fe-aba6-cd3f7bcfa5ba",
+            await _edgeConsumerTransactionService.BalanceInquiry(_cancelTokenSource.Token,
+                                                                 "f2305283-bb84-49fe-aba6-cd3f7bcfa5ba",
                                                                  "1234",
                                                                  "English",
                                                                  "Checking",
                                                                  "Checking|T",
                                                                  "Print and Display");
 
-            //await _edgeConsumerTransactionService.BalanceInquiry("f2305283-bb84-49fe-aba6-cd3f7bcfa5ba",
-            //                                                     "1234",
-            //                                                     "Espanol",
-            //                                                     "Cuenta Corriente",
-            //                                                     "Checking|T",
-            //                                                     "Imprimir y Mostrar");
+            await _edgeConsumerTransactionService.BalanceInquiry(_cancelTokenSource.Token,
+                                                                 "f2305283-bb84-49fe-aba6-cd3f7bcfa5ba",
+                                                                 "1234",
+                                                                 "Espanol",
+                                                                 "Cuenta Corriente",
+                                                                 "Checking|T",
+                                                                 "Imprimir y Mostrar");
 
-            //await _vistaConsumerTransactionService.BalanceInquiry("f2305283-bb84-49fe-aba6-cd3f7bcfa5ba",
+            //await _vistaConsumerTransactionService.BalanceInquiry(_cancelTokenSource.Token,
+            //                                                      "f2305283-bb84-49fe-aba6-cd3f7bcfa5ba",
             //                                                      "1234",
             //                                                      "Display Balance",
             //                                                      "Checking",

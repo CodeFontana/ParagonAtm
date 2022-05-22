@@ -43,7 +43,8 @@ public class VistaConsumerTransactionService : IVistaConsumerTransactionService
     /// be built purely in C# code.
     /// </remarks>
     /// <returns>A task representing a balance inquiry transaction</returns>
-    public async Task BalanceInquiry(string cardId = "f2305283-bb84-49fe-aba6-cd3f7bcfa5ba",
+    public async Task BalanceInquiry(CancellationToken cancelToken,
+                                     string cardId = "f2305283-bb84-49fe-aba6-cd3f7bcfa5ba",
                                      string cardPin = "1234",
                                      string receiptOption = "Display Balance",
                                      string accountType = "Checking",
@@ -64,6 +65,7 @@ public class VistaConsumerTransactionService : IVistaConsumerTransactionService
             }
 
             await _clientService.SaveScreenshotAsync(saveFolder);
+            if (cancelToken.IsCancellationRequested) { _logger.LogInformation("Transaction cancelled"); return; }
 
             // Get ATM services
             List<AtmServiceModel> services = await _atmService.GetServicesAsync();
@@ -114,6 +116,7 @@ public class VistaConsumerTransactionService : IVistaConsumerTransactionService
             }
 
             await _clientService.SaveScreenshotAsync(saveFolder);
+            if (cancelToken.IsCancellationRequested) { _logger.LogInformation("Transaction cancelled"); return; }
 
             // Isolate pinpad service
             AtmServiceModel pinpad = services?.FirstOrDefault(x => x.DeviceType.ToLower() == "pin");
@@ -139,6 +142,7 @@ public class VistaConsumerTransactionService : IVistaConsumerTransactionService
             }
 
             await _clientService.SaveScreenshotAsync(saveFolder);
+            if (cancelToken.IsCancellationRequested) { _logger.LogInformation("Transaction cancelled"); return; }
 
             // Press ENTER
             success = await _atmService.PressKeyAsync(new PressKeyModel(pinpad.Name, "Enter"));
@@ -164,6 +168,7 @@ public class VistaConsumerTransactionService : IVistaConsumerTransactionService
             }
 
             await _clientService.SaveScreenshotAsync(saveFolder);
+            if (cancelToken.IsCancellationRequested) { _logger.LogInformation("Transaction cancelled"); return; }
 
             if (await _autoService.FindAndClickAsync("Yes") == false)
             {
@@ -186,6 +191,7 @@ public class VistaConsumerTransactionService : IVistaConsumerTransactionService
             }
 
             await _clientService.SaveScreenshotAsync(saveFolder);
+            if (cancelToken.IsCancellationRequested) { _logger.LogInformation("Transaction cancelled"); return; }
 
             if (await _autoService.FindAndClickAsync(receiptOption) == false)
             {
@@ -208,6 +214,7 @@ public class VistaConsumerTransactionService : IVistaConsumerTransactionService
             }
 
             await _clientService.SaveScreenshotAsync(saveFolder);
+            if (cancelToken.IsCancellationRequested) { _logger.LogInformation("Transaction cancelled"); return; }
 
             if (await _autoService.FindAndClickAsync(accountType) == false)
             {
@@ -230,6 +237,7 @@ public class VistaConsumerTransactionService : IVistaConsumerTransactionService
             }
 
             await _clientService.SaveScreenshotAsync(saveFolder);
+            if (cancelToken.IsCancellationRequested) { _logger.LogInformation("Transaction cancelled"); return; }
 
             if (await _autoService.FindAndClickAsync(accountName) == false)
             {
@@ -252,6 +260,7 @@ public class VistaConsumerTransactionService : IVistaConsumerTransactionService
             }
 
             await _clientService.SaveScreenshotAsync(saveFolder);
+            if (cancelToken.IsCancellationRequested) { _logger.LogInformation("Transaction cancelled"); return; }
 
             if (await _autoService.FindAndClickAsync("print") == false)
             {
