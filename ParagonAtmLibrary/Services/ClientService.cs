@@ -210,7 +210,7 @@ public class ClientService : IClientService
             await Task.Delay(standardDelay);
             return await DispatchToIdleAsync(saveFolder);
         }
-        else if (_autoService.MatchScreen(_atmScreens.First(s => s.Name.ToLower() == "TransactionCancelled"), curScreen))
+        else if (_autoService.MatchScreen(_atmScreens.First(s => s.Name.ToLower() == "transactioncancelled"), curScreen))
         {
             _logger.LogInformation("Dispatch - Transaction cancelled");
             await TakeAllMediaAsync(saveFolder);
