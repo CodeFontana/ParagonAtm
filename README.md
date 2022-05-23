@@ -213,10 +213,10 @@ Using the Paragon-provided APIs and the additional automations provided by this 
   
 </div>
 
-### Sample Balance Inquiry on an NCR Edge Virtual ATM
-
-![2022-04-19_00-46-34](https://user-images.githubusercontent.com/41308769/163922140-478fb29d-81ca-4451-a8f6-dd7324f10f41.gif)
-
+### Demos
+  
+https://user-images.githubusercontent.com/41308769/169855736-e5e9ca91-7a94-4335-83de-89fca32f3f6a.mp4
+  
   
 ## More Information about Paragon Virtual ATM
 https://www.paragonedge.com/products/virtualatm
