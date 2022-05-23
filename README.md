@@ -125,7 +125,7 @@ GetServicesAsync(), GetDeviceStateAsync(), InsertCardAsync(), TakeCardAsync(), P
 #### Library-provided API methods
 
 <ins>**IClientService:**</ins>  
-ConnectAsync(), DisconnectAsync(), DispatchToIdleAsync(), TakeAllMediaAsync(), SaveScreenshotsync()
+ConnectAsync(), DisconnectAsync(), DispatchToIdleAsync(), TakeAllMediaAsync(), SaveScreenshotAsync()
 
 <ins>**IAutomationService:**</ins>  
 CompareText() / CompareTextAsync(), FindAndClickAsync(), GetScreenWordsAsync(), MatchScreen() / MatchScreenAsync(), WaitForScreenAsync(), WaitForScreensAsync(), WaitForTextAsync()
