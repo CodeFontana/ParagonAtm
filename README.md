@@ -105,118 +105,33 @@ The **MatchConfidence** and **EditDistance** parameters are provided to accomoda
 }
 ```
 
-### Code your transaction -- API method chart
+### Code your transaction -- API and Automation methods
 Using the Paragon-provided APIs and the additional automations provided by this library, inject any of the following services and consume their methods in whatever sequence works for what you are attempting to achieve!  
 
-<div align="center">
-  
-  #### Paragon Built-in API methods
-  
-  <table>
-   <thead>
-      <tr>
-         <th><strong>IAgentService</strong></th>
-         <th><strong>IConnectionService</strong></th>
-         <th><strong>IVirtualMachineService</strong></th>
-      </tr>
-   </thead>
-   <tbody>
-      <tr>
-         <td>GetAgentStatusAsync()</td>
-         <td>OpenAsync()</td>
-         <td>GetScreenJpegAsync()</td>
-      </tr>
-      <tr>
-         <td>GetUserGroupsAsync()</td>
-         <td>CloseAsync()</td>
-         <td>GetScreenTextAsync()</td>
-      </tr>
-     <tr>
-         <td>OpenHwProfileAsync()</td>
-         <td>SaveCloseAsync()</td>
-         <td>ClickScreenAsync()</td>
-      </tr>
-     <tr>
-         <td>StartAtmAppAsync()</td>
-         <td>SaveCloseRebootAsync()</td>
-         <td>GetLocationByTextAsync()</td>
-      </tr>
-     <tr>
-         <td>OpenSesisonAsync()</td>
-         <td>CloseRebootAsync()</td>
-         <td></td>
-      </tr>
-     <tr>
-         <td>CloseSesisonAsync()</td>
-         <td></td>
-         <td></td>
-      </tr>
-   </tbody>
-  </table>
-  
-    
-  <table>
-     <thead>
-        <tr>
-           <th><strong>IAtmService</strong></th>
-           <th><strong>IAtmService (cont.)</strong></th>
-           <th><strong>IAtmService (cont.)</strong></th>
-        </tr>
-     </thead>
-     <tbody>
-        <tr>
-           <td>GetServicesAsync()</td>
-           <td>GetDeviceStateAsync()</td>
-           <td>InsertCardAsync()</td>
-        </tr>
-        <tr>
-           <td>TakeCardAsync()</td>
-           <td>PressKeyAsync()</td>
-           <td>PressTtuKeyAsync()</td>
-        </tr>
-       <tr>
-           <td>GetPinpadKeysAsync()</td>
-           <td>ChangeOperatorSwitchAsync()</td>
-           <td>PushOperatorSwitchAsync()</td>
-        </tr>
-       <tr>
-           <td>EnterDieboldSupervisorModeAsync()</td>
-           <td>ExitDieboldSupervisorModeAsync()</td>
-           <td>OperatorSwitchStatusAsync()</td>
-        </tr>
-       <tr>
-           <td>InsertMediaAsync()</td>
-           <td>TakeMediaAsync()</td>
-           <td>TakeReceiptAsync()</td>
-        </tr>
-       <tr>
-           <td>RecoverAsync()</td>
-           <td></td>
-           <td></td>
-        </tr>
-     </tbody>
-  </table>
-  
-    
-  
-  #### Library-provided API methods
+#### Paragon Built-in API methods
 
-  | IClientService         | IAutomationService
-  |------------------------|------------------------------------|
-  | ConnectAsync()         | CompareText() / CompareTextAsync() |
-  | DisconnectAsync()      | FindAndClickAsync()                |
-  | DispatchToIdleAsync()  | GetScreenWordsAsync()              |
-  | TakeAllMediaAsync()    | MatchScreen() / MatchScreenAsync() |
-  | SaveScreenshotsync()   | WaitForScreenAsync()               |
-  |                        | WaitForScreensAsync()              |
-  |                        | WaitForTextAsync()                 |
+<ins>**IAgentService:**</ins>  
+GetAgentStatusAsync(), GetUserGroupsAsync(), OpenHwProfileAsync(), StartAtmAppAsync(), OpenSesisonAsync(), CloseSesisonAsync()
   
-</div>
+<ins>**IConnectionService:**</ins>  
+OpenAsync(), CloseAsync(), SaveCloseAsync(), SaveCloseRebootAsync(), CloseRebootAsync()
+  
+<ins>**IVirtualMachineService:**</ins>  
+GetScreenJpegAsync(), GetScreenTextAsync(), ClickScreenAsync(), GetLocationByTextAsync()
+
+<ins>**IAtmService:**</ins>  
+GetServicesAsync(), GetDeviceStateAsync(), InsertCardAsync(), TakeCardAsync(), PressKeyAsync(), PressTtuKeyAsync(), GetPinpadKeysAsync(), ChangeOperatorSwitchAsync(), PushOperatorSwitchAsync(), EnterDieboldSupervisorModeAsync(), ExitDieboldSupervisorModeAsync(), OperatorSwitchStatusAsync(), InsertMediaAsync(), TakeMediaAsync(), TakeReceiptAsync(), RecoverAsync()
+ 
+#### Library-provided API methods
+
+<ins>**IClientService:**</ins>  
+ConnectAsync(), DisconnectAsync(), DispatchToIdleAsync(), TakeAllMediaAsync(), SaveScreenshotsync()
+
+<ins>**IAutomationService:**</ins>  
+CompareText() / CompareTextAsync(), FindAndClickAsync(), GetScreenWordsAsync(), MatchScreen() / MatchScreenAsync(), WaitForScreenAsync(), WaitForScreensAsync(), WaitForTextAsync()
 
 ### Demos
-  
 https://user-images.githubusercontent.com/41308769/169855736-e5e9ca91-7a94-4335-83de-89fca32f3f6a.mp4
-  
   
 ## More Information about Paragon Virtual ATM
 https://www.paragonedge.com/products/virtualatm
