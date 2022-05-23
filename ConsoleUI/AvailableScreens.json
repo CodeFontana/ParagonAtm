@@ -135,7 +135,7 @@
         "Do you want another transaction",
         "Desea otra transaccion"
       ],
-      "MatchConfidence": 0.60,
+      "MatchConfidence": 0.66,
       "EditDistance": 1
     },
     {
