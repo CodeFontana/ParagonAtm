@@ -90,13 +90,9 @@ public class ClientService : IClientService
                 return false;
             }
 
-            bool success = false;
-
             if (agentPaused == false)
             {
-                success = await _agentService.OpenHwProfileAsync(_virtualAtm.HwProfile);
-
-                if (success == false)
+                if (await _agentService.OpenHwProfileAsync(_virtualAtm.HwProfile) == false)
                 {
                     _logger.LogError($"Failed to open hardware profile [{_virtualAtm.HwProfile}]");
                     return false;
@@ -105,54 +101,10 @@ public class ClientService : IClientService
                 _profileLoaded = true;
             }
 
-            success = await _connectionService.OpenAsync();
-
-            if (success == false)
+            if (await _connectionService.OpenAsync() == false)
             {
                 _logger.LogError("Failed to open connection");
                 return false;
-            }
-
-            _logger.LogInformation("Check if ATM app is running...");
-            List<string> screenWords = await _autoService.GetScreenWordsAsync();
-
-            if (screenWords == null)
-            {
-                _logger.LogError("ATM screen is not available");
-                return false;
-            }
-
-            AtmScreenModel curScreen = _autoService.MatchScreen(_atmScreens, screenWords);
-
-            if (curScreen == null)
-            {
-                foreach (string app in _virtualAtm.StartupApps)
-                {
-                    await _agentService.StartAtmAppAsync(app);
-                }
-
-                TimeSpan startupDelay = TimeSpan.FromSeconds(int.Parse(_config["Terminal:StartupDelaySeconds"]));
-                _logger.LogInformation($"Delaying for {startupDelay.TotalSeconds} seconds while ATM app starts...");
-                await Task.Delay(startupDelay);
-
-                _logger.LogInformation("Validate welcome screen...");
-                success = await _autoService.WaitForScreenAsync(
-                    _atmScreens.First(s => s.Name.ToLower() == "welcome"),
-                    TimeSpan.FromMinutes(5),
-                    TimeSpan.FromSeconds(15));
-
-                if (success == false)
-                {
-                    _logger.LogError("ATM not at welcome screen");
-                    return false;
-                }
-
-                return true;
-            }
-
-            if (curScreen.Name.ToLower() != "welcome" && curScreen.Name.ToLower() != "outofservice")
-            {
-                return await DispatchToIdleAsync(_config["Preferences:DownloadPath"]);
             }
 
             return true;
@@ -162,6 +114,51 @@ public class ClientService : IClientService
             _logger.LogCritical(ex, "API connection failed");
             return false;
         }
+    }
+
+    public async Task<bool> StartAtmFromDesktopAsync()
+    {
+        _logger.LogInformation("Check if ATM app is running...");
+        List<string> screenWords = await _autoService.GetScreenWordsAsync();
+
+        if (screenWords == null)
+        {
+            _logger.LogError("ATM screen is not available");
+            return false;
+        }
+
+        AtmScreenModel curScreen = _autoService.MatchScreen(_atmScreens, screenWords);
+
+        if (curScreen == null)
+        {
+            foreach (string app in _virtualAtm.StartupApps)
+            {
+                await _agentService.StartAtmAppAsync(app);
+            }
+
+            TimeSpan startupDelay = TimeSpan.FromSeconds(int.Parse(_config["Terminal:StartupDelaySeconds"]));
+            _logger.LogInformation($"Delaying for {startupDelay.TotalSeconds} seconds while ATM app starts...");
+            await Task.Delay(startupDelay);
+
+            _logger.LogInformation("Validate welcome screen...");
+            bool success = await _autoService.WaitForScreenAsync(
+                _atmScreens.First(s => s.Name.ToLower() == "welcome"),
+                TimeSpan.FromMinutes(5),
+                TimeSpan.FromSeconds(15));
+
+            if (success == false)
+            {
+                _logger.LogError("ATM not at welcome screen");
+                return false;
+            }
+        }
+
+        if (curScreen.Name.ToLower() != "welcome" && curScreen.Name.ToLower() != "outofservice")
+        {
+            return await DispatchToIdleAsync(_config["Preferences:DownloadPath"]);
+        }
+
+        return true;
     }
 
     public async Task DisconnectAsync()

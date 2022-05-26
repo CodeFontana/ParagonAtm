@@ -66,6 +66,11 @@ public class ClientApp : IHostedService
                 return;
             }
 
+            if (await _clientService.StartAtmFromDesktopAsync() == false)
+            {
+                return;
+            }
+
             await _edgeConsumerTransactionService.BalanceInquiry(_cancelTokenSource.Token,
                                                                  "f2305283-bb84-49fe-aba6-cd3f7bcfa5ba",
                                                                  "1234",
