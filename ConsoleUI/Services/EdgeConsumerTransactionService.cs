@@ -30,6 +30,32 @@ public class EdgeConsumerTransactionService : IEdgeConsumerTransactionService
         _atmScreens = _config.GetSection("AvailableScreens").Get<List<AtmScreenModel>>();
     }
 
+    private async Task TakeReceipt(List<AtmServiceModel> services, string saveFolder)
+    {
+        // Isolate receipt printer service
+        AtmServiceModel receiptPrinter = services?.FirstOrDefault(x => x.DeviceType.ToLower() == "ptr");
+
+        if (receiptPrinter == null)
+        {
+            _logger.LogError($"Receipt printer not found in device list");
+            return;
+        }
+        else if (receiptPrinter.IsOpen == false)
+        {
+            _logger.LogError($"Receipt printer is not open");
+            return;
+        }
+
+        // Take receipt
+        ReceiptModel receipt = await _atmService.TakeReceiptAsync(receiptPrinter.Name, saveFolder);
+
+        if (receipt is not null)
+        {
+            string receiptText = JsonSerializer.Serialize(receipt.OcrData.Elements.ToList().Select(e => e.text));
+            _logger.LogInformation($"Take receipt -- {receiptText}");
+        }
+    }
+
     /// <summary>
     /// Sample Balance Inquiry transaction, with hard-coded responses
     /// and screen flow.
@@ -272,6 +298,14 @@ public class EdgeConsumerTransactionService : IEdgeConsumerTransactionService
 
             await Task.Delay(standardDelay);
 
+            // Check for receipt screen
+            atScreen = await _autoService.MatchScreenAsync(_atmScreens.First(s => s.Name.ToLower() == "TakeReceipt"));
+
+            if (atScreen)
+            {
+                await TakeReceipt(services, saveFolder);
+            }
+
             // Validate -- balance inquiry screen
             atScreen = await _autoService.WaitForScreenAsync(_atmScreens.First(s => s.Name.ToLower() == "balanceinquiry"),
                 TimeSpan.FromSeconds(20),
@@ -293,30 +327,8 @@ public class EdgeConsumerTransactionService : IEdgeConsumerTransactionService
             }
 
             await Task.Delay(standardDelay);
+            await TakeReceipt(services, saveFolder);
 
-            // Isolate receipt printer service
-            AtmServiceModel receiptPrinter = services?.FirstOrDefault(x => x.DeviceType.ToLower() == "ptr");
-
-            if (receiptPrinter == null)
-            {
-                _logger.LogError($"Receipt printer not found in device list");
-                return;
-            }
-            else if (receiptPrinter.IsOpen == false)
-            {
-                _logger.LogError($"Receipt printer is not open");
-                return;
-            }
-
-            // Take receipt
-            ReceiptModel receipt = await _atmService.TakeReceiptAsync(receiptPrinter.Name, saveFolder);
-
-            if (receipt is not null)
-            {
-                string receiptText = JsonSerializer.Serialize(receipt.OcrData.Elements.ToList().Select(e => e.text));
-                _logger.LogInformation($"Take receipt -- {receiptText}");
-            }
-            
             // Validate -- Another transaction screen
             atScreen = await _autoService.WaitForScreenAsync(_atmScreens.First(s => s.Name.ToLower() == "anothertransaction"),
                 TimeSpan.FromSeconds(20),
