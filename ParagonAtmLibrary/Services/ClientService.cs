@@ -53,6 +53,11 @@ public class ClientService : IClientService
         };
     }
 
+    /// <summary>
+    /// Connects to the Virtual ATM agent, opens an API session, loads the hardware profile and
+    /// opens an API connection for endpoint calls.
+    /// </summary>
+    /// <returns>True if the API connection is opened successfully, false otherwise.</returns>
     public async Task<bool> ConnectAsync()
     {
         try
@@ -116,6 +121,10 @@ public class ClientService : IClientService
         }
     }
 
+    /// <summary>
+    /// Starts the ATM application from the desktop, if not already running.
+    /// </summary>
+    /// <returns>True if the ATM is idle at the Welcome screen, false otherwise.</returns>
     public async Task<bool> StartAtmFromDesktopAsync()
     {
         _logger.LogInformation("Check if ATM app is running...");
@@ -161,6 +170,10 @@ public class ClientService : IClientService
         return true;
     }
 
+    /// <summary>
+    /// Dispatches the ATM to idle, closes the connection and closes the API session.
+    /// </summary>
+    /// <returns>A task representing the disconnect from the Virtual ATM API.</returns>
     public async Task DisconnectAsync()
     {
         try
@@ -178,6 +191,11 @@ public class ClientService : IClientService
         }
     }
 
+    /// <summary>
+    /// Dispatches the ATM to an idle state, e.g. the Welcome or Out-of-Service screen.
+    /// </summary>
+    /// <param name="saveFolder">Folder to save media, e.g. transaction receipt.</param>
+    /// <returns>True if successfully dispatched to an idle state, false otherwise.</returns>
     public async Task<bool> DispatchToIdleAsync(string saveFolder = null)
     {
         _logger.LogInformation("Dispatch to idle...");
@@ -308,6 +326,11 @@ public class ClientService : IClientService
         }
     }
 
+    /// <summary>
+    /// Takes all available media from the ATM, card, receipt or cash.
+    /// </summary>
+    /// <param name="saveFolder">Folder to save any images, e.g. receipt image.</param>
+    /// <returns>A task for taking all available media from the ATM.</returns>
     public async Task TakeAllMediaAsync(string saveFolder = null)
     {
         await _atmService.TakeCardAsync();
@@ -366,6 +389,11 @@ public class ClientService : IClientService
         }
     }
 
+    /// <summary>
+    /// Saves a screenshot of the Virtual ATM.
+    /// </summary>
+    /// <param name="folder">Folder to save the screenshot.</param>
+    /// <returns>True, if the screenshot is successfully saved, false otherwise.</returns>
     public async Task<bool> SaveScreenshotAsync(string folder)
     {
         try
