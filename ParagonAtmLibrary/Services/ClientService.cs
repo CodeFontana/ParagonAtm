@@ -248,6 +248,13 @@ public class ClientService : IClientService
             await Task.Delay(standardDelay);
             return await DispatchToIdleAsync(saveFolder);
         }
+        else if (_autoService.MatchScreen(_atmScreens.First(s => s.Name.ToLower() == "transactioncomplete"), curScreen))
+        {
+            _logger.LogInformation("Dispatch - Transaction complete");
+            await TakeAllMediaAsync(saveFolder);
+            await Task.Delay(standardDelay);
+            return await DispatchToIdleAsync(saveFolder);
+        }
         else if (_autoService.MatchScreen(_atmScreens.First(s => s.Name.ToLower() == "pin"), curScreen))
         {
             _logger.LogInformation("Dispatch - PIN screen");
