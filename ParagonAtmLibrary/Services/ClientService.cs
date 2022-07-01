@@ -324,6 +324,8 @@ public class ClientService : IClientService
             await _atmService.PressKeyAsync(new PressKeyModel(pinpad.Name, "Cancel"));
             await _autoService.FindAndClickAsync("cancel");
             await Task.Delay(standardDelay);
+            await TakeAllMediaAsync(saveFolder);
+            await Task.Delay(standardDelay);
             return await DispatchToIdleAsync(saveFolder);
         }
     }
