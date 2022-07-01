@@ -356,6 +356,7 @@ public class VistaConsumerTransactionService : IVistaConsumerTransactionService
 
             await Task.Delay(standardDelay);
             await _clientService.SaveScreenshotAsync(saveFolder);
+            await _clientService.DispatchToIdleAsync();
         }
         catch (Exception ex)
         {

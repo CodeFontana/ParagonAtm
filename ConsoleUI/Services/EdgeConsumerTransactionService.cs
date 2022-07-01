@@ -365,6 +365,7 @@ public class EdgeConsumerTransactionService : IEdgeConsumerTransactionService
             await _atmService.TakeCardAsync();
             await Task.Delay(standardDelay);
             await _clientService.SaveScreenshotAsync(saveFolder);
+            await _clientService.DispatchToIdleAsync();
         }
         catch (Exception ex)
         {
