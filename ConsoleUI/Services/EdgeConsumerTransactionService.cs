@@ -299,7 +299,7 @@ public class EdgeConsumerTransactionService : IEdgeConsumerTransactionService
             await Task.Delay(standardDelay);
 
             // Check for receipt screen
-            atScreen = await _autoService.MatchScreenAsync(_atmScreens.First(s => s.Name.ToLower() == "TakeReceipt"));
+            atScreen = await _autoService.MatchScreenAsync(_atmScreens.First(s => s.Name.ToLower() == "takereceipt"));
 
             if (atScreen)
             {
