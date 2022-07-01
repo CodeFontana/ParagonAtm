@@ -161,10 +161,12 @@ public class ClientService : IClientService
                 return false;
             }
         }
-
-        if (curScreen.Name.ToLower() != "welcome" && curScreen.Name.ToLower() != "outofservice")
+        else
         {
-            return await DispatchToIdleAsync(_config["Preferences:DownloadPath"]);
+            if (curScreen.Name.ToLower() != "welcome" && curScreen.Name.ToLower() != "outofservice")
+            {
+                return await DispatchToIdleAsync(_config["Preferences:DownloadPath"]);
+            }
         }
 
         return true;
