@@ -2,7 +2,6 @@
 using ParagonAtmLibrary.Interfaces;
 using ParagonAtmLibrary.Models;
 using System.Text.Json;
-using static ParagonAtmLibrary.Models.FindAndClickModel;
 
 namespace ParagonAtmLibrary.Services;
 
@@ -21,74 +20,71 @@ public class AutomationService : IAutomationService
     }
 
     /// <summary>
-    /// Compares a list of phrases against all words on the screen. In this overload, it's up to the caller
-    /// to provide the text of the screen. This can be useful if the caller is doing multiple comparisons, 
+    /// Compares a phrase against all words on the screen. In this overload, it's up to the caller to
+    /// provide the text of the screen. This can be useful if the caller is doing multiple comparisons, 
     /// but prefers to only grab the screen words only once.
     /// </summary>
     /// <param name="screenWords">List of words on the screen, which the caller can obtain using GetScreenWords().</param>
-    /// <param name="comparePhrases">List of phrases, each may contain one or more words for comparison.</param>
+    /// <param name="phraseText">Phrase for comparison.</param>
     /// <param name="matchConfidence">Required confidence level for any single phrase to be considered a match.</param>
     /// <param name="acceptableEditDistance">Acceptable edit distance when comparing words for equality.</param>
-    /// <returns>True, if any phrase matches above the specified confidence level, false otherwise.</returns>
-    public bool CompareText(List<string> screenWords, List<string> comparePhrases, decimal matchConfidence, int acceptableEditDistance = 0)
+    /// <returns>True, if the phrase matches above the specified confidence level, false otherwise.</returns>
+    public bool CompareText(List<string> screenWords, string phraseText, decimal matchConfidence, int acceptableEditDistance = 0)
     {
         ArgumentNullException.ThrowIfNull(screenWords);
-        ArgumentNullException.ThrowIfNull(comparePhrases);
+        ArgumentNullException.ThrowIfNull(phraseText);
         ArgumentNullException.ThrowIfNull(matchConfidence);
 
-        foreach (string phrase in comparePhrases)
+        decimal confidence = 0;
+        List<string> matches = new();
+
+        foreach (string pWord in phraseText.Split(_splitChars))
         {
-            decimal confidence = 0;
-            List<string> matches = new();
-
-            foreach (string pWord in phrase.Split(_splitChars))
+            foreach (string sWord in screenWords)
             {
-                foreach (string sWord in screenWords)
+                if (sWord.ToLower().Trim() == pWord.ToLower().Trim())
                 {
-                    if (sWord.ToLower().Trim() == pWord.ToLower().Trim())
-                    {
-                        matches.Add(pWord);
-                        break;
-                    }
-                    else if (acceptableEditDistance > 0
-                        && ComputeEditDistance(sWord.ToLower().Trim(), pWord.ToLower().Trim()) <= acceptableEditDistance)
-                    {
-                        matches.Add(pWord);
-                        break;
-                    }
+                    matches.Add(pWord);
+                    break;
+                }
+                else if (acceptableEditDistance > 0
+                    && ComputeEditDistance(sWord.ToLower().Trim(), pWord.ToLower().Trim()) <= acceptableEditDistance)
+                {
+                    matches.Add(pWord);
+                    break;
                 }
             }
-
-            if (matches.Count > 0)
-            {
-                _logger.LogDebug($"Mathcing words -- {JsonSerializer.Serialize(matches)}");
-                confidence = matches.Count / (decimal)phrase.Split(_splitChars).Length;
-
-                if (confidence >= matchConfidence)
-                {
-                    _logger.LogDebug($"Phrase Matched -- {JsonSerializer.Serialize(phrase)} [Confidence {confidence:0.00}] [Required {matchConfidence:0.00}]");
-                    return true;
-                }
-            }
-
-            _logger.LogDebug($"Phrase NotMatched -- {JsonSerializer.Serialize(phrase)} [Confidence {confidence:0.00}] [Required {matchConfidence:0.00}]");
         }
+
+        if (matches.Count > 0)
+        {
+            _logger.LogDebug($"Mathcing words -- {JsonSerializer.Serialize(matches)}");
+            confidence = matches.Count / (decimal)phraseText.Split(_splitChars).Length;
+
+            if (confidence >= matchConfidence)
+            {
+                _logger.LogDebug($"Phrase Matched -- {JsonSerializer.Serialize(phraseText)} [Confidence {confidence:0.00}] [Required {matchConfidence:0.00}]");
+                return true;
+            }
+        }
+
+        _logger.LogDebug($"Phrase NotMatched -- {JsonSerializer.Serialize(phraseText)} [Confidence {confidence:0.00}] [Required {matchConfidence:0.00}]");
 
         return false;
     }
 
     /// <summary>
-    /// Compares a list of phrases against all words on the screen. This overload will query the screen of
+    /// Compares a phrase against all words on the screen. This overload will query the screen of
     /// the ATM to obtain the list of words.
     /// </summary>
-    /// <param name="comparePhrases">List of phrases, each may contain one or more words for comparison.</param>
+    /// <param name="phraseText">List of phrases, each may contain one or more words for comparison.</param>
     /// <param name="matchConfidence">Required confidence level for any single phrase to be considered a match.</param>
     /// <param name="acceptableEditDistance">Acceptable edit distance when comparing words for equality.</param>
-    /// <returns>True, if any phrase matches above the specified confidence level, false otherwise.</returns>
-    public async Task<bool> CompareTextAsync(List<string> comparePhrases, decimal matchConfidence, int acceptableEditDistance = 0)
+    /// <returns>True, if the phrase matches above the specified confidence level, false otherwise.</returns>
+    public async Task<bool> CompareTextAsync(string phraseText, decimal matchConfidence, int acceptableEditDistance = 0)
     {
         List<string> screenWords = await GetScreenWordsAsync();
-        return CompareText(screenWords, comparePhrases, matchConfidence, acceptableEditDistance);
+        return CompareText(screenWords, phraseText, matchConfidence, acceptableEditDistance);
     }
 
     /// <summary>
@@ -365,7 +361,15 @@ public class AutomationService : IAutomationService
     /// <returns>True, if the AtmScreenModel matches above its required confidence level, false otherwise.</returns>
     public bool MatchScreen(AtmScreenModel screen, List<string> screenWords)
     {
-        return CompareText(screenWords, screen.Text, screen.MatchConfidence, screen.EditDistance);
+        foreach (ScreenPhrase phrase in screen.Phrases)
+        {
+            if (CompareText(screenWords, phrase.Text, phrase.MatchConfidence, phrase.EditDistance))
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /// <summary>
@@ -381,10 +385,12 @@ public class AutomationService : IAutomationService
     {
         foreach (AtmScreenModel s in screens)
         {
-            if (CompareText(screenWords, s.Text, s.MatchConfidence, s.EditDistance))
+            foreach (ScreenPhrase p in s.Phrases)
             {
-                _logger.LogDebug($"Found match -- {s.Name}");
-                return s;
+                if (CompareText(screenWords, p.Text, p.MatchConfidence, p.EditDistance))
+                {
+                    return s;
+                }
             }
         }
 
@@ -400,7 +406,7 @@ public class AutomationService : IAutomationService
     public async Task<bool> MatchScreenAsync(AtmScreenModel screen)
     {
         List<string> screenText = await GetScreenWordsAsync();
-        return CompareText(screenText, screen.Text, screen.MatchConfidence, screen.EditDistance);
+        return MatchScreen(screen, screenText);
     }
 
     /// <summary>
@@ -425,7 +431,29 @@ public class AutomationService : IAutomationService
     public async Task<bool> WaitForScreenAsync(AtmScreenModel screen, TimeSpan timeout, TimeSpan refreshInterval)
     {
         _logger.LogDebug($"Wait for screen -- {screen.Name}");
-        return await WaitForTextAsync(screen.Text, screen.MatchConfidence, timeout, refreshInterval, screen.EditDistance);
+
+        try
+        {
+            DateTime curTime = DateTime.Now;
+            DateTime endTime = curTime + timeout;
+
+            while (DateTime.Now < endTime)
+            {
+                if (await MatchScreenAsync(screen))
+                {
+                    return true;
+                }
+
+                await Task.Delay(refreshInterval);
+            }
+
+            return false;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, $"Unexpected error waiting for ATM screen -- {ex.Message}");
+            return false;
+        }
     }
 
     /// <summary>
@@ -461,27 +489,23 @@ public class AutomationService : IAutomationService
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Unexpected error waiting for ATM screen");
+            _logger.LogError(ex, $"Unexpected error waiting for ATM screen -- {ex.Message}");
             return null;
         }
     }
 
     /// <summary>
-    /// Waits for the specified text to be displayed on the ATM screen. This overload accepts
-    /// a string list for input.
+    /// Waits for the specified text to be displayed on screen.
     /// </summary>
-    /// <param name="phrases">List of phrases to wait for.</param>
-    /// <param name="matchConfidence">Required confidence level the words must match with the screen words.</param>
+    /// <param name="phrase">The text to wait for.</param>
+    /// <param name="matchConfidence">Required confidence level for any single phrase to be considered a match.</param>
     /// <param name="timeout">The overall timeout to wait for this screen match.</param>
     /// <param name="refreshInterval">How often to refresh the screen OCR data to check for a match.</param>
     /// <param name="acceptableEditDistance">Acceptable edit distance when comparing words for equality.</param>
-    /// <returns>Returns true, if the specified word list matches above the specified confidence level, and within the specified timeout, false otherwise.</returns>
-    public async Task<bool> WaitForTextAsync(List<string> phrases, decimal matchConfidence, TimeSpan timeout, TimeSpan refreshInterval, int acceptableEditDistance = 0)
+    /// <returns>Returns true, if the specified phrase matches above it's required confidence level, and within the specified timeout, false otherwise.</returns>
+    public async Task<bool> WaitForTextAsync(string phrase, decimal matchConfidence, TimeSpan timeout, TimeSpan refreshInterval, int acceptableEditDistance = 0)
     {
-        ArgumentNullException.ThrowIfNull(phrases);
-        ArgumentNullException.ThrowIfNull(matchConfidence);
-        ArgumentNullException.ThrowIfNull(timeout);
-        ArgumentNullException.ThrowIfNull(refreshInterval);
+        _logger.LogDebug($"Wait for text -- {phrase}");
 
         try
         {
@@ -490,7 +514,7 @@ public class AutomationService : IAutomationService
 
             while (DateTime.Now < endTime)
             {
-                if (await CompareTextAsync(phrases, matchConfidence, acceptableEditDistance))
+                if (await CompareTextAsync(phrase, matchConfidence, acceptableEditDistance))
                 {
                     return true;
                 }
@@ -502,23 +526,48 @@ public class AutomationService : IAutomationService
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Unexpected error waiting for specified text");
+            _logger.LogError(ex, $"Unexpected error waiting for text -- {ex.Message}");
             return false;
         }
     }
 
     /// <summary>
-    /// Waits for the specified text to be displayed on the ATM screen. This overload accepts
-    /// a string array for input.
+    /// Waits for any of the specified phrases to be displayed on screen.
     /// </summary>
-    /// <param name="phrases">Array of phrases to wait for.</param>
-    /// <param name="matchConfidence">Required confidence level the words must match with the screen words.</param>
+    /// <param name="phrases">List of phrases to wait for.</param>
+    /// <param name="matchConfidence">Required confidence level for any single phrase to be considered a match.</param>
     /// <param name="timeout">The overall timeout to wait for this screen match.</param>
     /// <param name="refreshInterval">How often to refresh the screen OCR data to check for a match.</param>
     /// <param name="acceptableEditDistance">Acceptable edit distance when comparing words for equality.</param>
-    /// <returns>Returns true, if the specified word array matches above the specified confidence level, and within the specified timeout, false otherwise.</returns>
-    public async Task<bool> WaitForTextAsync(string[] phrases, decimal matchConfidence, TimeSpan timeout, TimeSpan refreshInterval, int acceptableEditDistance = 0)
+    /// <returns>Returns true, if any of the specified phrases matches above it's required confidence level, and within the specified timeout, false otherwise.</returns>
+    public async Task<bool> WaitForTextAsync(List<string> phrases, decimal matchConfidence, TimeSpan timeout, TimeSpan refreshInterval, int acceptableEditDistance = 0)
     {
-        return await WaitForTextAsync(phrases.ToList(), matchConfidence, timeout, refreshInterval, acceptableEditDistance);
+        _logger.LogDebug($"Wait for text -- {string.Join(" | ", phrases)}");
+
+        try
+        {
+            DateTime curTime = DateTime.Now;
+            DateTime endTime = curTime + timeout;
+
+            while (DateTime.Now < endTime)
+            {
+                foreach (string s in phrases)
+                {
+                    if (await CompareTextAsync(s, matchConfidence, acceptableEditDistance))
+                    {
+                        return true;
+                    }
+                }
+
+                await Task.Delay(refreshInterval);
+            }
+
+            return false;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, $"Unexpected error waiting for text -- {ex.Message}");
+            return false;
+        }
     }
 }

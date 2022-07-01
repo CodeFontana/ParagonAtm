@@ -309,7 +309,7 @@ public class ClientService : IClientService
             await Task.Delay(standardDelay);
             return await DispatchToIdleAsync(saveFolder);
         }
-        else if (_autoService.CompareText(curScreen, new List<string>() { "Recycle bin" }, 1))
+        else if (_autoService.CompareText(curScreen, "Recycle bin", 1))
         {
             _logger.LogInformation("Dispatch - ATM is at desktop");
             return true;
