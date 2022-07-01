@@ -232,6 +232,14 @@ public class ClientService : IClientService
             _logger.LogInformation("Dispatch - Transaction cancelled");
             await TakeAllMediaAsync(saveFolder);
             await Task.Delay(standardDelay);
+
+            var location = await _vmService.GetLocationByTextAsync("no");
+
+            if (location is not null && location.Found)
+            {
+                await _vmService.ClickScreenAsync(new ClickScreenModel(location));
+            }
+
             return await DispatchToIdleAsync(saveFolder);
         }
         else if (_autoService.MatchScreen(_atmScreens.First(s => s.Name.ToLower() == "takecard"), curScreen))
