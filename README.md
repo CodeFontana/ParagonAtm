@@ -3,19 +3,22 @@ This library is used for interacting with a Paragon Virtual ATM via the publishe
 
 [![Nuget Release](https://img.shields.io/nuget/v/CodeFoxtrot.ParagonAtmLibrary?style=for-the-badge)](https://www.nuget.org/packages/CodeFoxtrot.ParagonAtmLibrary/)
 
+## Breaking Changes 1.7.8 --> 1.8.0
+The AvailableScreens.json was restructured, such that, rather than assigning a "Match Confidence" and "Edit Distance" to an entire ScreenModel, they are now per-phrase configuration. In this more granular approach, each phrase can be uniquely adjusted, rather than trying to find a one-size-fits-all setting for every phrase in that ScreenModel.
+
 ## How to use
 Add latest **CodeFoxtrot.ParagonAtmLibrary** to your project via 'Manage Nuget Packages'... 
 
 or via command line...
 
 ```
-dotnet add package CodeFoxtrot.ParagonAtmLibrary --version 1.7.8
+dotnet add package CodeFoxtrot.ParagonAtmLibrary --version 1.8.0
 ```
 
 or via your .csproj file...
 
 ```
-<PackageReference Include="CodeFoxtrot.ParagonAtmLibrary" Version="1.7.8" />
+<PackageReference Include="CodeFoxtrot.ParagonAtmLibrary" Version="1.8.0" />
 ```
 
 Add this to your ConfigureServices() method:
@@ -69,40 +72,64 @@ Note: The "Terminal" configuration section is used by the demo to determine whic
 ### Define your screen pool -- AvailableScreens.json
 This JSON is used to define each screen. This is completely subjective, so you'll need to adjust accordingly with your testing.  
 
-Each screen is given a name, an array of phrases, confidence level and acceptable edit distance.  The array of phrases allows you to define multiple potential values, e.g. English vs Spanish phrases.
+Each screen is given a name, and an array of phrases. Each phrase will have a corresponding 'MatchConfidence' and 'EditDistance' setting to help overcome minor inconsistencies with the OCR screen matching.  By supporting an array of phrases you can define multiple ways for matching that screen, e.g. cross-vendor phrasing or English vs Spanish language.
 
 The **MatchConfidence** and **EditDistance** parameters are provided to accomodate variability with the Paragon screen OCR technology. OCR will not always read every word correctly from the screen.
 
 **EditDistance** - Similar to spell check, specify the maximum acceptable character difference when comparing two words for equality. E.g. with an EditDistance=2, 'vout' would be considered matching with the word 'your'.
 
-**MatchConfidence** - Specify the percentage of words from a given phrase that must match with the on-screen text, in order to declare the phrase as matching based on the on-screen text.
+**MatchConfidence** - Specify the percentage of words from a given phrase that must match with the on-screen text, in order to declare a phrase as matching based on the on-screen text.
 
 ```
-"AvailableScreens": [
-  {
-    "Name": "Welcome",
-    "Text": [
-      "Please insert your card",
-      "Por favor inserte su tarjeta",
-      "Please insert and remove your card",
-      "Por favor inserte y retire su tarjeta"
-    ],
-    "MatchConfidence": 0.80,
-    "EditDistance": 2
-  },
-  {
-    "Name": "OutOfService",
-    "Text": [
-      "This ATM is temporarily unavailable We're sorry for the inconvenience",
-      "Sorry this ATM is temporarily out of service",
-      "Sorry this machine is temporarily out of service"
-    ],
-    "MatchConfidence": 0.80,
-    "EditDistance": 1
-  },
-    ... etc. 
+{
+  "AvailableScreens": [
+    {
+      "Name": "Welcome",
+      "Phrases": [
+        {
+          "Text": "Please insert your card",
+          "MatchConfidence": 0.85,
+          "EditDistance": 1
+        },
+        {
+          "Text": "Por favor inserte su tarjeta",
+          "MatchConfidence": 0.85,
+          "EditDistance": 1
+        },
+        {
+          "Text": "Please insert and remove your card",
+          "MatchConfidence": 0.85,
+          "EditDistance": 1
+        },
+        {
+          "Text": "Por favor inserte y retire su tarjeta",
+          "MatchConfidence": 0.85,
+          "EditDistance": 1
+        }
+      ]
+    },
+    {
+      "Name": "OutOfService",
+      "Phrases": [
+        {
+          "Text": "This ATM is temporarily unavailable We're sorry for the inconvenience",
+          "MatchConfidence": 0.80,
+          "EditDistance": 1
+        },
+        {
+          "Text": "Sorry this ATM is temporarily out of service",
+          "MatchConfidence": 0.80,
+          "EditDistance": 1
+        },
+        {
+          "Text": "Sorry this machine is temporarily out of service",
+          "MatchConfidence": 0.80,
+          "EditDistance": 1
+        }
+      ]
+    }
   ]
-}
+}  
 ```
 
 ### Code your transaction -- API and Automation methods
