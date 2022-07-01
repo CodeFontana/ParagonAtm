@@ -4,7 +4,7 @@ This library is used for interacting with a Paragon Virtual ATM via the publishe
 [![Nuget Release](https://img.shields.io/nuget/v/CodeFoxtrot.ParagonAtmLibrary?style=for-the-badge)](https://www.nuget.org/packages/CodeFoxtrot.ParagonAtmLibrary/)
 
 ## Breaking Changes 1.7.8 --> 1.8.0
-The AvailableScreens.json was restructured, such that, rather than assigning a "Match Confidence" and "Edit Distance" to an entire ScreenModel, they are now per-phrase configuration. In this more granular approach, each phrase can be uniquely adjusted, rather than trying to find a one-size-fits-all setting for every phrase in that ScreenModel.
+The AvailableScreens.json was restructured, such that, rather than assigning a "Match Confidence" and "Edit Distance" to an entire ScreenModel, they are now per-phrase configuration. In this more granular approach, each phrase can be uniquely adjusted, rather than trying to find a one-size-fits-all setting for every phrase in that ScreenModel. See the sample below which reflects the new structure.
 
 ## How to use
 Add latest **CodeFoxtrot.ParagonAtmLibrary** to your project via 'Manage Nuget Packages'... 
@@ -127,7 +127,8 @@ The **MatchConfidence** and **EditDistance** parameters are provided to accomoda
           "EditDistance": 1
         }
       ]
-    }
+    },
+    ...
   ]
 }  
 ```
