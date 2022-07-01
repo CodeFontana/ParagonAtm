@@ -40,7 +40,7 @@ public class ClientApp : IHostedService
             }
             catch (Exception ex)
             {
-                _logger.LogCritical(ex, "Unhandled exception!");
+                _logger.LogCritical(ex, ex.Message);
             }
             finally
             {
@@ -96,7 +96,7 @@ public class ClientApp : IHostedService
         }
         catch (Exception ex)
         {
-            _logger.LogCritical(ex, "Unexpected error");
+            _logger.LogCritical(ex, ex.Message);
         }
     }        
 }

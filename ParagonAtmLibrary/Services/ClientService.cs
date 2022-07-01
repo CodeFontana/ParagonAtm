@@ -116,7 +116,7 @@ public class ClientService : IClientService
         }
         catch (Exception ex)
         {
-            _logger.LogCritical(ex, "API connection failed");
+            _logger.LogCritical(ex, $"API connection failed -- {ex.Message}");
             return false;
         }
     }

@@ -359,7 +359,7 @@ public class VistaConsumerTransactionService : IVistaConsumerTransactionService
         }
         catch (Exception ex)
         {
-            _logger.LogCritical(ex, "Balance inquiry failed");
+            _logger.LogCritical(ex, $"Balance inquiry failed -- {ex.Message}");
         }
     }
 }
