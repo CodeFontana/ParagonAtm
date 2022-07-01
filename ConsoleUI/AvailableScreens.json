@@ -309,6 +309,11 @@
           "EditDistance": 2
         },
         {
+          "Text": "take your cash",
+          "MatchConfidence": 1.00,
+          "EditDistance": 1
+        },
+        {
           "Text": "Please take your card",
           "MatchConfidence": 0.80,
           "EditDistance": 2
@@ -317,6 +322,11 @@
           "Text": "Por favor retire su tarjeta",
           "MatchConfidence": 0.80,
           "EditDistance": 2
+        },
+        {
+          "Text": "thank you de ot a tek",
+          "MatchConfidence": 1.00,
+          "EditDistance": 0
         }
       ]
     },
@@ -394,9 +404,9 @@
           "EditDistance": 1
         },
         {
-          "Text": "thank you de ot a tek",
+          "Text": "de ot a tek",
           "MatchConfidence": 1.00,
-          "EditDistance": 1
+          "EditDistance": 0
         }
       ]
     }
