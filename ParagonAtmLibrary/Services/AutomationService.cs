@@ -7,11 +7,11 @@ namespace ParagonAtmLibrary.Services;
 
 public class AutomationService : IAutomationService
 {
-    private readonly ILogger<AgentService> _logger;
+    private readonly ILogger<AutomationService> _logger;
     private readonly IVirtualMachineService _vmService;
     private readonly char[] _splitChars;
 
-    public AutomationService(ILogger<AgentService> logger,
+    public AutomationService(ILogger<AutomationService> logger,
                              IVirtualMachineService vmService)
     {
         _logger = logger;

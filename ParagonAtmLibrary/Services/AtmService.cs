@@ -9,10 +9,10 @@ namespace ParagonAtmLibrary.Services;
 public class AtmService : IAtmService
 {
     private readonly IConfiguration _config;
-    private readonly ILogger<AgentService> _logger;
+    private readonly ILogger<AtmService> _logger;
     private readonly HttpClient _httpClient;
     public AtmService(IConfiguration configuration,
-                      ILogger<AgentService> logger,
+                      ILogger<AtmService> logger,
                       HttpClient httpClient)
     {
         _config = configuration;
