@@ -177,7 +177,7 @@ public class AutomationService : IAutomationService
             return false;
         }
 
-        _logger.LogDebug($"Find text: {findText}");
+        _logger.LogInformation($"Find text: {findText}");
         string[] findWords = findText.ToLower().Split(_splitChars, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
 
         foreach (Element element in screenText.Elements)
@@ -430,7 +430,7 @@ public class AutomationService : IAutomationService
     /// <returns>Returns true, if the specified AtmScreenModel matches above it's required confidence level, and within the specified timeout, false otherwise.</returns>
     public async Task<bool> WaitForScreenAsync(AtmScreenModel screen, TimeSpan timeout, TimeSpan refreshInterval)
     {
-        _logger.LogDebug($"Wait for screen -- {screen.Name}");
+        _logger.LogInformation($"Wait for screen -- {screen.Name}");
 
         try
         {
@@ -465,7 +465,7 @@ public class AutomationService : IAutomationService
     /// <returns>Returns the AtmScreenModel from the supplied list that matches the current screen, null if no match is found after the specified timeout.</returns>
     public async Task<AtmScreenModel> WaitForScreensAsync(List<AtmScreenModel> screens, TimeSpan timeout, TimeSpan refreshInterval)
     {
-        _logger.LogDebug($"Wait for screens -- {string.Join(",", screens.Select(s => s.Name))}");
+        _logger.LogInformation($"Wait for screens -- {string.Join(",", screens.Select(s => s.Name))}");
 
         try
         {
@@ -505,7 +505,7 @@ public class AutomationService : IAutomationService
     /// <returns>Returns true, if the specified phrase matches above it's required confidence level, and within the specified timeout, false otherwise.</returns>
     public async Task<bool> WaitForTextAsync(string phrase, decimal matchConfidence, TimeSpan timeout, TimeSpan refreshInterval, int acceptableEditDistance = 0)
     {
-        _logger.LogDebug($"Wait for text -- {phrase}");
+        _logger.LogInformation($"Wait for text -- {phrase}");
 
         try
         {
@@ -542,7 +542,7 @@ public class AutomationService : IAutomationService
     /// <returns>Returns true, if any of the specified phrases matches above it's required confidence level, and within the specified timeout, false otherwise.</returns>
     public async Task<bool> WaitForTextAsync(List<string> phrases, decimal matchConfidence, TimeSpan timeout, TimeSpan refreshInterval, int acceptableEditDistance = 0)
     {
-        _logger.LogDebug($"Wait for text -- {string.Join(" | ", phrases)}");
+        _logger.LogInformation($"Wait for text -- {string.Join(" | ", phrases)}");
 
         try
         {
