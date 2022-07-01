@@ -240,6 +240,20 @@ public class ClientService : IClientService
                 await _vmService.ClickScreenAsync(new ClickScreenModel(location));
             }
 
+            location = await _vmService.GetLocationByTextAsync("exit");
+
+            if (location is not null && location.Found)
+            {
+                await _vmService.ClickScreenAsync(new ClickScreenModel(location));
+            }
+
+            location = await _vmService.GetLocationByTextAsync("return card");
+
+            if (location is not null && location.Found)
+            {
+                await _vmService.ClickScreenAsync(new ClickScreenModel(location));
+            }
+
             return await DispatchToIdleAsync(saveFolder);
         }
         else if (_autoService.MatchScreen(_atmScreens.First(s => s.Name.ToLower() == "takecard"), curScreen))
