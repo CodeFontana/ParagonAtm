@@ -162,6 +162,11 @@
           "Text": "Select an option no receipt",
           "MatchConfidence": 0.80,
           "EditDistance": 1
+        },
+        {
+          "Text": "Do you want a receipt",
+          "MatchConfidence": 1.00,
+          "EditDistance": 1
         }
       ]
     },
@@ -200,6 +205,26 @@
         },
         {
           "Text": "Select an Account",
+          "MatchConfidence": 1.00,
+          "EditDistance": 1
+        },
+        {
+          "Text": "Select From Account",
+          "MatchConfidence": 1.00,
+          "EditDistance": 1
+        },
+        {
+          "Text": "Select \u0026#39 from\u0026#39 account",
+          "MatchConfidence": 1.00,
+          "EditDistance": 1
+        },
+        {
+          "Text": "Select To Account",
+          "MatchConfidence": 1.00,
+          "EditDistance": 1
+        },
+        {
+          "Text": "Select \u0026#39 to\u0026#39 account",
           "MatchConfidence": 1.00,
           "EditDistance": 1
         }
@@ -272,6 +297,11 @@
           "Text": "Please select Fast Cash amount",
           "MatchConfidence": 0.80,
           "EditDistance": 1
+        },
+        {
+          "Text": "Fast cash from",
+          "MatchConfidence": 1.00,
+          "EditDistance": 1
         }
       ]
     },
@@ -290,6 +320,11 @@
         },
         {
           "Text": "Enter amount to transfer",
+          "MatchConfidence": 1.00,
+          "EditDistance": 1
+        },
+        {
+          "Text": "Enter amount",
           "MatchConfidence": 1.00,
           "EditDistance": 1
         }
@@ -320,6 +355,11 @@
         },
         {
           "Text": "Getting ready",
+          "MatchConfidence": 1.00,
+          "EditDistance": 1
+        },
+        {
+          "Text": "Preparing your transaction",
           "MatchConfidence": 1.00,
           "EditDistance": 1
         }
@@ -409,7 +449,7 @@
           "EditDistance": 2
         },
         {
-          "Text": "take your cash",
+          "Text": "Take your cash",
           "MatchConfidence": 1.00,
           "EditDistance": 1
         },
@@ -461,6 +501,11 @@
         {
           "Text": "no podemos procesar esta transaccion la transaccion ha sido cancelada",
           "MatchConfidence": 0.80,
+          "EditDistance": 1
+        },
+        {
+          "Text": "Transaction canceled",
+          "MatchConfidence": 1.00,
           "EditDistance": 1
         }
       ]
