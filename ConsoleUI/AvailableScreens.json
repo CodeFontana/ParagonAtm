@@ -317,6 +317,11 @@
           "Text": "One moment please",
           "MatchConfidence": 1.00,
           "EditDistance": 1
+        },
+        {
+          "Text": "Getting ready",
+          "MatchConfidence": 1.00,
+          "EditDistance": 1
         }
       ]
     },
