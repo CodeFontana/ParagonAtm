@@ -12,6 +12,7 @@ public class AgentService : IAgentService
     private readonly IConfiguration _config;
     private readonly ILogger<AgentService> _logger;
     private readonly HttpClient _httpClient;
+    private readonly string _simulationProfile;
 
     public AgentService(IConfiguration configuration,
                         ILogger<AgentService> logger,
@@ -20,7 +21,8 @@ public class AgentService : IAgentService
         _config = configuration;
         _logger = logger;
         _httpClient = httpClient;
-        _httpClient.BaseAddress = new Uri(_config["Terminal:Host"]);
+        _simulationProfile = _config[$"Preferences:SimulationProfile"];
+        _httpClient.BaseAddress = new Uri(_config[$"Terminal.{_simulationProfile}:Host"]);
     }
 
     public record SessionToken(string sessionToken);
@@ -111,7 +113,7 @@ public class AgentService : IAgentService
     {
         try
         {
-            _logger.LogInformation($"Open session for {webFastUser.Username} [GroupId={webFastUser.GroupId}] on {_config["Terminal:Host"]}...");
+            _logger.LogInformation($"Open session for {webFastUser.Username} [GroupId={webFastUser.GroupId}] on {_config[$"Terminal.{_simulationProfile}:Host"]}...");
 
             using HttpResponseMessage response =
                 await _httpClient.PostAsJsonAsync($"{_config["ApiEndpoint:Agent"]}/open-session", webFastUser);

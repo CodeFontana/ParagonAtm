@@ -15,6 +15,7 @@ public class VistaConsumerTransactionService : IVistaConsumerTransactionService
     private readonly IAutomationService _autoService;
     private readonly IClientService _clientService;
     private readonly List<AtmScreenModel> _atmScreens;
+    private readonly string _simulationProfile;
 
     public VistaConsumerTransactionService(IConfiguration configuration,
                                            ILogger<EdgeConsumerTransactionService> logger,
@@ -28,6 +29,7 @@ public class VistaConsumerTransactionService : IVistaConsumerTransactionService
         _autoService = autoService;
         _clientService = clientService;
         _atmScreens = _config.GetSection("AvailableScreens").Get<List<AtmScreenModel>>();
+        _simulationProfile = _config[$"Preferences:SimulationProfile"];
     }
 
     /// <summary>
@@ -100,7 +102,7 @@ public class VistaConsumerTransactionService : IVistaConsumerTransactionService
                 return;
             }
 
-            int standardDelay = _config.GetValue("Terminal:StandardDelayMS", 2000);
+            int standardDelay = _config.GetValue($"Terminal.{_simulationProfile}:StandardDelayMS", 2000);
             await Task.Delay(standardDelay);
 
             // Validate -- PIN screen

@@ -19,6 +19,7 @@ public class ClientService : IClientService
     private readonly List<AtmScreenModel> _atmScreens;
     private readonly WebFastUserModel _webFastUser;
     private readonly TerminalModel _virtualAtm;
+    private readonly string _simulationProfile;
     private bool _profileLoaded = false;
 
     public ClientService(IConfiguration configuration,
@@ -38,11 +39,18 @@ public class ClientService : IClientService
         _autoService = autoService;
         _atmScreens = _config.GetSection("AvailableScreens").Get<List<AtmScreenModel>>();
 
+        _simulationProfile = _config[$"Preferences:SimulationProfile"];
+
+        if (string.IsNullOrWhiteSpace(_simulationProfile))
+        {
+            throw new Exception("Undefined -- Preferences:Profile setting is required");
+        }
+
         _virtualAtm = new()
         {
-            Host = _config["Terminal:Host"],
-            HwProfile = _config["Terminal:HwProfile"],
-            StartupApps = _config.GetSection("Terminal:StartupApps").Get<List<string>>()
+            Host = _config[$"Terminal.{_simulationProfile}:Host"],
+            HwProfile = _config[$"Terminal.{_simulationProfile}:HwProfile"],
+            StartupApps = _config.GetSection($"Terminal.{_simulationProfile}:StartupApps").Get<List<string>>()
         };
 
         _webFastUser = new WebFastUserModel
@@ -145,7 +153,7 @@ public class ClientService : IClientService
                 await _agentService.StartAtmAppAsync(app);
             }
 
-            TimeSpan startupDelay = TimeSpan.FromSeconds(int.Parse(_config["Terminal:StartupDelaySeconds"]));
+            TimeSpan startupDelay = TimeSpan.FromSeconds(int.Parse(_config[$"Terminal.{_simulationProfile}:StartupDelaySeconds"]));
             _logger.LogInformation($"Delaying for {startupDelay.TotalSeconds} seconds while ATM app starts...");
             await Task.Delay(startupDelay);
 
@@ -202,7 +210,7 @@ public class ClientService : IClientService
     {
         _logger.LogInformation("Dispatch to idle...");
         List<string> curScreen = await _autoService.GetScreenWordsAsync();
-        int standardDelay = _config.GetValue<int>("Terminal:StandardDelayMS");
+        int standardDelay = _config.GetValue<int>($"Terminal.{_simulationProfile}:StandardDelayMS");
 
         if (curScreen is null)
         {

@@ -12,9 +12,10 @@
     "WebFast": "/api/v1/wft"
   },
   "Preferences": {
+    "SimulationProfile": "Edge",
     "DownloadPath": "C:\\Users\\Brian\\Desktop\\Screenshots"
   },
-  "Terminal": {
+  "Terminal.Edge": {
     "Host": "http://10.44.112.155:13467",
     "HwProfile": "1744febb-dd28-433e-aa1b-33139c820d2e",
     "StartupApps": [
