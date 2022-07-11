@@ -38,7 +38,6 @@ public class ClientService : IClientService
         _atmService = atmService;
         _autoService = autoService;
         _atmScreens = _config.GetSection("AvailableScreens").Get<List<AtmScreenModel>>();
-
         _simulationProfile = _config[$"Preferences:SimulationProfile"];
 
         if (string.IsNullOrWhiteSpace(_simulationProfile))

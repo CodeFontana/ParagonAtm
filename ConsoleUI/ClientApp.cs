@@ -16,6 +16,7 @@ public class ClientApp : IHostedService
     private readonly IVistaConsumerTransactionService _vistaConsumerTransactionService;
     private readonly CancellationTokenSource _cancelTokenSource;
     private readonly string _simulationProfile;
+    private readonly string _simulationPlatform;
 
     public ClientApp(IConfiguration configuration,
                      IHostApplicationLifetime hostApplicationLifetime,
@@ -32,6 +33,18 @@ public class ClientApp : IHostedService
         _vistaConsumerTransactionService = vistaConsumerTransactionService;
         _cancelTokenSource = new CancellationTokenSource();
         _simulationProfile = _config[$"Preferences:SimulationProfile"];
+
+        if (string.IsNullOrWhiteSpace(_simulationProfile))
+        {
+            throw new Exception("Undefined -- Preferences:Profile setting is required");
+        }
+        
+        _simulationPlatform = _config[$"Terminal.{_simulationProfile}:Platform"];
+        
+        if (string.IsNullOrWhiteSpace(_simulationPlatform))
+        {
+            throw new Exception($"Undefined -- Terminal.{_simulationProfile}:Platform setting is required");
+        }
     }
 
     public Task StartAsync(CancellationToken cancellationToken)
@@ -77,7 +90,7 @@ public class ClientApp : IHostedService
                 return;
             }
 
-            if (_simulationProfile.Equals("Edge", StringComparison.CurrentCultureIgnoreCase))
+            if (_simulationPlatform.Equals("Edge", StringComparison.CurrentCultureIgnoreCase))
             {
                 await _edgeConsumerTransactionService.BalanceInquiry(_cancelTokenSource.Token,
                                                                  "f2305283-bb84-49fe-aba6-cd3f7bcfa5ba",
@@ -95,7 +108,7 @@ public class ClientApp : IHostedService
                                                                      "Checking|T",
                                                                      "Imprimir y Mostrar");
             }
-            else if (_simulationProfile.Equals("Vista", StringComparison.CurrentCultureIgnoreCase))
+            else if (_simulationPlatform.Equals("Vista", StringComparison.CurrentCultureIgnoreCase))
             {
                 await _vistaConsumerTransactionService.BalanceInquiry(_cancelTokenSource.Token,
                                                                   "f2305283-bb84-49fe-aba6-cd3f7bcfa5ba",
@@ -103,6 +116,10 @@ public class ClientApp : IHostedService
                                                                   "Display Balance",
                                                                   "Checking",
                                                                   "Checking|T");
+            }
+            else
+            {
+                throw new Exception($"Unsupported platform -- {_simulationPlatform}");
             }
         }
         catch (Exception ex)
