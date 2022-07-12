@@ -12,7 +12,7 @@
     "WebFast": "/api/v1/wft"
   },
   "Preferences": {
-    "SimulationProfile": "VMISED01",
+    "SimulationProfile": "VMISAE01",
     "DownloadPath": "C:\\Users\\Brian\\Desktop\\Screenshots"
   },
   "Terminal.VMISED01": {
@@ -34,5 +34,15 @@
     ],
     "StandardDelayMS": 1000,
     "StartupDelaySeconds": 200
+  },
+  "Terminal.VMISAE01": {
+    "Platform": "ActivateEnterprise",
+    "Host": "http://10.44.112.177:13467",
+    "HwProfile": "cdbb0e2c-0343-4ae5-89e6-4d7f9782153a",
+    "StartupApps": [
+      "C:\\Program Files (x86)\\NCR\\Activate Enterprise\\LoadAptra.bat"
+    ],
+    "StandardDelayMS": 1000,
+    "StartupDelaySeconds": 300
   }
 }

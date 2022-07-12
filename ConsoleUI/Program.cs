@@ -40,8 +40,9 @@ class Program
                 .ConfigureServices((hostContext, services) =>
                 {
                     services.AddScoped(sp => new HttpClient(new RequestHandler(new HttpClientHandler(), sp.GetRequiredService<ILogger<RequestHandler>>())));
-                    services.AddScoped<IEdgeConsumerTransactionService, EdgeConsumerTransactionService>();
-                    services.AddScoped<IVistaConsumerTransactionService, VistaConsumerTransactionService>();
+                    services.AddScoped<IEdgeBalanceInquiryService, EdgeBalanceInquiryService>();
+                    services.AddScoped<IVistaBalanceInquiryService, VistaBalanceInquiryService>();
+                    services.AddScoped<IActivateEnterpriseBalanceInquiryService, ActivateEnterpriseBalanceInquiryService>();
                     services.AddParagonAtmLibrary();
                     services.AddHostedService<ClientApp>();
                 })

@@ -12,8 +12,9 @@ public class ClientApp : IHostedService
     private readonly IHostApplicationLifetime _hostApplicationLifetime;
     private readonly ILogger<ClientApp> _logger;
     private readonly IClientService _clientService;
-    private readonly IEdgeConsumerTransactionService _edgeConsumerTransactionService;
-    private readonly IVistaConsumerTransactionService _vistaConsumerTransactionService;
+    private readonly IEdgeBalanceInquiryService _edgeConsumerTransactionService;
+    private readonly IVistaBalanceInquiryService _vistaConsumerTransactionService;
+    private readonly IActivateEnterpriseBalanceInquiryService _activateEnterpriseBalanceInquiryService;
     private readonly CancellationTokenSource _cancelTokenSource;
     private readonly string _simulationProfile;
     private readonly string _simulationPlatform;
@@ -22,8 +23,9 @@ public class ClientApp : IHostedService
                      IHostApplicationLifetime hostApplicationLifetime,
                      ILogger<ClientApp> logger,
                      IClientService clientService,
-                     IEdgeConsumerTransactionService edgeConsumerTransactionService,
-                     IVistaConsumerTransactionService vistaConsumerTransactionService)
+                     IEdgeBalanceInquiryService edgeConsumerTransactionService,
+                     IVistaBalanceInquiryService vistaConsumerTransactionService,
+                     IActivateEnterpriseBalanceInquiryService activateEnterpriseBalanceInquiryService)
     {
         _config = configuration;
         _hostApplicationLifetime = hostApplicationLifetime;
@@ -31,6 +33,7 @@ public class ClientApp : IHostedService
         _clientService = clientService;
         _edgeConsumerTransactionService = edgeConsumerTransactionService;
         _vistaConsumerTransactionService = vistaConsumerTransactionService;
+        _activateEnterpriseBalanceInquiryService = activateEnterpriseBalanceInquiryService;
         _cancelTokenSource = new CancellationTokenSource();
         _simulationProfile = _config[$"Preferences:SimulationProfile"];
 
@@ -116,6 +119,15 @@ public class ClientApp : IHostedService
                                                                   "Display Balance",
                                                                   "Checking",
                                                                   "Checking|T");
+            }
+            else if (_simulationPlatform.Equals("ActivateEnterprise", StringComparison.CurrentCultureIgnoreCase))
+            {
+                await _activateEnterpriseBalanceInquiryService.BalanceInquiry(_cancelTokenSource.Token,
+                                                                              "f2305283-bb84-49fe-aba6-cd3f7bcfa5ba",
+                                                                              "1234",
+                                                                              "English",
+                                                                              "Checking",
+                                                                              "Checking");
             }
             else
             {

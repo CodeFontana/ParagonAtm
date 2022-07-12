@@ -1,6 +1,6 @@
 ﻿namespace ConsoleUI.Interfaces;
 
-public interface IEdgeConsumerTransactionService
+public interface IEdgeBalanceInquiryService
 {
     Task BalanceInquiry(CancellationToken cancelToken,
                         string cardId,

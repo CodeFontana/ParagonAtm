@@ -7,21 +7,21 @@ using System.Text.Json;
 
 namespace ConsoleUI.Services;
 
-public class EdgeConsumerTransactionService : IEdgeConsumerTransactionService
+public class VistaBalanceInquiryService : IVistaBalanceInquiryService
 {
     private readonly IConfiguration _config;
-    private readonly ILogger<EdgeConsumerTransactionService> _logger;
+    private readonly ILogger<EdgeBalanceInquiryService> _logger;
     private readonly IAtmService _atmService;
     private readonly IAutomationService _autoService;
     private readonly IClientService _clientService;
     private readonly List<AtmScreenModel> _atmScreens;
     private readonly string _simulationProfile;
 
-    public EdgeConsumerTransactionService(IConfiguration configuration,
-                                          ILogger<EdgeConsumerTransactionService> logger,
-                                          IAtmService atmService,
-                                          IAutomationService autoService,
-                                          IClientService clientService)
+    public VistaBalanceInquiryService(IConfiguration configuration,
+                                      ILogger<EdgeBalanceInquiryService> logger,
+                                      IAtmService atmService,
+                                      IAutomationService autoService,
+                                      IClientService clientService)
     {
         _config = configuration;
         _logger = logger;
@@ -30,32 +30,6 @@ public class EdgeConsumerTransactionService : IEdgeConsumerTransactionService
         _clientService = clientService;
         _atmScreens = _config.GetSection("AvailableScreens").Get<List<AtmScreenModel>>();
         _simulationProfile = _config[$"Preferences:SimulationProfile"];
-    }
-
-    private async Task TakeReceipt(List<AtmServiceModel> services, string saveFolder)
-    {
-        // Isolate receipt printer service
-        AtmServiceModel receiptPrinter = services?.FirstOrDefault(x => x.DeviceType.ToLower() == "ptr");
-
-        if (receiptPrinter == null)
-        {
-            _logger.LogError($"Receipt printer not found in device list");
-            return;
-        }
-        else if (receiptPrinter.IsOpen == false)
-        {
-            _logger.LogError($"Receipt printer is not open");
-            return;
-        }
-
-        // Take receipt
-        ReceiptModel receipt = await _atmService.TakeReceiptAsync(receiptPrinter.Name, saveFolder);
-
-        if (receipt is not null)
-        {
-            string receiptText = JsonSerializer.Serialize(receipt.OcrData.Elements.ToList().Select(e => e.text));
-            _logger.LogInformation($"Take receipt -- {receiptText}");
-        }
     }
 
     /// <summary>
@@ -74,20 +48,13 @@ public class EdgeConsumerTransactionService : IEdgeConsumerTransactionService
     public async Task BalanceInquiry(CancellationToken cancelToken,
                                      string cardId = "f2305283-bb84-49fe-aba6-cd3f7bcfa5ba",
                                      string cardPin = "1234",
-                                     string language = "English",
+                                     string receiptOption = "Display Balance",
                                      string accountType = "Checking",
-                                     string accountName = "Checking|T",
-                                     string receiptOption = "Print and Display")
+                                     string accountName = "Checking|T")
     {
         try
         {
             string saveFolder = Path.Combine(_config["Preferences:DownloadPath"], DateTime.Now.ToString("yyyy-MM-dd--HH.mm.ss"));
-            string transactionType = "Account Balance";
-
-            if (language.ToLower() == "espanol")
-            {
-                transactionType = "Saldos de Cuenta";
-            }
 
             // Starting point -- InService/Welcome screen
             AtmScreenModel welcomeScreen = _atmScreens.First(s => s.Name.ToLower() == "welcome");
@@ -138,37 +105,15 @@ public class EdgeConsumerTransactionService : IEdgeConsumerTransactionService
             int standardDelay = _config.GetValue($"Terminal.{_simulationProfile}:StandardDelayMS", 2000);
             await Task.Delay(standardDelay);
 
-            // Validate -- Language selection screen
-            AtmScreenModel languageScreen = _atmScreens.First(s => s.Name.ToLower() == "languageselection");
-            atScreen = await _autoService.WaitForScreenAsync(languageScreen,
-                TimeSpan.FromSeconds(20),
-                TimeSpan.FromMilliseconds(standardDelay));
-
-            if (atScreen == false)
-            {
-                _logger.LogError($"ATM not at language screen");
-                return;
-            }
-
-            await _clientService.SaveScreenshotAsync(saveFolder);
-            if (cancelToken.IsCancellationRequested) { _logger.LogInformation("Transaction cancelled"); return; }
-
-            if (await _autoService.FindAndClickAsync(language) == false)
-            {
-                _logger.LogError($"Failed to find and click '{language}' button");
-                return;
-            }
-
-            await Task.Delay(standardDelay);
-
             // Validate -- PIN screen
-            atScreen = await _autoService.WaitForScreenAsync(_atmScreens.First(s => s.Name.ToLower() == "pin"),
+            atScreen = await _autoService.WaitForScreenAsync(
+                _atmScreens.First(s => s.Name.ToLower() == "pin"),
                 TimeSpan.FromSeconds(20),
                 TimeSpan.FromMilliseconds(standardDelay));
 
             if (atScreen == false)
             {
-                _logger.LogError("Enter your PIN screen not found");
+                _logger.LogError("PIN screen not found");
                 return;
             }
 
@@ -212,52 +157,32 @@ public class EdgeConsumerTransactionService : IEdgeConsumerTransactionService
 
             await Task.Delay(standardDelay);
 
-            // Validate -- Transaction type screen
-            atScreen = await _autoService.WaitForScreenAsync(_atmScreens.First(s => s.Name.ToLower() == "transactiontype"),
+            // Validate -- Would you like your account balance?
+            AtmScreenModel balanceRequest = _atmScreens.First(s => s.Name.ToLower() == "accountbalance");
+            atScreen = await _autoService.WaitForScreenAsync(balanceRequest,
                 TimeSpan.FromSeconds(20),
                 TimeSpan.FromMilliseconds(standardDelay));
 
             if (atScreen == false)
             {
-                _logger.LogError("Transaction type screen not found");
+                _logger.LogError($"ATM not at balance request screen");
                 return;
             }
 
             await _clientService.SaveScreenshotAsync(saveFolder);
             if (cancelToken.IsCancellationRequested) { _logger.LogInformation("Transaction cancelled"); return; }
 
-            if (await _autoService.FindAndClickAsync(transactionType) == false)
+            if (await _autoService.FindAndClickAsync("Yes") == false)
             {
-                _logger.LogError($"Failed to find and click '{transactionType}' button");
-                return;
-            }
-
-            await Task.Delay(standardDelay);
-
-            // Validate -- Account type screen
-            atScreen = await _autoService.WaitForScreenAsync(_atmScreens.First(s => s.Name.ToLower() == "accounttype"),
-                TimeSpan.FromSeconds(20),
-                TimeSpan.FromMilliseconds(standardDelay));
-
-            if (atScreen == false)
-            {
-                _logger.LogError("Account type screen not found");
-                return;
-            }
-
-            await _clientService.SaveScreenshotAsync(saveFolder);
-            if (cancelToken.IsCancellationRequested) { _logger.LogInformation("Transaction cancelled"); return; }
-
-            if (await _autoService.FindAndClickAsync(accountType) == false)
-            {
-                _logger.LogError($"Failed to find and click '{accountType}' button");
+                _logger.LogError($"Failed to find and click 'Yes' button");
                 return;
             }
 
             await Task.Delay(standardDelay);
 
             // Validate -- Balance destination screen
-            atScreen = await _autoService.WaitForScreenAsync(_atmScreens.First(s => s.Name.ToLower() == "balancedestination"),
+            atScreen = await _autoService.WaitForScreenAsync(
+                _atmScreens.First(s => s.Name.ToLower() == "balancedestination"),
                 TimeSpan.FromSeconds(20),
                 TimeSpan.FromMilliseconds(standardDelay));
 
@@ -278,8 +203,32 @@ public class EdgeConsumerTransactionService : IEdgeConsumerTransactionService
 
             await Task.Delay(standardDelay);
 
+            // Validate -- Account type screen
+            atScreen = await _autoService.WaitForScreenAsync(
+                _atmScreens.First(s => s.Name.ToLower() == "accounttype"),
+                TimeSpan.FromSeconds(20),
+                TimeSpan.FromMilliseconds(standardDelay));
+
+            if (atScreen == false)
+            {
+                _logger.LogError("Account type screen not found");
+                return;
+            }
+
+            await _clientService.SaveScreenshotAsync(saveFolder);
+            if (cancelToken.IsCancellationRequested) { _logger.LogInformation("Transaction cancelled"); return; }
+
+            if (await _autoService.FindAndClickAsync(accountType) == false)
+            {
+                _logger.LogError($"Failed to find and click '{accountType}' button");
+                return;
+            }
+
+            await Task.Delay(standardDelay);
+
             // Validate -- Account name screen
-            atScreen = await _autoService.WaitForScreenAsync(_atmScreens.First(s => s.Name.ToLower() == "accountname"),
+            atScreen = await _autoService.WaitForScreenAsync(
+                _atmScreens.First(s => s.Name.ToLower() == "accountname"),
                 TimeSpan.FromSeconds(20),
                 TimeSpan.FromMilliseconds(standardDelay));
 
@@ -300,16 +249,9 @@ public class EdgeConsumerTransactionService : IEdgeConsumerTransactionService
 
             await Task.Delay(standardDelay);
 
-            // Check for receipt screen
-            atScreen = await _autoService.MatchScreenAsync(_atmScreens.First(s => s.Name.ToLower() == "takereceipt"));
-
-            if (atScreen)
-            {
-                await TakeReceipt(services, saveFolder);
-            }
-
             // Validate -- balance inquiry screen
-            atScreen = await _autoService.WaitForScreenAsync(_atmScreens.First(s => s.Name.ToLower() == "balanceinquiry"),
+            atScreen = await _autoService.WaitForScreenAsync(
+                _atmScreens.First(s => s.Name.ToLower() == "balanceinquiry"),
                 TimeSpan.FromSeconds(20),
                 TimeSpan.FromMilliseconds(standardDelay));
 
@@ -322,17 +264,52 @@ public class EdgeConsumerTransactionService : IEdgeConsumerTransactionService
             await _clientService.SaveScreenshotAsync(saveFolder);
             if (cancelToken.IsCancellationRequested) { _logger.LogInformation("Transaction cancelled"); return; }
 
-            if (await _autoService.FindAndClickAsync(new string[] { "continue", "continuar" }) == false)
+            if (await _autoService.FindAndClickAsync("print") == false)
             {
-                _logger.LogError($"Failed to find and click 'Continue' or 'Continuar' button");
+                _logger.LogError("Failed to find and click 'Print' button");
                 return;
             }
 
             await Task.Delay(standardDelay);
-            await TakeReceipt(services, saveFolder);
 
-            // Validate -- Another transaction screen
-            atScreen = await _autoService.WaitForScreenAsync(_atmScreens.First(s => s.Name.ToLower() == "anothertransaction"),
+            // Validate -- Take receipt screen
+            atScreen = await _autoService.WaitForScreenAsync(
+                _atmScreens.First(s => s.Name.ToLower() == "takereceipt"),
+                TimeSpan.FromSeconds(20),
+                TimeSpan.FromMilliseconds(standardDelay));
+
+            if (atScreen == false)
+            {
+                _logger.LogError("Balance inquiry screen not found");
+                return;
+            }
+
+            // Isolate receipt printer service
+            AtmServiceModel receiptPrinter = services?.FirstOrDefault(x => x.DeviceType.ToLower() == "ptr");
+
+            if (receiptPrinter == null)
+            {
+                _logger.LogError($"Receipt printer not found in device list");
+                return;
+            }
+            else if (receiptPrinter.IsOpen == false)
+            {
+                _logger.LogError($"Receipt printer is not open");
+                return;
+            }
+
+            // Take receipt
+            ReceiptModel receipt = await _atmService.TakeReceiptAsync(receiptPrinter.Name, saveFolder);
+
+            if (receipt is not null)
+            {
+                string receiptText = JsonSerializer.Serialize(receipt.OcrData.Elements.ToList().Select(e => e.text));
+                _logger.LogInformation($"Take receipt -- {receiptText}");
+            }
+
+            // Validate -- Transaction complete
+            atScreen = await _autoService.WaitForScreenAsync(
+                _atmScreens.First(s => s.Name.ToLower() == "transactioncomplete"),
                 TimeSpan.FromSeconds(20),
                 TimeSpan.FromMilliseconds(standardDelay));
 
@@ -344,27 +321,41 @@ public class EdgeConsumerTransactionService : IEdgeConsumerTransactionService
 
             await _clientService.SaveScreenshotAsync(saveFolder);
 
-            if (await _autoService.FindAndClickAsync("no") == false)
+            if (await _autoService.FindAndClickAsync("Return card"))
             {
-                _logger.LogError($"Failed to find and click 'No' button");
+                await Task.Delay(standardDelay);
+
+                // Validate -- Take card screen
+                atScreen = await _autoService.WaitForScreenAsync(
+                    _atmScreens.First(s => s.Name.ToLower() == "takecard"),
+                    TimeSpan.FromSeconds(20),
+                    TimeSpan.FromMilliseconds(standardDelay));
+
+                if (atScreen == false)
+                {
+                    _logger.LogError("Take card screen not found");
+                    return;
+                }
+
+                await _clientService.SaveScreenshotAsync(saveFolder);
+                await _atmService.TakeCardAsync();
+            }
+            else if (await _autoService.FindAndClickAsync("Return card"))
+            {
+                for (int i = 0; i < 4; i++)
+                {
+                    await _atmService.TakeCardAsync();
+                    await Task.Delay(500);
+                }
+                
+                await _clientService.SaveScreenshotAsync(saveFolder);
+            }
+            else
+            {
+                _logger.LogError($"Failed to find and click 'Exit' or 'Return card' button");
                 return;
             }
 
-            await Task.Delay(standardDelay);
-
-            // Validate -- Take card screen
-            atScreen = await _autoService.WaitForScreenAsync(_atmScreens.First(s => s.Name.ToLower() == "takecard"),
-                TimeSpan.FromSeconds(20),
-                TimeSpan.FromMilliseconds(standardDelay));
-
-            if (atScreen == false)
-            {
-                _logger.LogError("Take card screen not found");
-                return;
-            }
-
-            await _clientService.SaveScreenshotAsync(saveFolder);
-            await _atmService.TakeCardAsync();
             await Task.Delay(standardDelay);
             await _clientService.SaveScreenshotAsync(saveFolder);
             await _clientService.DispatchToIdleAsync();
