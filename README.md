@@ -165,6 +165,7 @@ ConnectAsync(), DisconnectAsync(), DispatchToIdleAsync(), TakeAllMediaAsync(), S
 CompareText() / CompareTextAsync(), FindAndClickAsync(), GetScreenWordsAsync(), MatchScreen() / MatchScreenAsync(), WaitForScreenAsync(), WaitForScreensAsync(), WaitForTextAsync()
 
 ### Demos
+https://user-images.githubusercontent.com/41308769/179620502-1c16442a-c91e-46cf-a857-a1ead2e17f51.mp4  
 https://user-images.githubusercontent.com/41308769/169855736-e5e9ca91-7a94-4335-83de-89fca32f3f6a.mp4
   
 ## More Information about Paragon Virtual ATM
