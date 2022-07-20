@@ -311,6 +311,7 @@ public class ActivateEnterpriseBalanceInquiryService : IActivateEnterpriseBalanc
 
             await _clientService.SaveScreenshotAsync(saveFolder);
             await _atmService.TakeCardAsync();
+            await TakeReceipt(services, saveFolder);
             await Task.Delay(standardDelay);
             await _clientService.SaveScreenshotAsync(saveFolder);
             await _clientService.DispatchToIdleAsync();
