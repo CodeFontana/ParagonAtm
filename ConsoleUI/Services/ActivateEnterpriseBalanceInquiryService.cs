@@ -65,11 +65,11 @@ public class ActivateEnterpriseBalanceInquiryService : IActivateEnterpriseBalanc
     /// </remarks>
     /// <returns>A task representing a balance inquiry transaction</returns>
     public async Task BalanceInquiry(CancellationToken cancelToken,
-                               string cardId,
-                               string cardPin,
-                               string language,
-                               string accountType,
-                               string accountName)
+                                     string cardId,
+                                     string cardPin,
+                                     string language,
+                                     string accountType,
+                                     string accountName)
     {
         try
         {
@@ -270,14 +270,6 @@ public class ActivateEnterpriseBalanceInquiryService : IActivateEnterpriseBalanc
 
             await Task.Delay(standardDelay);
 
-            // Check for receipt screen
-            atScreen = await _autoService.MatchScreenAsync(_atmScreens.First(s => s.Name.ToLower() == "takereceipt"));
-
-            if (atScreen)
-            {
-                await TakeReceipt(services, saveFolder);
-            }
-
             // Validate -- Another transaction screen
             atScreen = await _autoService.WaitForScreenAsync(_atmScreens.First(s => s.Name.ToLower() == "anothertransaction"),
                 TimeSpan.FromSeconds(30),
@@ -312,6 +304,7 @@ public class ActivateEnterpriseBalanceInquiryService : IActivateEnterpriseBalanc
 
             await _clientService.SaveScreenshotAsync(saveFolder);
             await _atmService.TakeCardAsync();
+            await TakeReceipt(services, saveFolder);
             await Task.Delay(standardDelay);
             await _clientService.SaveScreenshotAsync(saveFolder);
             await _clientService.DispatchToIdleAsync();
