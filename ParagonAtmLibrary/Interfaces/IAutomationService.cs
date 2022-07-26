@@ -1,6 +1,5 @@
-﻿using ParagonAtmLibrary.Models;
+﻿namespace ParagonAtmLibrary.Interfaces;
 
-namespace ParagonAtmLibrary.Interfaces;
 public interface IAutomationService
 {
     bool CompareText(List<string> screenWords, string phraseText, decimal matchConfidence, int acceptableEditDistance = 0);

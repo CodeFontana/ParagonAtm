@@ -1,8 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using ParagonAtmLibrary.Interfaces;
-using ParagonAtmLibrary.Services;
-
-namespace ParagonAtmLibrary;
+﻿namespace ParagonAtmLibrary;
 
 public static class ParagonAtmLibraryExtensions
 {

@@ -1,10 +1,4 @@
-﻿using ConsoleUI.Interfaces;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using ParagonAtmLibrary.Interfaces;
-
-namespace VirtualAtmClient;
+﻿namespace VirtualAtmClient;
 
 public class ClientApp : IHostedService
 {

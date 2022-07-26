@@ -1,6 +1,4 @@
-﻿using ParagonAtmLibrary.Models;
-
-namespace ParagonAtmLibrary.Interfaces;
+﻿namespace ParagonAtmLibrary.Interfaces;
 public interface IAgentService
 {
     Task<bool> CloseSesisonAsync();

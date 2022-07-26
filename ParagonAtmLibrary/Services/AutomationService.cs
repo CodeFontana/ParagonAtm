@@ -1,9 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
-using ParagonAtmLibrary.Interfaces;
-using ParagonAtmLibrary.Models;
-using System.Text.Json;
-
-namespace ParagonAtmLibrary.Services;
+﻿namespace ParagonAtmLibrary.Services;
 
 public class AutomationService : IAutomationService
 {

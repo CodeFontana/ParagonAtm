@@ -1,9 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-using ParagonAtmLibrary.Interfaces;
-using ParagonAtmLibrary.Models;
-using System.Text.Json;
-using static ParagonAtmLibrary.Services.AtmService;
+﻿using static ParagonAtmLibrary.Services.AtmService;
 
 namespace ParagonAtmLibrary.Services;
 

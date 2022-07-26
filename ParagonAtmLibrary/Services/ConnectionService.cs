@@ -1,9 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-using ParagonAtmLibrary.Interfaces;
-using System.Net.Http.Json;
-
-namespace ParagonAtmLibrary.Services;
+﻿namespace ParagonAtmLibrary.Services;
 
 public class ConnectionService : IConnectionService
 {

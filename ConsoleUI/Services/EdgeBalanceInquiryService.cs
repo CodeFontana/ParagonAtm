@@ -1,11 +1,4 @@
-﻿using ConsoleUI.Interfaces;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-using ParagonAtmLibrary.Interfaces;
-using ParagonAtmLibrary.Models;
-using System.Text.Json;
-
-namespace ConsoleUI.Services;
+﻿namespace ConsoleUI.Services;
 
 public class EdgeBalanceInquiryService : IEdgeBalanceInquiryService
 {

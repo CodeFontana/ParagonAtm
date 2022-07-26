@@ -1,8 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
-using System.Net.Http.Json;
-using System.Text.Json;
-
-namespace VirtualAtmClient.Helpers;
+﻿namespace VirtualAtmClient.Helpers;
 
 public class RequestHandler : DelegatingHandler
 {

@@ -1,7 +1,5 @@
-﻿using ParagonAtmLibrary.Models;
-using ParagonAtmLibrary.Services;
+﻿namespace ParagonAtmLibrary.Interfaces;
 
-namespace ParagonAtmLibrary.Interfaces;
 public interface IAtmService
 {
     Task<bool> ChangeOperatorSwitchAsync(bool supervisor);

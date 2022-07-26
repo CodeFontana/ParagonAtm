@@ -1,0 +1,12 @@
+﻿global using ConsoleUI.Interfaces;
+global using ConsoleUI.Services;
+global using FileLoggerLibrary;
+global using Microsoft.Extensions.Configuration;
+global using Microsoft.Extensions.DependencyInjection;
+global using Microsoft.Extensions.Hosting;
+global using Microsoft.Extensions.Logging;
+global using ParagonAtmLibrary;
+global using ParagonAtmLibrary.Interfaces;
+global using ParagonAtmLibrary.Models;
+global using System.Text.Json;
+global using VirtualAtmClient.Helpers;

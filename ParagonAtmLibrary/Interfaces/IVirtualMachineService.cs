@@ -1,6 +1,5 @@
-﻿using ParagonAtmLibrary.Models;
+﻿namespace ParagonAtmLibrary.Interfaces;
 
-namespace ParagonAtmLibrary.Interfaces;
 public interface IVirtualMachineService
 {
     Task<bool> ClickScreenAsync(ClickScreenModel clickPoint, bool rightClick = false);

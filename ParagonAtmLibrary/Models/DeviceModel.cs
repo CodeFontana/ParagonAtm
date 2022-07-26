@@ -1,6 +1,4 @@
-﻿using System.Text.Json.Serialization;
-
-namespace ParagonAtmLibrary.Models;
+﻿namespace ParagonAtmLibrary.Models;
 
 public class DeviceModel
 {
