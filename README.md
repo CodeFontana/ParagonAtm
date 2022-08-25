@@ -3,10 +3,13 @@ This library is used for interacting with a Paragon Virtual ATM via the publishe
 
 [![Nuget Release](https://img.shields.io/nuget/v/CodeFoxtrot.ParagonAtmLibrary?style=for-the-badge)](https://www.nuget.org/packages/CodeFoxtrot.ParagonAtmLibrary/)
 
-## Breaking Changes 1.8.5+
+## Breaking Changes 1.8.6
+Paragon has updated its API methods to support multiple screens. As such, API methods for pulling back a screenshot or reading OCR text now take a parameter indicating which screen the data should come from. Hence the nuget package has been updated to support this change, defaulting to an empty string, which aligns with requesting data from the primary monitor. Thus this nuget package will allow existing code to work again, unchanged, and at the same time, optionally provide the ability to specify which screen the data should come from. Enjoy.
+
+## Breaking Changes 1.8.5
 Support for multiple terminal profiles was added to Simulation.json. To accomplish this, a Preferences:SimulationProfile configuration parameter was added. See the sample Simulation.json below. The value of this parameter is how the library chooses which Terminal.{profile name} to choose for connection. If unspecified, the library will throw an exception.
 
-## Breaking Changes 1.8.0+
+## Breaking Changes 1.8.0
 The AvailableScreens.json was restructured, such that, rather than assigning a "Match Confidence" and "Edit Distance" to an entire ScreenModel, they are now per-phrase configuration. In this more granular approach, each phrase can be uniquely adjusted, rather than trying to find a one-size-fits-all setting for every phrase in that ScreenModel. See the sample below which reflects the new structure.
 
 ## How to use
