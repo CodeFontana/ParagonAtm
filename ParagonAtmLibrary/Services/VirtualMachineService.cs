@@ -17,14 +17,52 @@ public class VirtualMachineService : IVirtualMachineService
 
     public record OcrData(OcrDataModel ocrData);
 
-    public async Task<string> GetScreenJpegAsync()
+    public async Task<string> GetScreenAsync(string screenName = "")
+    {
+        try
+        {
+            _logger.LogInformation("Get screen...");
+
+            ScreenNameModel screen = new()
+            {
+                ScreenName = screenName
+            };
+
+            using HttpResponseMessage response =
+                await _httpClient.PostAsJsonAsync($"{_config["ApiEndpoint:VirtualMachine"]}/get-screen", screen);
+
+            if (response.IsSuccessStatusCode)
+            {
+                ScreenshotModel result = await response.Content.ReadFromJsonAsync<ScreenshotModel>();
+                _logger.LogInformation($"Success -- Base64/{result.Result.Substring(0, 50)}...");
+                return result.Result;
+            }
+            else
+            {
+                _logger.LogError($"Failed to get screen -- [{response.ReasonPhrase}]");
+                return null;
+            }
+        }
+        catch (Exception e)
+        {
+            _logger.LogError($"Failed to get screen -- [{e.Message}]");
+            return null;
+        }
+    }
+
+    public async Task<string> GetScreenJpegAsync(string screenName = "")
     {
         try
         {
             _logger.LogInformation("Get screen JPEG...");
 
+            ScreenNameModel screen = new()
+            {
+                ScreenName = screenName
+            };
+
             using HttpResponseMessage response =
-                await _httpClient.PostAsync($"{_config["ApiEndpoint:VirtualMachine"]}/get-screen-jpeg", null);
+                await _httpClient.PostAsJsonAsync($"{_config["ApiEndpoint:VirtualMachine"]}/get-screen-jpeg", screen);
 
             if (response.IsSuccessStatusCode)
             {
@@ -45,14 +83,19 @@ public class VirtualMachineService : IVirtualMachineService
         }
     }
 
-    public async Task<OcrDataModel> GetScreenTextAsync()
+    public async Task<OcrDataModel> GetScreenTextAsync(string screenName = "")
     {
         try
         {
             _logger.LogInformation($"Get screen text...");
 
+            ScreenNameModel screen = new()
+            {
+                ScreenName = screenName
+            };
+
             using HttpResponseMessage response =
-                await _httpClient.PostAsync($"{_config["ApiEndpoint:VirtualMachine"]}/get-screen-text", null);
+                await _httpClient.PostAsJsonAsync($"{_config["ApiEndpoint:VirtualMachine"]}/get-screen-text", screen);
 
             if (response.IsSuccessStatusCode)
             {

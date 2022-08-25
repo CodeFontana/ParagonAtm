@@ -429,11 +429,11 @@ public class ClientService : IClientService
     /// </summary>
     /// <param name="folder">Folder to save the screenshot.</param>
     /// <returns>True, if the screenshot is successfully saved, false otherwise.</returns>
-    public async Task<bool> SaveScreenshotAsync(string folder)
+    public async Task<bool> SaveScreenshotAsync(string folder, string screenName = "")
     {
         try
         {
-            string jpeg = await _vmService.GetScreenJpegAsync();
+            string jpeg = await _vmService.GetScreenAsync();
 
             if (string.IsNullOrWhiteSpace(jpeg) == false)
             {
