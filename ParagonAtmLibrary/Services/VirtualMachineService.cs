@@ -16,6 +16,35 @@ public class VirtualMachineService : IVirtualMachineService
     }
 
     public record OcrData(OcrDataModel ocrData);
+    public record Screens(List<ScreenModel> screens);
+
+    public async Task<List<ScreenModel>> EnumerateScreensAsync()
+    {
+        try
+        {
+            _logger.LogInformation("Enumerate screens...");
+
+            using HttpResponseMessage response =
+                await _httpClient.PostAsync($"{_config["ApiEndpoint:VirtualMachine"]}/enumerate-screens", null);
+
+            if (response.IsSuccessStatusCode)
+            {
+                Screens result = await response.Content.ReadFromJsonAsync<Screens>();
+                _logger.LogInformation($"Success [{response.StatusCode}] -- /enumerate-screens");
+                return result.screens;
+            }
+            else
+            {
+                _logger.LogError($"Failed to enumerate screens -- [{response.ReasonPhrase}]");
+                return null;
+            }
+        }
+        catch (Exception e)
+        {
+            _logger.LogError($"Failed to enumerate screens -- [{e.Message}]");
+            return null;
+        }
+    }
 
     public async Task<string> GetScreenAsync(string screenName = "")
     {
@@ -100,6 +129,7 @@ public class VirtualMachineService : IVirtualMachineService
             if (response.IsSuccessStatusCode)
             {
                 OcrData result = await response.Content.ReadFromJsonAsync<OcrData>();
+                _logger.LogInformation($"Success [{response.StatusCode}] -- /get-screen-text");
                 return result.ocrData;
             }
             else
