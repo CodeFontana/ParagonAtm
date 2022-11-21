@@ -1,3 +1,6 @@
+# Annoucement
+This library is no longer maintained as I have left the ATM industry. Hopefully it provides some help and guidance to others still working with Paragon software.
+
 # Paragon Virtual ATM API Library
 This library is used for interacting with a Paragon Virtual ATM via the published API.
 
